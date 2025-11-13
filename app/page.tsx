@@ -29,8 +29,8 @@ export default async function HomePage() {
     <>
       <AdHeader />
 
-      <div className="mx-auto max-w-sm md:max-w-4xl lg:max-w-6xl bg-[#F8FAFC] dark:bg-[#1E293B] shadow-lg min-h-screen flex flex-col pt-[60px]">
-        <main className="flex-grow pb-24 px-2 md:px-6">
+      <div className="mx-auto max-w-sm bg-[#F8FAFC] dark:bg-[#1E293B] shadow-lg min-h-screen flex flex-col pt-[60px]">
+        <main className="flex-grow pb-20 px-2">
           {error ? (
             <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
               <p className="text-lg text-slate-600 dark:text-slate-400">Unable to load collections</p>
@@ -39,7 +39,7 @@ export default async function HomePage() {
               </p>
             </div>
           ) : collections.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            <div className="grid grid-cols-2 gap-x-0 gap-y-4">
               {collections.map((collection) => (
                 <Link key={collection.id} href={`/collections/${collection.id}`} className="flex flex-col">
                   <div className="relative overflow-hidden rounded-lg">
