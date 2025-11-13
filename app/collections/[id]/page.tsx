@@ -2,13 +2,14 @@ import { createClient } from "@/lib/supabase/server"
 import { notFound } from "next/navigation"
 import { BottomNav } from "@/components/bottom-nav"
 import { WishlistButton } from "@/components/wishlist-button"
+import { AdHeader } from "@/components/ad-header"
 import type { Metadata } from "next"
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params
   const supabase = await createClient()
 
-  const { data: collection } = await supabase.from("collections").select("title, brand").eq("slug", id).single()
+  const { data: collection } = await supabase.from("collections").select("title, brand").eq("id", id).single()
 
   if (!collection) {
     return {
@@ -33,7 +34,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ id:
   const { data: collection } = await supabase
     .from("collections")
     .select("*")
-    .eq("slug", id)
+    .eq("id", id)
     .eq("status", "published")
     .single()
 
@@ -48,58 +49,69 @@ export default async function CollectionPage({ params }: { params: Promise<{ id:
     .eq("is_visible", true)
     .order("created_at", { ascending: false })
 
+  const productCount = products?.length || 0
+
   return (
-    <div className="flex flex-col min-h-screen bg-[#f8f6f5] dark:bg-[#23150f]">
-      <main className="flex-grow pb-20">
-        <div className="relative w-full h-56 md:h-80 lg:h-96">
-          <img
-            src={collection.image_url || "/placeholder.svg"}
-            alt={collection.title}
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#f8f6f5] dark:from-[#23150f] via-transparent to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 lg:p-8">
-            <h1 className="text-[#23150f] dark:text-[#f8f6f5] text-2xl md:text-3xl lg:text-4xl font-bold leading-tight tracking-tight">
-              {collection.title}
-            </h1>
-            <p className="text-[#9e6147] dark:text-gray-400 text-xs md:text-sm font-normal leading-normal pt-2">
-              As an affiliate, we may earn from qualifying purchases.
-            </p>
-          </div>
-        </div>
+    <>
+      <AdHeader />
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {products?.map((product) => (
-            <div key={product.id} className="flex flex-col group relative">
-              <div className="relative w-full overflow-hidden bg-gray-200">
-                <div
-                  className="w-full bg-center bg-no-repeat aspect-[3/4] bg-cover"
-                  style={{ backgroundImage: `url('${product.image_url}')` }}
-                />
-                <WishlistButton productId={product.id} />
-              </div>
-              <a
-                href={product.affiliate_link || "#"}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex flex-col p-3"
-              >
-                <p className="text-[#23150f] dark:text-[#f8f6f5] text-xs md:text-sm font-bold uppercase leading-normal tracking-wide">
-                  {product.brand}
-                </p>
-                <p className="text-[#9e6147] dark:text-gray-400 text-sm md:text-base font-normal leading-normal line-clamp-2">
-                  {product.title}
-                </p>
-                <p className="text-[#23150f] dark:text-gray-200 text-sm md:text-base font-medium leading-normal pt-1">
-                  ${product.price.toFixed(2)}
-                </p>
-              </a>
+      <div className="mx-auto max-w-sm md:max-w-4xl lg:max-w-6xl bg-[#F8FAFC] dark:bg-[#1E293B] shadow-lg min-h-screen flex flex-col pt-[60px]">
+        <main className="flex-grow px-4 md:px-6 pt-6 pb-24">
+          <div className="flex items-start justify-between mb-6">
+            <div className="flex-1 pr-4">
+              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-slate-800 dark:text-slate-100">
+                {collection.title}
+              </h1>
+              <p className="text-sm md:text-base text-slate-500 dark:text-slate-400 mt-1">
+                {collection.brand} - Our latest collection of premium products
+              </p>
+              <p className="text-xs md:text-sm text-slate-400 dark:text-slate-500 mt-2">{productCount} items</p>
             </div>
-          ))}
-        </div>
-      </main>
+            <div className="w-24 h-24 md:w-32 md:h-32 rounded-lg overflow-hidden shadow-md flex-shrink-0">
+              <img
+                alt={collection.title}
+                className="w-full h-full object-cover"
+                src={collection.image_url || "/placeholder.svg?height=128&width=128"}
+              />
+            </div>
+          </div>
 
-      <BottomNav />
-    </div>
+          {products && products.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 gap-y-2 md:gap-4">
+              {products.map((product) => (
+                <div key={product.id} className="flex flex-col">
+                  <div className="relative overflow-hidden rounded-lg">
+                    <img
+                      alt={product.title}
+                      className="w-full h-auto aspect-[3/4] object-cover"
+                      src={product.image_url || "/placeholder.svg?height=400&width=300"}
+                    />
+                    <div className="absolute top-2 right-2">
+                      <WishlistButton productId={product.id} className="bg-black/20 backdrop-blur-sm" />
+                    </div>
+                  </div>
+                  <a href={product.affiliate_link || "#"} target="_blank" rel="noopener noreferrer" className="pt-2">
+                    <h3 className="font-semibold text-sm md:text-base text-slate-800 dark:text-slate-200 truncate">
+                      {product.title}
+                    </h3>
+                    <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400">{product.brand}</p>
+                    <p className="text-sm md:text-base font-bold text-slate-800 dark:text-slate-100 mt-1">
+                      ${product.price.toFixed(2)}
+                    </p>
+                  </a>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
+              <p className="text-lg text-slate-600 dark:text-slate-400">No products in this collection yet</p>
+              <p className="text-sm text-slate-500 dark:text-slate-500 mt-2">Check back soon for new arrivals</p>
+            </div>
+          )}
+        </main>
+
+        <BottomNav />
+      </div>
+    </>
   )
 }

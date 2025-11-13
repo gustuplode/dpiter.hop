@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
 import { BottomNav } from "@/components/bottom-nav"
+import { AdHeader } from "@/components/ad-header"
 
 export default async function HomePage() {
   const supabase = await createClient()
@@ -25,65 +26,63 @@ export default async function HomePage() {
   }
 
   return (
-    <div className="relative flex min-h-screen w-full flex-col bg-[#f8f6f5] dark:bg-[#23150f]">
-      <div className="bg-primary py-2 text-center text-sm font-bold text-white">
-        <span>🔥 47% off limited time offer</span>
-      </div>
+    <>
+      <AdHeader />
 
-      <main className="flex-1">
-        {error ? (
-          <div className="col-span-2 flex flex-col items-center justify-center py-16 px-4 text-center">
-            <p className="text-lg text-slate-600 dark:text-slate-400">Unable to load collections</p>
-            <p className="text-sm text-slate-500 dark:text-slate-500 mt-2">
-              Please make sure the database tables are created. Run the SQL scripts in the scripts folder.
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {collections.length > 0 ? (
-              collections.map((collection) => (
-                <Link
-                  key={collection.id}
-                  href={`/collections/${collection.slug || collection.id}`}
-                  className="flex flex-col group"
-                >
-                  <div className="relative w-full overflow-hidden bg-gray-200">
-                    <div
-                      className="w-full bg-cover bg-center bg-no-repeat aspect-[3/4]"
-                      style={{ backgroundImage: `url('${collection.image_url}')` }}
+      <div className="mx-auto max-w-sm md:max-w-4xl lg:max-w-6xl bg-[#F8FAFC] dark:bg-[#1E293B] shadow-lg min-h-screen flex flex-col pt-[60px]">
+        <main className="flex-grow pb-24 px-2 md:px-6">
+          {error ? (
+            <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
+              <p className="text-lg text-slate-600 dark:text-slate-400">Unable to load collections</p>
+              <p className="text-sm text-slate-500 dark:text-slate-500 mt-2">
+                Please make sure the database tables are created.
+              </p>
+            </div>
+          ) : collections.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+              {collections.map((collection) => (
+                <Link key={collection.id} href={`/collections/${collection.id}`} className="flex flex-col">
+                  <div className="relative overflow-hidden rounded-lg">
+                    <img
+                      alt={collection.title}
+                      className="w-full h-auto aspect-[3/4] object-cover"
+                      src={collection.image_url || "/placeholder.svg?height=400&width=300"}
                     />
                     {collection.is_limited_time && (
-                      <div className="absolute bottom-2 left-2 flex items-center gap-1 rounded-full bg-primary/90 px-2 py-1 text-xs font-medium text-white backdrop-blur-sm">
-                        <span className="material-symbols-outlined !text-sm">schedule</span>
-                        <span>Limited Time</span>
+                      <div className="absolute bottom-2 left-2 bg-[#F97316] text-white text-[8px] font-bold px-1.5 py-0.5 rounded-sm inline-flex items-center gap-0.5 shadow">
+                        <span className="material-symbols-outlined !text-[10px]">schedule</span>
+                        LIMITED TIME
                       </div>
                     )}
                   </div>
-                  <div className="px-2 pt-2 pb-4">
-                    <p className="text-xs md:text-sm font-bold uppercase leading-normal tracking-wide text-slate-700 dark:text-slate-400">
-                      {collection.brand}
-                    </p>
-                    <p className="text-sm md:text-base font-normal leading-normal text-[#23150f] dark:text-[#f8f6f5] line-clamp-2">
-                      {collection.title}
-                    </p>
+                  <div className="pt-2 px-1">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className="font-bold text-sm text-slate-800 dark:text-slate-200 uppercase">
+                          {collection.brand}
+                        </h3>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">{collection.title}</p>
+                      </div>
+                      <button className="text-slate-500 dark:text-slate-400">
+                        <span className="material-symbols-outlined">favorite</span>
+                      </button>
+                    </div>
                   </div>
                 </Link>
-              ))
-            ) : (
-              <div className="col-span-2 md:col-span-3 lg:col-span-4 flex flex-col items-center justify-center py-16 px-4 text-center">
-                <p className="text-lg text-slate-600 dark:text-slate-400">No collections available yet</p>
-                <p className="text-sm text-slate-500 dark:text-slate-500 mt-2">
-                  Collections will appear here once they are published
-                </p>
-              </div>
-            )}
-          </div>
-        )}
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
+              <p className="text-lg text-slate-600 dark:text-slate-400">No collections available yet</p>
+              <p className="text-sm text-slate-500 dark:text-slate-500 mt-2">
+                Collections will appear here once they are published
+              </p>
+            </div>
+          )}
+        </main>
 
-        <div className="h-24" />
-      </main>
-
-      <BottomNav />
-    </div>
+        <BottomNav />
+      </div>
+    </>
   )
 }

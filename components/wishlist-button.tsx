@@ -1,11 +1,9 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useEffect } from "react"
-import { Heart } from "lucide-react"
 
-export function WishlistButton({ productId }: { productId: string }) {
+export function WishlistButton({ productId, className = "" }: { productId: string; className?: string }) {
   const [isInWishlist, setIsInWishlist] = useState(false)
 
   useEffect(() => {
@@ -40,9 +38,9 @@ export function WishlistButton({ productId }: { productId: string }) {
   return (
     <button
       onClick={toggleWishlist}
-      className="absolute top-2 right-2 flex items-center justify-center size-8 rounded-full bg-[#f8f6f5]/70 dark:bg-[#23150f]/70 text-[#23150f] dark:text-gray-200 hover:bg-[#f8f6f5] dark:hover:bg-[#23150f] transition-colors"
+      className={`text-white rounded-full w-7 h-7 flex items-center justify-center ${className}`}
     >
-      <Heart className={`h-5 w-5 ${isInWishlist ? "fill-red-500 text-red-500" : ""}`} />
+      <span className={`material-symbols-outlined !text-base ${isInWishlist ? "filled" : ""}`}>favorite</span>
     </button>
   )
 }

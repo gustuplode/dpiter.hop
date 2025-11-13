@@ -1,10 +1,10 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Plus_Jakarta_Sans } from "next/font/google"
+import { Inter } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 
-const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"] })
+const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700"] })
 
 export const metadata: Metadata = {
   title: "Dpiter - Curated Fashion & Lifestyle Collections",
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   verification: {
     google: "sHFi0coDLCMtYeXcBFJ7pIrzGeebms59PVwFCCrATSA",
     other: {
-      "msvalidate.01": "FC0ED3E2CD6BC6E015201B4F0DABFp03E",
+      "msvalidate.01": "FC0ED3E2CD6BC6E015201B4F0DABF03E",
       monetag: "8e701858f43c71973d12ef290cd91d1f",
     },
   },
@@ -49,9 +49,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+          rel="stylesheet"
+        />
       </head>
-      <body className={`${plusJakartaSans.className} font-sans antialiased`}>
+      <body className={`${inter.className} font-display antialiased`}>
         {children}
         <Analytics />
       </body>
