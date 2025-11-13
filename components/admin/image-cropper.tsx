@@ -157,10 +157,6 @@ export function ImageCropper({
     const ctx = outputCanvas.getContext("2d", { alpha: false })
     if (!ctx) return
 
-    // Fill with white background
-    ctx.fillStyle = "#FFFFFF"
-    ctx.fillRect(0, 0, cropWidth, cropHeight)
-
     // Enable high-quality rendering
     ctx.imageSmoothingEnabled = true
     ctx.imageSmoothingQuality = "high"
@@ -181,7 +177,7 @@ export function ImageCropper({
         }
       },
       "image/jpeg",
-      0.95,
+      0.98,
     )
   }
 
