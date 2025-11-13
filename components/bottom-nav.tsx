@@ -7,60 +7,81 @@ export function BottomNav() {
   const pathname = usePathname()
 
   const navItems = [
-    { href: "/", label: "Home", icon: "home" },
-    { href: "/search", label: "Search", icon: "search" },
-    { href: "/wishlist", label: "Wishlist", icon: "favorite" },
-    { href: "/admin/login", label: "Profile", icon: "person" },
+    { href: "/", label: "Home", icon: "home", fill: true },
+    { href: "/search", label: "Search", icon: "search", fill: false },
+    { href: "/wishlist", label: "Wishlist", icon: "favorite_border", fill: false },
+    { href: "/admin/login", label: "Profile", icon: "person_outline", fill: false },
   ]
 
   return (
-    <footer className="fixed bottom-0 left-0 right-0 max-w-sm mx-auto">
-      <div className="relative bg-[#F8FAFC]/80 dark:bg-slate-900/80 backdrop-blur-sm border-t border-slate-200 dark:border-slate-700">
-        <div className="flex justify-around items-center h-14">
-          {navItems.slice(0, 2).map((item) => {
-            const isActive = pathname === item.href
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex flex-col items-center justify-center w-1/5 ${
-                  isActive ? "text-[#F97316]" : "text-slate-500 dark:text-slate-400"
-                }`}
-              >
-                <span className={`material-symbols-outlined text-[20px] ${isActive ? "!font-semibold" : ""}`}>
-                  {item.icon}
-                </span>
-                <span className={`text-[10px] ${isActive ? "font-semibold" : ""}`}>{item.label}</span>
-              </Link>
-            )
-          })}
-          <div className="w-1/5"></div>
-          {navItems.slice(2).map((item) => {
-            const isActive = pathname === item.href || pathname.startsWith("/admin")
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex flex-col items-center justify-center w-1/5 ${
-                  isActive ? "text-[#F97316]" : "text-slate-500 dark:text-slate-400"
-                }`}
-              >
-                <span className={`material-symbols-outlined text-[20px] ${isActive ? "!font-semibold" : ""}`}>
-                  {item.icon}
-                </span>
-                <span className={`text-[10px] ${isActive ? "font-semibold" : ""}`}>{item.label}</span>
-              </Link>
-            )
-          })}
-        </div>
-        <div className="absolute left-1/2 -translate-x-1/2 -top-7 text-center">
+    <footer className="fixed bottom-0 w-full bg-white dark:bg-slate-900 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] dark:shadow-[0_-2px_10px_rgba(0,0,0,0.2)]">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-around items-center h-20 relative">
           <Link
             href="/"
-            className="w-14 h-14 bg-[#F97316] rounded-full flex items-center justify-center shadow-lg ring-4 ring-[#F8FAFC] dark:ring-[#1E293B]"
+            className={`flex flex-col items-center transition-colors ${
+              pathname === "/"
+                ? "text-[#F97316]"
+                : "text-slate-600 dark:text-slate-400 hover:text-[#F97316] dark:hover:text-[#F97316]"
+            }`}
           >
-            <span className="material-symbols-outlined text-white !text-[28px]">shopping_bag</span>
+            <span
+              className="material-symbols-outlined text-3xl"
+              style={{ fontVariationSettings: pathname === "/" ? "'FILL' 1" : "'FILL' 0" }}
+            >
+              home
+            </span>
+            <span className="text-xs font-semibold mt-0.5">Home</span>
           </Link>
-          <span className="text-[10px] font-bold text-slate-800 dark:text-slate-200 mt-0.5 block">Dpiter</span>
+
+          <Link
+            href="/search"
+            className={`flex flex-col items-center transition-colors ${
+              pathname === "/search"
+                ? "text-[#F97316]"
+                : "text-slate-600 dark:text-slate-400 hover:text-[#F97316] dark:hover:text-[#F97316]"
+            }`}
+          >
+            <span className="material-symbols-outlined text-3xl">search</span>
+            <span className="text-xs font-semibold mt-0.5">Search</span>
+          </Link>
+
+          <div className="absolute -top-12">
+            <Link href="/">
+              <button className="bg-[#F97316] text-white rounded-full w-20 h-20 flex flex-col items-center justify-center shadow-lg transform transition-transform hover:scale-105">
+                <span className="material-symbols-outlined text-4xl">shopping_bag</span>
+              </button>
+            </Link>
+            <span className="text-center block text-xs font-semibold mt-2 text-slate-600 dark:text-slate-400">
+              Dpiter
+            </span>
+          </div>
+
+          <div className="w-20"></div>
+
+          <Link
+            href="/wishlist"
+            className={`flex flex-col items-center transition-colors ${
+              pathname === "/wishlist"
+                ? "text-[#F97316]"
+                : "text-slate-600 dark:text-slate-400 hover:text-[#F97316] dark:hover:text-[#F97316]"
+            }`}
+          >
+            <span className="material-symbols-outlined text-3xl">favorite_border</span>
+            <span className="text-xs font-semibold mt-0.5">Wishlist</span>
+          </Link>
+
+          <Link
+            href="/admin/login"
+            className={`flex flex-col items-center transition-colors ${
+              pathname.startsWith("/admin")
+                ? "text-[#F97316]"
+                : "text-slate-600 dark:text-slate-400 hover:text-[#F97316] dark:hover:text-[#F97316]"
+            }`}
+          >
+            <span className="material-symbols-outlined text-3xl">person_outline</span>
+            <span className="text-xs font-semibold mt-0.5">Profile</span>
+          </Link>
         </div>
       </div>
     </footer>

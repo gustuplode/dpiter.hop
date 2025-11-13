@@ -1,10 +1,10 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { Poppins } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 
-const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700"] })
+const poppins = Poppins({ subsets: ["latin"], weight: ["400", "500", "600", "700"] })
 
 export const metadata: Metadata = {
   title: "Dpiter - Curated Fashion & Lifestyle Collections",
@@ -57,7 +57,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className={`${inter.className} font-display antialiased`}>
+      <body className={`${poppins.className} font-display antialiased`}>
         {children}
         <Analytics />
       </body>
