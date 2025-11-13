@@ -64,7 +64,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ id:
           <div className="w-24 h-24 rounded-lg overflow-hidden shadow-md flex-shrink-0">
             <img
               alt={collection.title}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
               src={collection.image_url || "/placeholder.svg?height=128&width=128"}
             />
           </div>
@@ -77,7 +77,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ id:
                 <div className="relative overflow-hidden rounded-lg">
                   <img
                     alt={product.title}
-                    className="w-full h-auto aspect-[3/4] object-cover"
+                    className="w-full h-auto aspect-[3/4] object-contain bg-white"
                     src={product.image_url || "/placeholder.svg?height=400&width=300"}
                   />
                   <div className="absolute top-2 right-2">

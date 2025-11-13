@@ -157,7 +157,6 @@ export function ImageCropper({
     const ctx = outputCanvas.getContext("2d", { alpha: false })
     if (!ctx) return
 
-    // Enable high-quality rendering
     ctx.imageSmoothingEnabled = true
     ctx.imageSmoothingQuality = "high"
 
@@ -177,7 +176,7 @@ export function ImageCropper({
         }
       },
       "image/jpeg",
-      0.98,
+      1.0,
     )
   }
 

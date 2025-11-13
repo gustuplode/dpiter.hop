@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { ArrowLeft, Upload } from "lucide-react"
 import Link from "next/link"
@@ -21,6 +21,7 @@ type Product = {
   image_url: string
   affiliate_link: string
   is_visible: boolean
+  currency?: string
 }
 
 export function ProductForm({ collectionId, product }: { collectionId: string; product?: Product }) {
@@ -29,6 +30,7 @@ export function ProductForm({ collectionId, product }: { collectionId: string; p
   const [loading, setLoading] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [cropperImage, setCropperImage] = useState<string | null>(null)
+  const [selectedCurrency, setSelectedCurrency] = useState("USD")
   const [formData, setFormData] = useState({
     title: product?.title || "",
     brand: product?.brand || "",
@@ -36,7 +38,16 @@ export function ProductForm({ collectionId, product }: { collectionId: string; p
     image_url: product?.image_url || "",
     affiliate_link: product?.affiliate_link || "",
     is_visible: product?.is_visible ?? true,
+    currency: product?.currency || "USD",
   })
+
+  useEffect(() => {
+    const saved = localStorage.getItem("selected_currency")
+    if (saved) {
+      setSelectedCurrency(saved)
+      setFormData((prev) => ({ ...prev, currency: saved }))
+    }
+  }, [])
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -125,6 +136,19 @@ export function ProductForm({ collectionId, product }: { collectionId: string; p
     }
   }
 
+  const getCurrencySymbol = (code: string) => {
+    const symbols: Record<string, string> = {
+      USD: "$",
+      INR: "₹",
+      EUR: "€",
+      GBP: "£",
+      JPY: "¥",
+      AUD: "A$",
+      CAD: "C$",
+    }
+    return symbols[code] || "$"
+  }
+
   return (
     <>
       {cropperImage && (
@@ -177,7 +201,9 @@ export function ProductForm({ collectionId, product }: { collectionId: string; p
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="price">Price ($)</Label>
+              <Label htmlFor="price">
+                Price ({getCurrencySymbol(selectedCurrency)} {selectedCurrency})
+              </Label>
               <Input
                 id="price"
                 type="number"
@@ -214,7 +240,7 @@ export function ProductForm({ collectionId, product }: { collectionId: string; p
                   <img
                     src={formData.image_url || "/placeholder.svg"}
                     alt="Preview"
-                    className="w-full max-w-xs h-48 object-cover rounded-lg"
+                    className="w-full max-w-xs h-auto object-contain rounded-lg"
                   />
                 </div>
               )}

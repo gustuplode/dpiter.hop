@@ -4,6 +4,7 @@ import { ArrowLeft, Network, Search, ChevronDown, Plus, LogOut } from "lucide-re
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { CollectionList } from "@/components/admin/collection-list"
+import { CurrencySelector } from "@/components/admin/currency-selector"
 
 export default async function AdminDashboard() {
   const supabase = await createClient()
@@ -32,11 +33,14 @@ export default async function AdminDashboard() {
           <Network className="h-8 w-8 text-[#4A90E2]" />
           <h1 className="text-[#333333] dark:text-[#E5E7EB] text-xl font-bold leading-tight tracking-tight">Dpiter</h1>
         </div>
-        <form action="/api/auth/logout" method="POST">
-          <Button variant="ghost" type="submit" className="size-10 p-0">
-            <LogOut className="h-5 w-5 text-[#333333] dark:text-[#E5E7EB]" />
-          </Button>
-        </form>
+        <div className="flex items-center gap-2">
+          <CurrencySelector />
+          <form action="/api/auth/logout" method="POST">
+            <Button variant="ghost" type="submit" className="size-10 p-0">
+              <LogOut className="h-5 w-5 text-[#333333] dark:text-[#E5E7EB]" />
+            </Button>
+          </form>
+        </div>
       </header>
 
       <main className="flex-1 px-4 py-4">
