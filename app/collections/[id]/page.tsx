@@ -54,8 +54,25 @@ export default async function CollectionPage({ params }: { params: Promise<{ id:
 
   return (
     <div className="relative min-h-screen bg-[#F8FAFC] dark:bg-[#1E293B]">
-      <div className="container mx-auto max-w-7xl px-2 py-6 pb-32">
+      <div className="container mx-auto max-w-7xl px-4 pt-6 pb-32">
         <main>
+          <div className="flex items-start justify-between mb-6">
+            <div className="flex-1 pr-4">
+              <h1 className="text-xl font-bold text-slate-800 dark:text-slate-100">{collection.title}</h1>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                {collection.brand || 'Our latest collection'}
+              </p>
+              <p className="text-xs text-slate-400 dark:text-slate-500 mt-2">{productCount} items</p>
+            </div>
+            <div className="w-24 h-24 rounded-lg overflow-hidden shadow-md flex-shrink-0">
+              <img
+                alt={collection.title}
+                className="w-full h-full object-cover"
+                src={collection.image_url || "/placeholder.svg?height=96&width=96"}
+              />
+            </div>
+          </div>
+
           {products && products.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-[5px] gap-y-4">
               {products.map((product) => (

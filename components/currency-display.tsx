@@ -6,6 +6,11 @@ export function CurrencyDisplay({ price }: { price: number }) {
   const [displayPrice, setDisplayPrice] = useState({ symbol: "$", amount: price })
 
   useEffect(() => {
+    if (typeof price !== 'number' || isNaN(price)) {
+      setDisplayPrice({ symbol: "$", amount: 0 })
+      return
+    }
+
     const updateCurrency = () => {
       const selected = localStorage.getItem("selected_currency") || "USD"
       
