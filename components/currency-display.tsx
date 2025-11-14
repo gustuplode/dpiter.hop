@@ -3,11 +3,22 @@
 import { useEffect, useState } from "react"
 
 export function CurrencyDisplay({ price }: { price: number }) {
-  const [currency, setCurrency] = useState("$")
+  const [displayPrice, setDisplayPrice] = useState({ symbol: "$", amount: price })
 
   useEffect(() => {
     const updateCurrency = () => {
       const selected = localStorage.getItem("selected_currency") || "USD"
+      
+      const rates: Record<string, number> = {
+        USD: 1,
+        INR: 83.12,
+        EUR: 0.92,
+        GBP: 0.79,
+        JPY: 149.50,
+        AUD: 1.52,
+        CAD: 1.36,
+      }
+
       const symbols: Record<string, string> = {
         USD: "$",
         INR: "₹",
@@ -17,7 +28,13 @@ export function CurrencyDisplay({ price }: { price: number }) {
         AUD: "A$",
         CAD: "C$",
       }
-      setCurrency(symbols[selected] || "$")
+
+      const convertedAmount = price * rates[selected]
+      
+      setDisplayPrice({
+        symbol: symbols[selected] || "$",
+        amount: convertedAmount
+      })
     }
 
     updateCurrency()
@@ -28,12 +45,12 @@ export function CurrencyDisplay({ price }: { price: number }) {
 
     window.addEventListener("currencychange", handleCurrencyChange)
     return () => window.removeEventListener("currencychange", handleCurrencyChange)
-  }, [])
+  }, [price])
 
   return (
     <span>
-      {currency}
-      {price.toFixed(2)}
+      {displayPrice.symbol}
+      {displayPrice.amount.toFixed(2)}
     </span>
   )
 }

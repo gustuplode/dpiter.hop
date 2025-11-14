@@ -43,7 +43,6 @@ export function ProductForm({ collectionId, product }: { collectionId: string; p
     const saved = localStorage.getItem("selected_currency")
     if (saved) {
       setSelectedCurrency(saved)
-      setFormData((prev) => ({ ...prev, currency: saved }))
     }
 
     const handleCurrencyChange = (e: CustomEvent) => {
@@ -102,11 +101,19 @@ export function ProductForm({ collectionId, product }: { collectionId: string; p
     }
 
     try {
-      console.log("[v0] Saving product:", { ...formData, collection_id: collectionId })
+      const productData = {
+        title: formData.title,
+        brand: formData.brand,
+        price: formData.price,
+        image_url: formData.image_url,
+        affiliate_link: formData.affiliate_link,
+        is_visible: formData.is_visible,
+      }
+
+      console.log("[v0] Saving product:", { ...productData, collection_id: collectionId })
 
       if (product?.id) {
-        // Update existing product
-        const { data, error } = await supabase.from("products").update(formData).eq("id", product.id).select()
+        const { data, error } = await supabase.from("products").update(productData).eq("id", product.id).select()
 
         if (error) {
           console.error("[v0] Update error:", error)
@@ -114,11 +121,10 @@ export function ProductForm({ collectionId, product }: { collectionId: string; p
         }
         console.log("[v0] Product updated:", data)
       } else {
-        // Create new product
         const { data, error } = await supabase
           .from("products")
           .insert({
-            ...formData,
+            ...productData,
             collection_id: collectionId,
           })
           .select()
@@ -218,6 +224,9 @@ export function ProductForm({ collectionId, product }: { collectionId: string; p
                 placeholder="25.00"
                 required
               />
+              <p className="text-xs text-gray-500">
+                Enter price in {selectedCurrency}. It will be displayed in the selected currency on the frontend.
+              </p>
             </div>
 
             <div className="space-y-2">

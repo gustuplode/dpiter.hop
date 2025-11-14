@@ -6,13 +6,6 @@ import { usePathname } from 'next/navigation'
 export function BottomNav() {
   const pathname = usePathname()
 
-  const navItems = [
-    { href: "/", label: "Home", icon: "home", fill: true },
-    { href: "/search", label: "Search", icon: "search", fill: false },
-    { href: "/wishlist", label: "Wishlist", icon: "favorite_border", fill: false },
-    { href: "/admin/login", label: "Profile", icon: "person_outline", fill: false },
-  ]
-
   return (
     <footer className="fixed bottom-0 w-full bg-white dark:bg-slate-900 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] dark:shadow-[0_-2px_10px_rgba(0,0,0,0.2)]">
       <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -48,13 +41,18 @@ export function BottomNav() {
 
           <div className="absolute -top-6 md:-top-12">
             <Link href="/">
-              <button className="bg-[#F97316] text-white rounded-full w-10 h-10 md:w-20 md:h-20 flex flex-col items-center justify-center shadow-lg transform transition-transform hover:scale-105">
-                <span className="material-symbols-outlined text-xl md:text-4xl">shopping_bag</span>
+              <button className="relative bg-gradient-to-br from-[#F97316] to-[#EA580C] text-white rounded-full w-12 h-12 md:w-20 md:h-20 flex items-center justify-center shadow-[0_4px_12px_rgba(249,115,22,0.4)] transform transition-all hover:scale-105 hover:shadow-[0_6px_16px_rgba(249,115,22,0.5)]">
+                <div className="absolute inset-0 rounded-full bg-gradient-to-t from-transparent to-white/20"></div>
+                <span className="material-symbols-outlined text-2xl md:text-4xl font-bold relative z-10">
+                  shopping_bag
+                </span>
               </button>
             </Link>
-            <span className="text-center block text-[7px] md:text-xs font-semibold mt-0.5 md:mt-2 text-slate-600 dark:text-slate-400">
-              Dpiter
-            </span>
+            <div className="text-center mt-1 md:mt-2">
+              <span className="text-[10px] md:text-sm font-bold bg-gradient-to-r from-[#F97316] to-[#EA580C] bg-clip-text text-transparent">
+                Dpiter
+              </span>
+            </div>
           </div>
 
           <div className="w-10 md:w-20"></div>
