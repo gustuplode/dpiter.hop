@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
 import { BottomNav } from "@/components/bottom-nav"
 import { FooterLinks } from "@/components/footer-links"
+import { WishlistButton } from "@/components/wishlist-button"
 
 export default async function HomePage() {
   const supabase = await createClient()
@@ -39,30 +40,35 @@ export default async function HomePage() {
           ) : collections.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-[5px] gap-y-4">
               {collections.map((collection) => (
-                <Link key={collection.id} href={`/collections/${collection.id}`} className="group">
-                  <div className="relative overflow-hidden rounded-lg bg-white dark:bg-slate-800 shadow-sm">
-                    <img
-                      alt={collection.title}
-                      className="w-full h-auto aspect-[3/4] object-cover object-center"
-                      src={collection.image_url || "/placeholder.svg?height=400&width=300"}
-                    />
-                    {collection.is_limited_time && (
-                      <div className="absolute top-2 left-2">
-                        <span className="inline-flex items-center gap-1 rounded-md bg-[#F97316]/90 px-2 py-0.5 text-xs font-medium text-white">
-                          <span className="material-symbols-outlined text-sm">schedule</span>
-                          LIMITED TIME
-                        </span>
+                <div key={collection.id} className="group">
+                  <Link href={`/collections/${collection.id}`} className="block">
+                    <div className="relative overflow-hidden rounded-lg bg-white dark:bg-slate-800 shadow-sm">
+                      <img
+                        alt={collection.title}
+                        className="w-full h-auto aspect-[3/4] object-cover object-center"
+                        src={collection.image_url || "/placeholder.svg?height=400&width=300"}
+                      />
+                      {collection.is_limited_time && (
+                        <div className="absolute top-2 left-2">
+                          <span className="inline-flex items-center gap-1 rounded-md bg-[#F97316]/90 px-2 py-0.5 text-xs font-medium text-white">
+                            <span className="material-symbols-outlined text-sm">schedule</span>
+                            LIMITED TIME
+                          </span>
+                        </div>
+                      )}
+                      <div className="absolute top-2 right-2">
+                        <WishlistButton
+                          productId={collection.id}
+                          className="h-8 w-8 flex items-center justify-center rounded-full bg-white/70 dark:bg-slate-700/70 backdrop-blur-sm text-slate-700 dark:text-slate-200"
+                        />
                       </div>
-                    )}
-                    <button className="absolute top-2 right-2 h-8 w-8 flex items-center justify-center rounded-full bg-white/70 dark:bg-slate-700/70 backdrop-blur-sm text-slate-700 dark:text-slate-200">
-                      <span className="material-symbols-outlined text-xl">favorite_border</span>
-                    </button>
-                  </div>
-                  <div className="pt-2">
-                    <h3 className="text-sm font-semibold text-slate-900 dark:text-white">{collection.brand}</h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">{collection.title}</p>
-                  </div>
-                </Link>
+                    </div>
+                    <div className="pt-2">
+                      <h3 className="text-sm font-semibold text-slate-900 dark:text-white">{collection.brand}</h3>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">{collection.title}</p>
+                    </div>
+                  </Link>
+                </div>
               ))}
             </div>
           ) : (

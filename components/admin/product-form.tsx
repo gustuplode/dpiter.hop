@@ -29,7 +29,6 @@ export function ProductForm({ collectionId, product }: { collectionId: string; p
   const [loading, setLoading] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [cropperImage, setCropperImage] = useState<string | null>(null)
-  const [selectedCurrency, setSelectedCurrency] = useState("USD")
   const [formData, setFormData] = useState({
     title: product?.title || "",
     brand: product?.brand || "",
@@ -38,20 +37,6 @@ export function ProductForm({ collectionId, product }: { collectionId: string; p
     affiliate_link: product?.affiliate_link || "",
     is_visible: product?.is_visible ?? true,
   })
-
-  useEffect(() => {
-    const saved = localStorage.getItem("selected_currency")
-    if (saved) {
-      setSelectedCurrency(saved)
-    }
-
-    const handleCurrencyChange = (e: CustomEvent) => {
-      setSelectedCurrency(e.detail.currency)
-    }
-
-    window.addEventListener("currencychange" as any, handleCurrencyChange)
-    return () => window.removeEventListener("currencychange" as any, handleCurrencyChange)
-  }, [])
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -147,19 +132,6 @@ export function ProductForm({ collectionId, product }: { collectionId: string; p
     }
   }
 
-  const getCurrencySymbol = (code: string) => {
-    const symbols: Record<string, string> = {
-      USD: "$",
-      INR: "₹",
-      EUR: "€",
-      GBP: "£",
-      JPY: "¥",
-      AUD: "A$",
-      CAD: "C$",
-    }
-    return symbols[code] || "$"
-  }
-
   return (
     <>
       {cropperImage && (
@@ -213,7 +185,7 @@ export function ProductForm({ collectionId, product }: { collectionId: string; p
 
             <div className="space-y-2">
               <Label htmlFor="price">
-                Price ({getCurrencySymbol(selectedCurrency)} {selectedCurrency})
+                Price (₹ INR)
               </Label>
               <Input
                 id="price"
@@ -221,11 +193,11 @@ export function ProductForm({ collectionId, product }: { collectionId: string; p
                 step="0.01"
                 value={formData.price}
                 onChange={(e) => setFormData({ ...formData, price: Number.parseFloat(e.target.value) })}
-                placeholder="25.00"
+                placeholder="2500.00"
                 required
               />
               <p className="text-xs text-gray-500">
-                Enter price in {selectedCurrency}. It will be displayed in the selected currency on the frontend.
+                Enter price in INR (Indian Rupees)
               </p>
             </div>
 

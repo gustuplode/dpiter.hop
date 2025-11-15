@@ -3,16 +3,16 @@
 import { useEffect, useState } from "react"
 
 export function CurrencyDisplay({ price }: { price: number }) {
-  const [displayPrice, setDisplayPrice] = useState({ symbol: "$", amount: price })
+  const [displayPrice, setDisplayPrice] = useState({ symbol: "₹", amount: price })
 
   useEffect(() => {
     if (typeof price !== 'number' || isNaN(price)) {
-      setDisplayPrice({ symbol: "$", amount: 0 })
+      setDisplayPrice({ symbol: "₹", amount: 0 })
       return
     }
 
     const updateCurrency = () => {
-      const selected = localStorage.getItem("selected_currency") || "USD"
+      const selected = localStorage.getItem("selected_currency") || "INR"
       
       const rates: Record<string, number> = {
         USD: 1,
@@ -37,7 +37,7 @@ export function CurrencyDisplay({ price }: { price: number }) {
       const convertedAmount = price * rates[selected]
       
       setDisplayPrice({
-        symbol: symbols[selected] || "$",
+        symbol: symbols[selected] || "₹",
         amount: convertedAmount
       })
     }
@@ -54,8 +54,7 @@ export function CurrencyDisplay({ price }: { price: number }) {
 
   return (
     <span>
-      {displayPrice.symbol}
-      {displayPrice.amount.toFixed(2)}
+      ₹{displayPrice.amount.toFixed(2)}
     </span>
   )
 }
