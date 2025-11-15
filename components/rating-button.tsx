@@ -15,6 +15,7 @@ export function RatingButton({ itemId, itemType, className = "" }: RatingButtonP
   const [showRatingModal, setShowRatingModal] = useState(false)
   const [hoveredRating, setHoveredRating] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
+  const [comment, setComment] = useState("")
 
   useEffect(() => {
     loadUserRating()
@@ -28,7 +29,7 @@ export function RatingButton({ itemId, itemType, className = "" }: RatingButtonP
 
       const { data: userRatingData } = await supabase
         .from("ratings")
-        .select("rating")
+        .select("rating, comment")
         .eq("item_id", itemId)
         .eq("item_type", itemType)
         .eq("user_id", userId)
@@ -36,6 +37,7 @@ export function RatingButton({ itemId, itemType, className = "" }: RatingButtonP
 
       if (userRatingData) {
         setUserRating(userRatingData.rating)
+        setComment(userRatingData.comment || "")
       }
     } catch (error) {
       // Silently fail if table doesn't exist yet
@@ -56,11 +58,13 @@ export function RatingButton({ itemId, itemType, className = "" }: RatingButtonP
           item_type: itemType,
           user_id: userId,
           rating: rating,
+          comment: comment || null,
         })
 
       if (!error) {
         setUserRating(rating)
         setShowRatingModal(false)
+        setComment("")
         // Trigger a custom event to update the display
         window.dispatchEvent(new CustomEvent('ratingUpdated', { detail: { itemId, itemType } }))
       }
@@ -82,7 +86,6 @@ export function RatingButton({ itemId, itemType, className = "" }: RatingButtonP
       >
         <Star className={`w-4 h-4 ${userRating > 0 ? 'fill-yellow-400 text-yellow-400' : ''}`} />
       </button>
-      {/* </CHANGE> */}
 
       {showRatingModal && (
         <div
@@ -110,7 +113,7 @@ export function RatingButton({ itemId, itemType, className = "" }: RatingButtonP
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
                   key={star}
-                  onClick={() => submitRating(star)}
+                  onClick={() => setUserRating(star)}
                   onMouseEnter={() => setHoveredRating(star)}
                   onMouseLeave={() => setHoveredRating(0)}
                   disabled={isLoading}
@@ -126,7 +129,19 @@ export function RatingButton({ itemId, itemType, className = "" }: RatingButtonP
                 </button>
               ))}
             </div>
-            <div className="text-center">
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                Comment (Optional)
+              </label>
+              <textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder="Share your thoughts..."
+                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#F97316] resize-none"
+                rows={3}
+              />
+            </div>
+            <div className="text-center mb-4">
               {userRating > 0 ? (
                 <p className="text-sm font-medium text-green-600 dark:text-green-400">
                   ✓ Your rating: {userRating} {userRating === 1 ? 'star' : 'stars'}
@@ -137,16 +152,29 @@ export function RatingButton({ itemId, itemType, className = "" }: RatingButtonP
                 </p>
               )}
             </div>
-            <button
-              onClick={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                setShowRatingModal(false)
-              }}
-              className="mt-6 w-full py-3 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg font-medium hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
-            >
-              Close
-            </button>
+            <div className="flex gap-3">
+              <button
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  setShowRatingModal(false)
+                }}
+                className="flex-1 py-3 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg font-medium hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  if (userRating > 0) submitRating(userRating)
+                }}
+                disabled={userRating === 0 || isLoading}
+                className="flex-1 py-3 bg-[#F97316] text-white rounded-lg font-medium hover:bg-[#ea580c] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isLoading ? "Submitting..." : "Submit"}
+              </button>
+            </div>
           </div>
         </div>
       )}

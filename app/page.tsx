@@ -56,21 +56,20 @@ export default async function HomePage() {
                           itemType="collection"
                         />
                       </div>
-                      {/* Heart icon button at top-right */}
                       <div className="absolute top-2 right-2">
                         <WishlistButton
                           productId={collection.id}
+                          type="collection"
                           className="h-7 w-7 flex items-center justify-center rounded-full bg-white/70 dark:bg-slate-700/70 backdrop-blur-sm"
                         />
                       </div>
-                      {/* Rating display at bottom-right */}
+                      {/* </CHANGE> */}
                       <div className="absolute bottom-2 right-2">
                         <RatingDisplay
                           itemId={collection.id}
                           itemType="collection"
                         />
                       </div>
-                      {/* </CHANGE> */}
                       {collection.is_limited_time && (
                         <div className="absolute bottom-2 left-2">
                           <span className="inline-flex items-center gap-1 rounded-md bg-[#F97316]/90 px-2 py-0.5 text-xs font-medium text-white">

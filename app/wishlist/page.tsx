@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Heart, Trash2 } from "lucide-react"
+import { Heart, Trash2 } from 'lucide-react'
 import { BottomNav } from "@/components/bottom-nav"
 import { createClient } from "@/lib/supabase/client"
 
@@ -21,6 +21,14 @@ export default function WishlistPage() {
 
   useEffect(() => {
     loadWishlist()
+    
+    const handleWishlistUpdate = () => {
+      loadWishlist()
+    }
+    
+    window.addEventListener('wishlistUpdated', handleWishlistUpdate)
+    return () => window.removeEventListener('wishlistUpdated', handleWishlistUpdate)
+    // </CHANGE>
   }, [])
 
   const loadWishlist = async () => {
@@ -63,6 +71,8 @@ export default function WishlistPage() {
     const updatedIds = productIds.filter((id) => id !== productId)
     localStorage.setItem("wishlist", JSON.stringify(updatedIds))
     setWishlistProducts(wishlistProducts.filter((p) => p.id !== productId))
+    window.dispatchEvent(new CustomEvent('wishlistUpdated'))
+    // </CHANGE>
   }
 
   return (

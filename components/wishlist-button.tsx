@@ -3,7 +3,15 @@
 import type React from "react"
 import { useState, useEffect } from "react"
 
-export function WishlistButton({ productId, className = "" }: { productId: string; className?: string }) {
+export function WishlistButton({ 
+  productId, 
+  type = "product",
+  className = "" 
+}: { 
+  productId: string
+  type?: "product" | "collection"
+  className?: string 
+}) {
   const [isInWishlist, setIsInWishlist] = useState(false)
 
   useEffect(() => {
@@ -11,10 +19,11 @@ export function WishlistButton({ productId, className = "" }: { productId: strin
   }, [productId])
 
   const checkWishlist = () => {
-    const savedWishlist = localStorage.getItem("wishlist")
+    const key = type === "collection" ? "wishlist_collections" : "wishlist"
+    const savedWishlist = localStorage.getItem(key)
     if (savedWishlist) {
-      const productIds: string[] = JSON.parse(savedWishlist)
-      setIsInWishlist(productIds.includes(productId))
+      const ids: string[] = JSON.parse(savedWishlist)
+      setIsInWishlist(ids.includes(productId))
     }
   }
 
@@ -22,17 +31,20 @@ export function WishlistButton({ productId, className = "" }: { productId: strin
     e.preventDefault()
     e.stopPropagation()
 
-    const savedWishlist = localStorage.getItem("wishlist")
-    let productIds: string[] = savedWishlist ? JSON.parse(savedWishlist) : []
+    const key = type === "collection" ? "wishlist_collections" : "wishlist"
+    const savedWishlist = localStorage.getItem(key)
+    let ids: string[] = savedWishlist ? JSON.parse(savedWishlist) : []
 
     if (isInWishlist) {
-      productIds = productIds.filter((id) => id !== productId)
+      ids = ids.filter((id) => id !== productId)
     } else {
-      productIds.push(productId)
+      ids.push(productId)
     }
 
-    localStorage.setItem("wishlist", JSON.stringify(productIds))
+    localStorage.setItem(key, JSON.stringify(ids))
     setIsInWishlist(!isInWishlist)
+    
+    window.dispatchEvent(new CustomEvent('wishlistUpdated'))
   }
 
   return (
@@ -50,7 +62,6 @@ export function WishlistButton({ productId, className = "" }: { productId: strin
       >
         favorite
       </span>
-      {/* </CHANGE> */}
     </button>
   )
 }
