@@ -11,12 +11,11 @@ interface RatingDisplayProps {
 }
 
 export function RatingDisplay({ itemId, itemType, className = "" }: RatingDisplayProps) {
-  const [averageRating, setAverageRating] = useState(4.1)
+  const [displayRating, setDisplayRating] = useState(4.1)
 
   useEffect(() => {
     loadRating()
     
-    // Listen for rating updates
     const handleRatingUpdate = (event: any) => {
       if (event.detail.itemId === itemId && event.detail.itemType === itemType) {
         loadRating()
@@ -38,8 +37,24 @@ export function RatingDisplay({ itemId, itemType, className = "" }: RatingDispla
         .eq("item_type", itemType)
 
       if (ratings && ratings.length > 0) {
-        const avg = ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length
-        setAverageRating(Math.round(avg * 10) / 10)
+        // Count frequency of each rating
+        const frequency: { [key: number]: number } = {}
+        ratings.forEach(r => {
+          frequency[r.rating] = (frequency[r.rating] || 0) + 1
+        })
+        
+        // Find the most common rating (mode)
+        let maxCount = 0
+        let modeRating = 4
+        Object.entries(frequency).forEach(([rating, count]) => {
+          if (count > maxCount) {
+            maxCount = count
+            modeRating = parseInt(rating)
+          }
+        })
+        
+        // Display mode rating with .1 decimal (Meesho style)
+        setDisplayRating(modeRating + 0.1)
       }
     } catch (error) {
       // Silently fail if table doesn't exist yet
@@ -51,7 +66,7 @@ export function RatingDisplay({ itemId, itemType, className = "" }: RatingDispla
       className={`flex items-center gap-1 bg-green-600 text-white px-2 py-0.5 rounded-md text-xs font-semibold shadow-sm ${className}`}
     >
       <Star className="w-3 h-3 fill-white" />
-      <span>{averageRating}</span>
+      <span>{displayRating}</span>
     </div>
   )
 }

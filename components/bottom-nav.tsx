@@ -2,9 +2,21 @@
 
 import Link from "next/link"
 import { usePathname } from 'next/navigation'
+import { useState, useEffect } from 'react'
 
 export function BottomNav() {
   const pathname = usePathname()
+  const [wishlistFlash, setWishlistFlash] = useState(false)
+
+  useEffect(() => {
+    const handleWishlistAdded = () => {
+      setWishlistFlash(true)
+      setTimeout(() => setWishlistFlash(false), 1000)
+    }
+    
+    window.addEventListener('wishlistAdded', handleWishlistAdded)
+    return () => window.removeEventListener('wishlistAdded', handleWishlistAdded)
+  }, [])
 
   return (
     <footer className="fixed bottom-0 w-full bg-white dark:bg-slate-900 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] dark:shadow-[0_-2px_10px_rgba(0,0,0,0.2)]">
@@ -59,13 +71,17 @@ export function BottomNav() {
 
           <Link
             href="/wishlist"
-            className={`flex flex-col items-center transition-colors ${
-              pathname === "/wishlist"
+            className={`flex flex-col items-center transition-all ${
+              wishlistFlash
+                ? "text-red-500 scale-110"
+                : pathname === "/wishlist"
                 ? "text-[#F97316]"
                 : "text-slate-600 dark:text-slate-400 hover:text-[#F97316] dark:hover:text-[#F97316]"
             }`}
           >
-            <span className="material-symbols-outlined text-lg md:text-4xl">favorite_border</span>
+            <span className={`material-symbols-outlined text-lg md:text-4xl transition-all ${wishlistFlash ? 'animate-pulse' : ''}`}>
+              {wishlistFlash ? 'favorite' : 'favorite_border'}
+            </span>
             <span className="text-[9px] md:text-sm font-medium mt-0.5">Wishlist</span>
           </Link>
 

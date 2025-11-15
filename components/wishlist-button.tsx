@@ -39,6 +39,7 @@ export function WishlistButton({
       ids = ids.filter((id) => id !== productId)
     } else {
       ids.push(productId)
+      window.dispatchEvent(new CustomEvent('wishlistAdded'))
     }
 
     localStorage.setItem(key, JSON.stringify(ids))

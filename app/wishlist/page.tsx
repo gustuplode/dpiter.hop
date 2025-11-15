@@ -6,16 +6,17 @@ import { Heart, Trash2 } from 'lucide-react'
 import { BottomNav } from "@/components/bottom-nav"
 import { createClient } from "@/lib/supabase/client"
 
-type WishlistProduct = {
+type WishlistItem = {
   id: string
   title: string
   brand: string
-  price: number
+  price?: number
   image_url: string
+  type: "product" | "collection"
 }
 
 export default function WishlistPage() {
-  const [wishlistProducts, setWishlistProducts] = useState<WishlistProduct[]>([])
+  const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([])
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
 
@@ -28,51 +29,61 @@ export default function WishlistPage() {
     
     window.addEventListener('wishlistUpdated', handleWishlistUpdate)
     return () => window.removeEventListener('wishlistUpdated', handleWishlistUpdate)
-    // </CHANGE>
   }, [])
 
   const loadWishlist = async () => {
     try {
-      const savedWishlist = localStorage.getItem("wishlist")
-      if (!savedWishlist) {
-        setWishlistProducts([])
-        setLoading(false)
-        return
+      // Load products
+      const savedProducts = localStorage.getItem("wishlist")
+      const productIds: string[] = savedProducts ? JSON.parse(savedProducts) : []
+      
+      // Load collections
+      const savedCollections = localStorage.getItem("wishlist_collections")
+      const collectionIds: string[] = savedCollections ? JSON.parse(savedCollections) : []
+
+      const items: WishlistItem[] = []
+
+      // Fetch products
+      if (productIds.length > 0) {
+        const { data: products } = await supabase
+          .from("products")
+          .select("id, title, brand, price, image_url")
+          .in("id", productIds)
+
+        if (products) {
+          items.push(...products.map(p => ({ ...p, type: "product" as const })))
+        }
       }
 
-      const productIds: string[] = JSON.parse(savedWishlist)
+      // Fetch collections
+      if (collectionIds.length > 0) {
+        const { data: collections } = await supabase
+          .from("collections")
+          .select("id, title, brand, image_url")
+          .in("id", collectionIds)
 
-      if (productIds.length === 0) {
-        setWishlistProducts([])
-        setLoading(false)
-        return
+        if (collections) {
+          items.push(...collections.map(c => ({ ...c, type: "collection" as const })))
+        }
       }
 
-      const { data, error } = await supabase
-        .from("products")
-        .select("id, title, brand, price, image_url")
-        .in("id", productIds)
-
-      if (error) {
-        setWishlistProducts([])
-      } else {
-        setWishlistProducts(data || [])
-      }
+      setWishlistItems(items)
     } catch (error) {
-      setWishlistProducts([])
+      console.error("[v0] Error loading wishlist:", error)
+      setWishlistItems([])
     } finally {
       setLoading(false)
     }
   }
 
-  const removeFromWishlist = (productId: string) => {
-    const savedWishlist = localStorage.getItem("wishlist")
-    const productIds: string[] = savedWishlist ? JSON.parse(savedWishlist) : []
-    const updatedIds = productIds.filter((id) => id !== productId)
-    localStorage.setItem("wishlist", JSON.stringify(updatedIds))
-    setWishlistProducts(wishlistProducts.filter((p) => p.id !== productId))
+  const removeFromWishlist = (itemId: string, type: "product" | "collection") => {
+    const key = type === "collection" ? "wishlist_collections" : "wishlist"
+    const savedWishlist = localStorage.getItem(key)
+    const ids: string[] = savedWishlist ? JSON.parse(savedWishlist) : []
+    const updatedIds = ids.filter((id) => id !== itemId)
+    localStorage.setItem(key, JSON.stringify(updatedIds))
+    setWishlistItems(wishlistItems.filter((item) => !(item.id === itemId && item.type === type)))
     window.dispatchEvent(new CustomEvent('wishlistUpdated'))
-    // </CHANGE>
   }
 
   return (
@@ -84,7 +95,7 @@ export default function WishlistPage() {
           <div className="flex items-center justify-center py-16">
             <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#F97316] border-t-transparent"></div>
           </div>
-        ) : wishlistProducts.length === 0 ? (
+        ) : wishlistItems.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <Heart className="h-16 w-16 text-slate-300 dark:text-slate-700 mb-4" />
             <h3 className="text-xl font-bold text-slate-800 dark:text-slate-200">Your Wishlist is Empty</h3>
@@ -99,35 +110,40 @@ export default function WishlistPage() {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 pb-24">
-            {wishlistProducts.map((product) => (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-[5px] gap-y-4 pb-24">
+            {wishlistItems.map((item) => (
               <div
-                key={product.id}
+                key={`${item.type}-${item.id}`}
                 className="flex flex-col bg-white dark:bg-slate-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow relative group"
               >
                 <button
-                  onClick={() => removeFromWishlist(product.id)}
+                  onClick={() => removeFromWishlist(item.id, item.type)}
                   className="absolute top-2 right-2 z-10 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-full p-2 shadow-md hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                   title="Remove from wishlist"
                 >
                   <Trash2 className="h-4 w-4 text-red-600" />
                 </button>
-                <Link href={`/collections/${product.id}`} className="flex flex-col">
+                <Link href={`/collections/${item.id}`} className="flex flex-col">
                   <div className="relative w-full overflow-hidden">
                     <div
                       className="w-full bg-center bg-no-repeat aspect-[3/4] bg-cover"
-                      style={{ backgroundImage: `url('${product.image_url}')` }}
+                      style={{ backgroundImage: `url('${item.image_url}')` }}
                     />
                   </div>
                   <div className="flex flex-col p-3">
                     <p className="text-xs md:text-sm font-bold uppercase leading-normal tracking-wide text-slate-700 dark:text-slate-400">
-                      {product.brand}
+                      {item.brand}
                     </p>
                     <p className="text-sm md:text-base font-normal leading-normal text-slate-600 dark:text-slate-300 line-clamp-2">
-                      {product.title}
+                      {item.title}
                     </p>
-                    <p className="text-sm md:text-base font-medium leading-normal text-slate-800 dark:text-slate-100 pt-1">
-                      ${product.price.toFixed(2)}
+                    {item.price && (
+                      <p className="text-sm md:text-base font-medium leading-normal text-slate-800 dark:text-slate-100 pt-1">
+                        ₹{item.price.toFixed(2)}
+                      </p>
+                    )}
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                      {item.type === "collection" ? "Collection" : "Product"}
                     </p>
                   </div>
                 </Link>
