@@ -11,38 +11,96 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Fetch all published collections
   const { data: collections } = await supabase
     .from("collections")
-    .select("slug, updated_at")
+    .select("id, updated_at")
     .eq("status", "published")
     .order("updated_at", { ascending: false })
 
-  // Fetch all visible products
+  // Fetch all visible products with their collections
   const { data: products } = await supabase
     .from("products")
-    .select("slug, updated_at")
+    .select("id, collection_id, updated_at")
     .eq("is_visible", true)
     .order("updated_at", { ascending: false })
 
   const collectionUrls =
     collections?.map((collection) => ({
-      url: `${baseUrl}/collections/${collection.slug}`,
+      url: `${baseUrl}/collections/${collection.id}`,
       lastModified: new Date(collection.updated_at),
       changeFrequency: "daily" as const,
-      priority: 0.8,
+      priority: 0.9,
     })) || []
 
-  return [
+  const productUrls =
+    products?.map((product) => ({
+      url: `${baseUrl}/collections/${product.collection_id}#product-${product.id}`,
+      lastModified: new Date(product.updated_at),
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    })) || []
+
+  // Static pages with high priority
+  const staticPages = [
     {
       url: baseUrl,
       lastModified: new Date(),
-      changeFrequency: "daily",
+      changeFrequency: "daily" as const,
       priority: 1,
     },
     {
       url: `${baseUrl}/search`,
       lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.7,
+      changeFrequency: "daily" as const,
+      priority: 0.8,
     },
-    ...collectionUrls,
+    {
+      url: `${baseUrl}/wishlist`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/profile`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
+    },
+    {
+      url: `${baseUrl}/privacy-policy`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.4,
+    },
+    {
+      url: `${baseUrl}/terms-of-service`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.4,
+    },
+    {
+      url: `${baseUrl}/faq`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
+    },
+    {
+      url: `${baseUrl}/about`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.4,
+    },
+    {
+      url: `${baseUrl}/contact`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.4,
+    },
+    {
+      url: `${baseUrl}/shipping`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.4,
+    },
   ]
+
+  return [...staticPages, ...collectionUrls, ...productUrls]
 }
