@@ -86,9 +86,9 @@ export function BottomNav() {
           </Link>
 
           <Link
-            href="/admin/login"
+            href="/profile"
             className={`flex flex-col items-center transition-colors ${
-              pathname.startsWith("/admin")
+              pathname === "/profile"
                 ? "text-[#F97316]"
                 : "text-slate-600 dark:text-slate-400 hover:text-[#F97316] dark:hover:text-[#F97316]"
             }`}
