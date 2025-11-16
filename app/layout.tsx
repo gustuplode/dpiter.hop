@@ -290,7 +290,7 @@ export default function RootLayout({
     "@type": "Organization",
     "name": "Dpiter",
     "url": "https://dpiter.shop/",
-    "logo": "https://complicated-coral-dt9pgpdgdp.edgeone.app/1000007078-01_imgupscaler.ai_V1(Fast)_2K%20(2).jpg"
+    "logo": "https://fellow-lavender-k0z61xbabe.edgeone.app/1000007078-01_imgupscaler.ai_V1(Fast)_2K%20(2)%20(3)%20(1).jpg"
   }
 
   return (
@@ -300,8 +300,8 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
           rel="stylesheet"
         />
-        <link rel="icon" type="image/png" href="https://complicated-coral-dt9pgpdgdp.edgeone.app/1000007078-01_imgupscaler.ai_V1(Fast)_2K%20(2).jpg" />
-        <link rel="apple-touch-icon" href="https://complicated-coral-dt9pgpdgdp.edgeone.app/1000007078-01_imgupscaler.ai_V1(Fast)_2K%20(2).jpg" />
+        <link rel="icon" type="image/jpeg" href="https://fellow-lavender-k0z61xbabe.edgeone.app/1000007078-01_imgupscaler.ai_V1(Fast)_2K%20(2)%20(3)%20(1).jpg" />
+        <link rel="apple-touch-icon" href="https://fellow-lavender-k0z61xbabe.edgeone.app/1000007078-01_imgupscaler.ai_V1(Fast)_2K%20(2)%20(3)%20(1).jpg" />
         <meta name="theme-color" content="#F97316" />
         <meta name="google-site-verification" content="oAxbL_tiEoWvDgMQCCvT-bx5SpTHBRKA9yetJtFsoCw" />
         <script

@@ -6,7 +6,6 @@ import { WishlistButton } from "@/components/wishlist-button"
 import { RatingButton } from "@/components/rating-button"
 import { RatingDisplay } from "@/components/rating-display"
 import { getCollectionUrl } from "@/lib/utils"
-import { SplashScreen } from "@/components/splash-screen"
 
 export default async function HomePage() {
   const supabase = await createClient()
@@ -55,7 +54,6 @@ export default async function HomePage() {
 
   return (
     <>
-      <SplashScreen />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
