@@ -49,6 +49,8 @@ export function ProductForm({ collectionId, product }: { collectionId: string; p
       }
     }
     reader.readAsDataURL(file)
+    
+    e.target.value = ''
   }
 
   const handleCropComplete = async (croppedBlob: Blob) => {

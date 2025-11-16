@@ -57,8 +57,8 @@ export function ImageCropper({
     canvas.width = displayWidth
     canvas.height = displayHeight
 
-    // Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.fillStyle = "#ffffff"
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
 
     // Calculate scaled image dimensions
     const imgWidth = image.width * scale
@@ -135,7 +135,7 @@ export function ImageCropper({
   const handleWheel = (e: React.WheelEvent) => {
     e.preventDefault()
     const delta = -e.deltaY * 0.002
-    const newScale = Math.max(0.3, Math.min(8, scale + delta))
+    const newScale = Math.max(0.1, Math.min(8, scale + delta))
     setScale(newScale)
   }
 
@@ -159,6 +159,9 @@ export function ImageCropper({
 
     ctx.imageSmoothingEnabled = true
     ctx.imageSmoothingQuality = "high"
+
+    ctx.fillStyle = "#ffffff"
+    ctx.fillRect(0, 0, cropWidth, cropHeight)
 
     const imgWidth = image.width * scale
     const imgHeight = image.height * scale
