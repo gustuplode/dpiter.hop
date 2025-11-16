@@ -8,17 +8,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = createClient()
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dpiter.shop"
 
-  // Fetch all published collections
   const { data: collections } = await supabase
     .from("collections")
-    .select("id, updated_at")
+    .select("id, title, brand, updated_at")
     .eq("status", "published")
     .order("updated_at", { ascending: false })
 
-  // Fetch all visible products with their collections
   const { data: products } = await supabase
     .from("products")
-    .select("id, collection_id, updated_at")
+    .select("id, title, brand_name, collection_id, updated_at")
     .eq("is_visible", true)
     .order("updated_at", { ascending: false })
 
@@ -28,6 +26,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(collection.updated_at),
       changeFrequency: "daily" as const,
       priority: 0.9,
+      // Add title metadata for better search appearance
+      alternates: {
+        languages: {
+          'en': `${baseUrl}/collections/${collection.id}`,
+        },
+      },
     })) || []
 
   const productUrls =
@@ -35,7 +39,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${baseUrl}/collections/${product.collection_id}#product-${product.id}`,
       lastModified: new Date(product.updated_at),
       changeFrequency: "weekly" as const,
-      priority: 0.7,
+      priority: 0.8, // Increased priority for products
     })) || []
 
   // Static pages with high priority

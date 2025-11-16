@@ -1,0 +1,39 @@
+{
+  "name": "DPITER.shop - Curated Fashion Collections",
+  "short_name": "DPITER",
+  "description": "Discover trending fashion from Amazon, Flipkart, Meesho, Myntra & eBay. 100% secure redirect. No payment on our site.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F97316",
+  "theme_color": "#F97316",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-light-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["shopping", "fashion", "lifestyle"],
+  "lang": "en-US",
+  "dir": "ltr",
+  "scope": "/",
+  "screenshots": [
+    {
+      "src": "/placeholder-logo.png",
+      "sizes": "1280x720",
+      "type": "image/png"
+    }
+  ]
+}

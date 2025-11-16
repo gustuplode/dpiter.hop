@@ -222,6 +222,7 @@ export const metadata: Metadata = {
   other: {
     "google-adsense-account": "ca-pub-8731726233953156",
   },
+  manifest: "/manifest.json", // Added manifest link for PWA support and logo display in search
     generator: 'v0.app'
 }
 
@@ -291,6 +292,10 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
           rel="stylesheet"
         />
+        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+        <link rel="icon" href="/icon-light-32x32.png" type="image/png" sizes="32x32" />
+        <link rel="apple-touch-icon" href="/apple-icon.png" />
+        <meta name="theme-color" content="#F97316" />
         <meta name="google-site-verification" content="oAxbL_tiEoWvDgMQCCvT-bx5SpTHBRKA9yetJtFsoCw" />
         <script
           type="application/ld+json"
