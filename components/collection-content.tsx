@@ -34,27 +34,29 @@ export function CollectionContent({
   return (
     <div className="container mx-auto max-w-7xl px-4 pt-6 pb-32">
       <main>
-        <div className="mb-8">
-          {/* Collection Cover Image - Full Width on Mobile, Large on Desktop */}
-          <div className="relative w-full h-64 md:h-80 lg:h-96 rounded-2xl overflow-hidden shadow-xl mb-4">
-            <ImageLoader
-              src={collection.image_url || "/placeholder.svg?height=400&width=800"}
-              alt={collection.title}
-              className="w-full h-full"
-              aspectRatio="16/9"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
-            <div className="absolute bottom-0 left-0 right-0 p-6">
-              <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">{collection.title}</h1>
-              <p className="text-base md:text-lg text-white/90">
-                {collection.brand || 'Our latest collection'}
-              </p>
-              <div className="flex items-center gap-3 mt-3">
-                <RatingDisplay
-                  itemId={collection.id}
-                  itemType="collection"
-                />
-                <p className="text-sm text-white/80">{productCount} items</p>
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3 flex-1 min-w-0">
+              <img
+                src={collection.image_url || "/placeholder.svg?height=200&width=200"}
+                alt={collection.title}
+                className="w-24 h-24 md:w-32 md:h-32 object-cover rounded-lg shadow-md flex-shrink-0"
+                loading="lazy"
+              />
+              <div className="flex-1 min-w-0">
+                <h1 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white truncate">
+                  {collection.title}
+                </h1>
+                <p className="text-sm md:text-base text-slate-600 dark:text-slate-400">
+                  {collection.brand}
+                </p>
+                <div className="flex items-center gap-2 mt-2">
+                  <RatingDisplay
+                    itemId={collection.id}
+                    itemType="collection"
+                  />
+                  <span className="text-xs text-slate-500">{productCount} items</span>
+                </div>
               </div>
             </div>
           </div>
@@ -70,12 +72,12 @@ export function CollectionContent({
                   rel="noopener noreferrer"
                   className="block"
                 >
-                  <div className="relative overflow-hidden rounded-lg bg-white dark:bg-slate-800 shadow-sm">
-                    <ImageLoader
+                  <div className="relative overflow-hidden rounded-lg bg-white dark:bg-slate-800 shadow-sm aspect-[3/4]">
+                    <img
                       src={product.image_url || "/placeholder.svg?height=400&width=300"}
                       alt={product.title}
-                      className="w-full"
-                      aspectRatio="3/4"
+                      className="w-full h-full object-cover"
+                      loading="lazy"
                     />
                     <div 
                       className="absolute top-2 left-2"
