@@ -4,6 +4,7 @@ import { WishlistButton } from "@/components/wishlist-button"
 import { RatingButton } from "@/components/rating-button"
 import { RatingDisplay } from "@/components/rating-display"
 import { CurrencyDisplay } from "@/components/currency-display"
+import { ImageLoader } from "@/components/image-loader"
 
 interface Collection {
   id: string
@@ -33,26 +34,29 @@ export function CollectionContent({
   return (
     <div className="container mx-auto max-w-7xl px-4 pt-6 pb-32">
       <main>
-        <div className="flex items-start justify-between mb-6">
-          <div className="flex-1 pr-4">
-            <h1 className="text-xl font-bold text-slate-800 dark:text-slate-100">{collection.title}</h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-              {collection.brand || 'Our latest collection'}
-            </p>
-            <div className="flex items-center gap-2 mt-2">
-              <RatingDisplay
-                itemId={collection.id}
-                itemType="collection"
-              />
-              <p className="text-xs text-slate-400 dark:text-slate-500">{productCount} items</p>
-            </div>
-          </div>
-          <div className="w-24 h-24 rounded-lg overflow-hidden shadow-md flex-shrink-0">
-            <img
+        <div className="mb-8">
+          {/* Collection Cover Image - Full Width on Mobile, Large on Desktop */}
+          <div className="relative w-full h-64 md:h-80 lg:h-96 rounded-2xl overflow-hidden shadow-xl mb-4">
+            <ImageLoader
+              src={collection.image_url || "/placeholder.svg?height=400&width=800"}
               alt={collection.title}
-              className="w-full h-full object-cover"
-              src={collection.image_url || "/placeholder.svg?height=96&width=96"}
+              className="w-full h-full"
+              aspectRatio="16/9"
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+            <div className="absolute bottom-0 left-0 right-0 p-6">
+              <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">{collection.title}</h1>
+              <p className="text-base md:text-lg text-white/90">
+                {collection.brand || 'Our latest collection'}
+              </p>
+              <div className="flex items-center gap-3 mt-3">
+                <RatingDisplay
+                  itemId={collection.id}
+                  itemType="collection"
+                />
+                <p className="text-sm text-white/80">{productCount} items</p>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -67,10 +71,11 @@ export function CollectionContent({
                   className="block"
                 >
                   <div className="relative overflow-hidden rounded-lg bg-white dark:bg-slate-800 shadow-sm">
-                    <img
-                      alt={product.title}
-                      className="w-full h-auto aspect-[3/4] object-contain object-center"
+                    <ImageLoader
                       src={product.image_url || "/placeholder.svg?height=400&width=300"}
+                      alt={product.title}
+                      className="w-full"
+                      aspectRatio="3/4"
                     />
                     <div 
                       className="absolute top-2 left-2"
