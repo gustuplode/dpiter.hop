@@ -5,6 +5,7 @@ import { FooterLinks } from "@/components/footer-links"
 import { WishlistButton } from "@/components/wishlist-button"
 import { RatingButton } from "@/components/rating-button"
 import { RatingDisplay } from "@/components/rating-display"
+import { getCollectionUrl } from "@/lib/utils"
 
 export default async function HomePage() {
   const supabase = await createClient()
@@ -28,6 +29,8 @@ export default async function HomePage() {
     error = e
   }
 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dpiter.shop"
+
   const itemListJsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -39,7 +42,7 @@ export default async function HomePage() {
         "name": collection.title,
         "brand": collection.brand,
         "image": collection.image_url,
-        "url": `${process.env.NEXT_PUBLIC_SITE_URL || "https://dpiter.vercel.app"}/collections/${collection.id}`,
+        "url": `${baseUrl}${getCollectionUrl(collection.id, collection.title)}`,
         "offers": {
           "@type": "AggregateOffer",
           "availability": "https://schema.org/InStock",
@@ -66,10 +69,10 @@ export default async function HomePage() {
                 </p>
               </div>
             ) : collections.length > 0 ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-[5px] gap-y-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-[5px] md:gap-x-4 gap-y-4">
                 {collections.map((collection) => (
                   <div key={collection.id} className="group">
-                    <Link href={`/collections/${collection.id}`} className="block">
+                    <Link href={getCollectionUrl(collection.id, collection.title)} className="block">
                       <div className="relative overflow-hidden rounded-lg bg-white dark:bg-slate-800 shadow-sm">
                         <img
                           alt={collection.title}

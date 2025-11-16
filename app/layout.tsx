@@ -285,6 +285,14 @@ export default function RootLayout({
     }
   }
 
+  const brandLogoJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Dpiter",
+    "url": "https://dpiter.shop/",
+    "logo": "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1000007078-01_imgupscaler.ai_V1%28Fast%29_2K.png.jpg-kN64jsYjWJBqDqEUwWk8icdF6HfwLc.png"
+  }
+
   return (
     <html lang="en">
       <head>
@@ -292,9 +300,8 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
           rel="stylesheet"
         />
-        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-        <link rel="icon" href="/icon-light-32x32.png" type="image/png" sizes="32x32" />
-        <link rel="apple-touch-icon" href="/apple-icon.png" />
+        <link rel="icon" type="image/png" href="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1000007078-01_imgupscaler.ai_V1%28Fast%29_2K.png.jpg-kN64jsYjWJBqDqEUwWk8icdF6HfwLc.png" />
+        <link rel="apple-touch-icon" href="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/1000007078-01_imgupscaler.ai_V1%28Fast%29_2K.png.jpg-kN64jsYjWJBqDqEUwWk8icdF6HfwLc.png" />
         <meta name="theme-color" content="#F97316" />
         <meta name="google-site-verification" content="oAxbL_tiEoWvDgMQCCvT-bx5SpTHBRKA9yetJtFsoCw" />
         <script
@@ -304,6 +311,10 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(brandLogoJsonLd) }}
         />
       </head>
       <body className={`${poppins.className} font-display antialiased`}>
