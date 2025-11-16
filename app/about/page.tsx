@@ -5,6 +5,7 @@ import type { Metadata } from "next"
 export const metadata: Metadata = {
   title: "About DPITER.shop | Curated Fashion Discovery Platform",
   description: "Learn about DPITER.shop - Your trusted fashion discovery platform featuring curated collections from Amazon, Flipkart, Meesho, Myntra & eBay. Safe redirect, no payment processing.",
+  keywords: "about dpiter, dpiter shop story, curated fashion platform, fashion discovery, amazon flipkart meesho, dpiter mission, dpiter vision, fashion curation, online shopping guide, dpiter collections, dpiter products",
 }
 
 export default function AboutPage() {
@@ -17,10 +18,10 @@ export default function AboutPage() {
           <section>
             <h2 className="text-2xl font-semibold text-slate-900 dark:text-white mb-3">What is DPITER.shop?</h2>
             <p>
-              <strong>DPITER.shop</strong> is a curated fashion platform that lists trending products from <strong>Amazon, Flipkart, Myntra, Meesho</strong> and <strong>eBay</strong>. We do not sell any product directly — clicking any item redirects you safely to the official trusted marketplace.
+              <strong><a href="https://dpiter.shop" className="text-primary hover:underline">DPITER.shop</a></strong> is a curated fashion platform that lists trending products from <strong><a href="https://www.amazon.in" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Amazon</a>, <a href="https://www.flipkart.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Flipkart</a>, <a href="https://www.myntra.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Myntra</a>, <a href="https://www.meesho.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Meesho</a></strong> and <strong><a href="https://www.ebay.in" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">eBay</a></strong>. We do not sell any product directly — clicking any item redirects you safely to the official trusted marketplace.
             </p>
             <p>
-              Our team curates top trending outfits, premium boys clothing, menswear essentials, and popular styles updated daily. DPITER.shop is created to help users find the best items without searching across multiple platforms.
+              Our team curates top trending outfits, premium boys clothing, menswear essentials, and popular styles updated daily at <a href="https://dpiter.shop/search" className="text-primary hover:underline">dpiter.shop/search</a>. DPITER.shop is created to help users find the best items without searching across multiple platforms. Browse our complete <a href="https://dpiter.shop/sitemap.xml" className="text-primary hover:underline">product catalog</a>.
             </p>
           </section>
 
@@ -70,14 +71,28 @@ export default function AboutPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-semibold text-slate-900 dark:text-white mb-3">Trusted Marketplace Partners</h2>
-            <p>All products on DPITER.shop redirect to these verified platforms:</p>
+            <h2 className="text-2xl font-semibold text-slate-900 dark:text-white mb-3">Explore Our Platform</h2>
+            <p className="mb-3">Discover everything <a href="https://dpiter.shop" className="text-primary hover:underline"><strong>DPITER.shop</strong></a> has to offer:</p>
             <ul className="list-disc pl-6 space-y-2">
-              <li><strong>Amazon</strong> - World's largest online marketplace</li>
-              <li><strong>Flipkart</strong> - India's leading ecommerce platform</li>
-              <li><strong>Meesho</strong> - Popular budget-friendly fashion destination</li>
-              <li><strong>Myntra</strong> - India's #1 fashion marketplace</li>
-              <li><strong>eBay</strong> - Global marketplace with unique finds</li>
+              <li><a href="https://dpiter.shop" className="text-primary hover:underline">Homepage</a> - Latest trending collections</li>
+              <li><a href="https://dpiter.shop/search" className="text-primary hover:underline">Search Page</a> - Browse all fashion collections</li>
+              <li><a href="https://dpiter.shop/wishlist" className="text-primary hover:underline">Wishlist</a> - Save your favorite products</li>
+              <li><a href="https://dpiter.shop/profile" className="text-primary hover:underline">Profile</a> - Manage your account</li>
+              <li><a href="https://dpiter.shop/faq" className="text-primary hover:underline">FAQ</a> - Common questions answered</li>
+              <li><a href="https://dpiter.shop/contact" className="text-primary hover:underline">Contact</a> - Get in touch with us</li>
+              <li><a href="https://dpiter.shop/sitemap.xml" className="text-primary hover:underline">Sitemap</a> - Complete list of all products and collections</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-semibold text-slate-900 dark:text-white mb-3">Trusted Marketplace Partners</h2>
+            <p>All products on <a href="https://dpiter.shop" className="text-primary hover:underline">DPITER.shop</a> redirect to these verified platforms:</p>
+            <ul className="list-disc pl-6 space-y-2">
+              <li><strong><a href="https://www.amazon.in" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Amazon</a></strong> - World's largest online marketplace</li>
+              <li><strong><a href="https://www.flipkart.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Flipkart</a></strong> - India's leading ecommerce platform</li>
+              <li><strong><a href="https://www.meesho.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Meesho</a></strong> - Popular budget-friendly fashion destination</li>
+              <li><strong><a href="https://www.myntra.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Myntra</a></strong> - India's #1 fashion marketplace</li>
+              <li><strong><a href="https://www.ebay.in" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">eBay</a></strong> - Global marketplace with unique finds</li>
             </ul>
           </section>
         </div>

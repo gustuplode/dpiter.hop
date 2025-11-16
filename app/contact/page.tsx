@@ -3,8 +3,9 @@ import { FooterLinks } from "@/components/footer-links"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Contact Us | Dpiter",
-  description: "Get in touch with the Dpiter team.",
+  title: "Contact Us | DPITER.shop - Get in Touch",
+  description: "Contact DPITER.shop for questions about our curated fashion collections from Amazon, Flipkart, Meesho, Myntra. We're here to help with your shopping experience.",
+  keywords: "contact dpiter, dpiter support, dpiter customer service, fashion help, shopping assistance, dpiter email, dpiter social media, dpiter contact form",
 }
 
 export default function ContactPage() {
@@ -17,7 +18,7 @@ export default function ContactPage() {
           <div>
             <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-3">Get in Touch</h2>
             <p className="text-slate-700 dark:text-slate-300 mb-4">
-              Have questions, suggestions, or feedback? We'd love to hear from you! Reach out to us through any of the following channels:
+              Have questions, suggestions, or feedback about <a href="https://dpiter.shop" className="text-primary hover:underline"><strong>DPITER.shop</strong></a>? We'd love to hear from you! Reach out to us through any of the following channels. Whether you need help with our <a href="https://dpiter.shop/search" className="text-primary hover:underline">collections</a>, have questions about products from <a href="https://www.amazon.in" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Amazon</a>, <a href="https://www.flipkart.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Flipkart</a>, or <a href="https://www.meesho.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Meesho</a>, or want to learn more about our platform, we're here to help.
             </p>
           </div>
 
@@ -62,6 +63,17 @@ export default function ContactPage() {
               <p className="text-slate-700 dark:text-slate-300">
                 We typically respond to all inquiries within 24-48 hours during business days.
               </p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-slate-900 dark:text-white mb-2">Quick Links</h3>
+              <ul className="space-y-1 text-sm">
+                <li><a href="https://dpiter.shop" className="text-[#F97316] hover:underline">Home - DPITER.shop</a></li>
+                <li><a href="https://dpiter.shop/search" className="text-[#F97316] hover:underline">Browse Collections</a></li>
+                <li><a href="https://dpiter.shop/faq" className="text-[#F97316] hover:underline">FAQ - Common Questions</a></li>
+                <li><a href="https://dpiter.shop/about" className="text-[#F97316] hover:underline">About Us</a></li>
+                <li><a href="https://dpiter.shop/sitemap.xml" className="text-[#F97316] hover:underline">Sitemap</a></li>
+              </ul>
             </div>
           </div>
         </div>
