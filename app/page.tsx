@@ -6,6 +6,7 @@ import { WishlistButton } from "@/components/wishlist-button"
 import { RatingButton } from "@/components/rating-button"
 import { RatingDisplay } from "@/components/rating-display"
 import { getCollectionUrl } from "@/lib/utils"
+import { CategoryHeader } from "@/components/category-header"
 
 export default async function HomePage() {
   const supabase = await createClient()
@@ -59,6 +60,7 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
       />
       <div className="relative min-h-screen bg-[#F8FAFC] dark:bg-[#1E293B]">
+        <CategoryHeader />
         
         <div className="container mx-auto max-w-7xl px-2 pt-2 pb-32">
           <main>
