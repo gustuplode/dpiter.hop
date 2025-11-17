@@ -10,7 +10,6 @@ import { Switch } from "@/components/ui/switch"
 import { ArrowLeft, Upload } from 'lucide-react'
 import Link from "next/link"
 import { ImageCropper } from "./image-cropper"
-import { put } from "@vercel/blob"
 
 interface CategoryProductFormProps {
   product?: any
@@ -52,13 +51,18 @@ export function CategoryProductForm({ product, category }: CategoryProductFormPr
   const handleCroppedImage = async (croppedImageBlob: Blob) => {
     setUploading(true)
     try {
-      const fileName = `category-product-${Date.now()}.jpg`
-      const blob = await put(fileName, croppedImageBlob, {
-        access: 'public',
-        token: process.env.NEXT_PUBLIC_BLOB_READ_WRITE_TOKEN,
+      const formData = new FormData()
+      formData.append("file", croppedImageBlob, "category-product.jpg")
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
       })
 
-      setFormData({ ...formData, image_url: blob.url })
+      if (!response.ok) throw new Error("Upload failed")
+
+      const data = await response.json()
+      setFormData(prev => ({ ...prev, image_url: data.url }))
       setShowCropper(false)
       setSelectedImage(null)
     } catch (error) {
