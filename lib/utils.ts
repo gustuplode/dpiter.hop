@@ -28,3 +28,5 @@ export function getCollectionProductUrl(collectionId: string, productId: string,
   const slug = generateSlug(title)
   return `/collections/${collectionId}/products/${productId}/${slug}`
 }
+
+export const generateProductUrl = getProductUrl

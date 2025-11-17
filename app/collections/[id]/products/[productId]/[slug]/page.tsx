@@ -110,10 +110,9 @@ export default async function CollectionProductDetailPage({
         <div className="container mx-auto max-w-7xl px-4 py-6 pb-32">
           <Link
             href={getCollectionUrl(id, collection?.title || "")}
-            className="inline-flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 hover:text-primary mb-4"
+            className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-primary mb-4"
           >
-            <span className="material-symbols-outlined text-base">arrow_back</span>
-            Back to {collection?.title || "Collection"}
+            <span className="material-symbols-outlined text-2xl">arrow_back</span>
           </Link>
 
           <div className="grid md:grid-cols-2 gap-8">

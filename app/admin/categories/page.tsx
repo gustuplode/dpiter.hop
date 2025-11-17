@@ -4,6 +4,7 @@ import { ArrowLeft, Plus } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { CategoryProductCard } from "@/components/admin/category-product-card"
 
 export default async function AdminCategoriesPage() {
   const supabase = await createClient()
@@ -93,14 +94,7 @@ export default async function AdminCategoriesPage() {
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {fashionProducts?.map((product) => (
-                <Link key={product.id} href={`/admin/categories/${product.id}/edit`}>
-                  <div className="bg-white dark:bg-[#2a2a2e] rounded-lg p-3 shadow-sm">
-                    <img src={product.image_url || "/placeholder.svg"} alt={product.title} className="w-full h-40 object-cover rounded mb-2" />
-                    <h3 className="font-semibold text-sm">{product.brand}</h3>
-                    <p className="text-xs text-slate-500">{product.title}</p>
-                    <p className="text-sm font-bold mt-1">₹{product.price}</p>
-                  </div>
-                </Link>
+                <CategoryProductCard key={product.id} product={product} />
               ))}
             </div>
           </TabsContent>
@@ -117,14 +111,7 @@ export default async function AdminCategoriesPage() {
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {gadgetsProducts?.map((product) => (
-                <Link key={product.id} href={`/admin/categories/${product.id}/edit`}>
-                  <div className="bg-white dark:bg-[#2a2a2e] rounded-lg p-3 shadow-sm">
-                    <img src={product.image_url || "/placeholder.svg"} alt={product.title} className="w-full h-40 object-cover rounded mb-2" />
-                    <h3 className="font-semibold text-sm">{product.brand}</h3>
-                    <p className="text-xs text-slate-500">{product.title}</p>
-                    <p className="text-sm font-bold mt-1">₹{product.price}</p>
-                  </div>
-                </Link>
+                <CategoryProductCard key={product.id} product={product} />
               ))}
             </div>
           </TabsContent>
@@ -141,14 +128,7 @@ export default async function AdminCategoriesPage() {
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {gamingProducts?.map((product) => (
-                <Link key={product.id} href={`/admin/categories/${product.id}/edit`}>
-                  <div className="bg-white dark:bg-[#2a2a2e] rounded-lg p-3 shadow-sm">
-                    <img src={product.image_url || "/placeholder.svg"} alt={product.title} className="w-full h-40 object-cover rounded mb-2" />
-                    <h3 className="font-semibold text-sm">{product.brand}</h3>
-                    <p className="text-xs text-slate-500">{product.title}</p>
-                    <p className="text-sm font-bold mt-1">₹{product.price}</p>
-                  </div>
-                </Link>
+                <CategoryProductCard key={product.id} product={product} />
               ))}
             </div>
           </TabsContent>
