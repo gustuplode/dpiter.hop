@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
 import { BottomNav } from "@/components/bottom-nav"
 import { FooterLinks } from "@/components/footer-links"
+import { CategoryHeader } from "@/components/category-header"
 import { WishlistButton } from "@/components/wishlist-button"
 import { RatingButton } from "@/components/rating-button"
 import { RatingDisplay } from "@/components/rating-display"
@@ -28,6 +29,38 @@ export default async function HomePage() {
   } catch (e) {
     error = e
   }
+
+  let fashionCount = 0
+  let gadgetsCount = 0
+  let gamingCount = 0
+
+  try {
+    const { count: fCount } = await supabase
+      .from("category_products")
+      .select("*", { count: "exact", head: true })
+      .eq("category", "fashion")
+      .eq("is_visible", true)
+    fashionCount = fCount || 0
+
+    const { count: gCount } = await supabase
+      .from("category_products")
+      .select("*", { count: "exact", head: true })
+      .eq("category", "gadgets")
+      .eq("is_visible", true)
+    gadgetsCount = gCount || 0
+
+    const { count: gmCount } = await supabase
+      .from("category_products")
+      .select("*", { count: "exact", head: true })
+      .eq("category", "gaming")
+      .eq("is_visible", true)
+    gamingCount = gmCount || 0
+  } catch (e) {
+    // Table doesn't exist yet, that's okay
+    console.log("[v0] Category products table not ready yet")
+  }
+
+  const allCount = fashionCount + gadgetsCount + gamingCount
 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dpiter.shop"
 
@@ -59,6 +92,13 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
       />
       <div className="relative min-h-screen bg-[#F8FAFC] dark:bg-[#1E293B]">
+        <CategoryHeader 
+          fashionCount={fashionCount}
+          gadgetsCount={gadgetsCount}
+          gamingCount={gamingCount}
+          allProductsCount={allCount}
+        />
+        
         <div className="container mx-auto max-w-7xl px-2 py-6 pb-32">
           <main>
             {error ? (
