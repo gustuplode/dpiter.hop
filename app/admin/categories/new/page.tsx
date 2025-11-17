@@ -7,7 +7,7 @@ import { CategoryProductForm } from "@/components/admin/category-product-form"
 export default async function NewCategoryProductPage({
   searchParams,
 }: {
-  searchParams: { category?: string }
+  searchParams: Promise<{ category?: string }>
 }) {
   const supabase = await createClient()
 
@@ -19,7 +19,8 @@ export default async function NewCategoryProductPage({
     redirect("/admin/login")
   }
 
-  const category = searchParams.category || "fashion"
+  const params = await searchParams
+  const category = params.category || "fashion"
 
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col bg-[#F4F4F7] dark:bg-[#1a1a1d]">
