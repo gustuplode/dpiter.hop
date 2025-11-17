@@ -29,7 +29,7 @@ export function CategoryProductForm({ product, category }: CategoryProductFormPr
     image_url: product?.image_url || "",
     affiliate_link: product?.affiliate_link || "",
     category: product?.category || category,
-    visible: product?.visible ?? true,
+    is_visible: product?.is_visible ?? true,
   })
 
   const [showCropper, setShowCropper] = useState(false)
@@ -244,11 +244,11 @@ export function CategoryProductForm({ product, category }: CategoryProductFormPr
             </div>
 
             <div className="flex items-center justify-between">
-              <Label htmlFor="visible">Visible to public</Label>
+              <Label htmlFor="is_visible">Visible to public</Label>
               <Switch
-                id="visible"
-                checked={formData.visible}
-                onCheckedChange={(checked) => setFormData({ ...formData, visible: checked })}
+                id="is_visible"
+                checked={formData.is_visible}
+                onCheckedChange={(checked) => setFormData({ ...formData, is_visible: checked })}
               />
             </div>
           </div>

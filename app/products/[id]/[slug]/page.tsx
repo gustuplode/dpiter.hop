@@ -65,7 +65,7 @@ export default async function CategoryProductDetailPage({ params }: { params: Pr
       .from("category_products")
       .select("*")
       .eq("category", product.category)
-      .eq("visible", true)
+      .eq("is_visible", true) // Changed visible to is_visible to match database column
       .neq("id", id)
       .order("created_at", { ascending: false })
       .limit(10)
