@@ -18,3 +18,13 @@ export function getCollectionUrl(id: string, title: string): string {
   const slug = generateSlug(title)
   return `/collections/${id}/${slug}`
 }
+
+export function getProductUrl(id: string, title: string, category: string): string {
+  const slug = generateSlug(title)
+  return `/products/${category}/${id}/${slug}`
+}
+
+export function getCollectionProductUrl(collectionId: string, productId: string, title: string): string {
+  const slug = generateSlug(title)
+  return `/collections/${collectionId}/products/${productId}/${slug}`
+}

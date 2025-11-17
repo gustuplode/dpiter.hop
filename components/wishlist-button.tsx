@@ -6,11 +6,13 @@ import { useState, useEffect } from "react"
 export function WishlistButton({ 
   productId, 
   type = "product",
-  className = "" 
+  className = "",
+  showText = false // Add showText prop
 }: { 
   productId: string
   type?: "product" | "collection"
-  className?: string 
+  className?: string
+  showText?: boolean // Add showText prop type
 }) {
   const [isInWishlist, setIsInWishlist] = useState(false)
 
@@ -63,6 +65,11 @@ export function WishlistButton({
       >
         favorite
       </span>
+      {showText && (
+        <span>
+          {isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
+        </span>
+      )}
     </button>
   )
 }

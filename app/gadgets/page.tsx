@@ -6,6 +6,7 @@ import { CategoryHeader } from "@/components/category-header"
 import { WishlistButton } from "@/components/wishlist-button"
 import { RatingButton } from "@/components/rating-button"
 import { RatingDisplay } from "@/components/rating-display"
+import { getProductUrl } from "@/lib/utils" // Added import for product URL helper
 
 export const metadata = {
   title: "Gadgets - Dpiter",
@@ -60,7 +61,7 @@ export default async function GadgetsPage() {
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-[5px] md:gap-x-6 gap-y-4">
               {products.map((product) => (
                 <div key={product.id} className="group">
-                  <a href={product.affiliate_link} target="_blank" rel="noopener noreferrer" className="block">
+                  <Link href={getProductUrl(product.id, product.title, product.category)} className="block">
                     <div className="relative overflow-hidden rounded-lg bg-white dark:bg-slate-800 shadow-sm aspect-[3/4]">
                       <img
                         src={product.image_url || "/placeholder.svg"}
@@ -87,7 +88,7 @@ export default async function GadgetsPage() {
                       <p className="text-xs text-slate-500 dark:text-slate-400">{product.title}</p>
                       <p className="text-sm font-bold text-slate-900 dark:text-white mt-1">₹{product.price}</p>
                     </div>
-                  </a>
+                  </Link>
                 </div>
               ))}
             </div>
