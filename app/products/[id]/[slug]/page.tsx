@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
-import { notFound, redirect } from 'next/navigation'
+import { redirect } from 'next/navigation'
 import { BottomNav } from "@/components/bottom-nav"
 import { FooterLinks } from "@/components/footer-links"
 import { WishlistButton } from "@/components/wishlist-button"
@@ -18,14 +18,17 @@ export async function generateMetadata({ params }: { params: { id: string; slug:
       .eq("id", params.id)
       .single()
 
-    if (!product) return { title: "Product Not Found" }
+    if (!product) return { title: "Product - Dpiter" }
 
     return {
       title: `${product.title} - ${product.brand} | Dpiter`,
       description: `Buy ${product.title} from ${product.brand} at ₹${product.price}. Shop the best deals on fashion, gadgets, and gaming products.`,
     }
   } catch (error) {
-    return { title: "Product - Dpiter" }
+    return { 
+      title: "Product - Dpiter",
+      description: "Shop the best deals on fashion, gadgets, and gaming products at Dpiter."
+    }
   }
 }
 
@@ -34,7 +37,6 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
 
   let product = null
   let suggestedProducts: any[] = []
-  let error = null
 
   try {
     const { data, error: fetchError } = await supabase
@@ -43,13 +45,32 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
       .eq("id", params.id)
       .single()
 
-    if (fetchError) {
-      error = fetchError
-    } else {
+    if (!fetchError && data) {
       product = data
+
+      // Check if slug matches, redirect if not
+      const correctSlug = generateSlug(product.title)
+      if (params.slug !== correctSlug) {
+        redirect(`/products/${params.id}/${correctSlug}`)
+      }
+
+      // Fetch suggested products from the same category
+      try {
+        const { data: suggested } = await supabase
+          .from("category_products")
+          .select("*")
+          .eq("category", product.category)
+          .eq("is_visible", true)
+          .neq("id", params.id)
+          .limit(10)
+        
+        suggestedProducts = suggested || []
+      } catch (e) {
+        // Ignore errors for suggested products
+      }
     }
   } catch (e) {
-    error = e
+    // Handle missing table error
   }
 
   if (!product) {
@@ -58,10 +79,10 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
         <div className="container mx-auto max-w-7xl px-4 py-16">
           <div className="flex flex-col items-center justify-center text-center">
             <p className="text-lg text-slate-600 dark:text-slate-400 mb-2">Product not found</p>
-            <p className="text-sm text-slate-500 dark:text-slate-500">
-              {error ? 'Please make sure the category_products table is created by running the SQL script from admin panel.' : 'This product may have been removed or doesn\'t exist.'}
+            <p className="text-sm text-slate-500 dark:text-slate-500 mb-4">
+              The category_products table needs to be created. Please run the SQL script from the admin panel.
             </p>
-            <Link href="/" className="mt-4 text-blue-600 hover:text-blue-700 font-medium">
+            <Link href="/" className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
               Go back to home
             </Link>
           </div>
@@ -70,27 +91,6 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
         <BottomNav />
       </div>
     )
-  }
-
-  // Check if slug matches, redirect if not
-  const correctSlug = generateSlug(product.title)
-  if (params.slug !== correctSlug) {
-    redirect(`/products/${params.id}/${correctSlug}`)
-  }
-
-  // Fetch suggested products from the same category
-  try {
-    const { data } = await supabase
-      .from("category_products")
-      .select("*")
-      .eq("category", product.category)
-      .eq("is_visible", true)
-      .neq("id", params.id)
-      .limit(10)
-    
-    suggestedProducts = data || []
-  } catch (e) {
-    // Ignore errors for suggested products
   }
 
   return (

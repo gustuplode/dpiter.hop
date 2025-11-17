@@ -10,47 +10,91 @@ import { ShoppingBag } from 'lucide-react'
 import Link from "next/link"
 
 export async function generateMetadata({ params }: { params: { id: string; slug: string } }) {
-  const supabase = await createClient()
-  const { data: product } = await supabase
-    .from("products")
-    .select("*, collections(*)")
-    .eq("id", params.id)
-    .single()
+  try {
+    const supabase = await createClient()
+    const { data: product } = await supabase
+      .from("products")
+      .select("*, collections(*)")
+      .eq("id", params.id)
+      .single()
 
-  if (!product) return { title: "Product Not Found" }
+    if (!product) return { title: "Product - Dpiter" }
 
-  return {
-    title: `${product.title} - ${product.brand} | Dpiter`,
-    description: `Buy ${product.title} from ${product.brand} at ₹${product.price}. Shop the best deals.`,
+    return {
+      title: `${product.title} - ${product.brand} | Dpiter`,
+      description: `Buy ${product.title} from ${product.brand} at ₹${product.price}. Shop the best deals.`,
+    }
+  } catch (error) {
+    return { 
+      title: "Product - Dpiter",
+      description: "Shop the best deals at Dpiter."
+    }
   }
 }
 
 export default async function CollectionProductDetailPage({ params }: { params: { id: string; slug: string } }) {
   const supabase = await createClient()
 
-  // Fetch the product with collection info
-  const { data: product } = await supabase
-    .from("products")
-    .select("*, collections(*)")
-    .eq("id", params.id)
-    .single()
+  let product = null
+  let suggestedProducts: any[] = []
 
-  if (!product) notFound()
+  try {
+    // Fetch the product with collection info
+    const { data, error } = await supabase
+      .from("products")
+      .select("*, collections(*)")
+      .eq("id", params.id)
+      .single()
 
-  // Check if slug matches
-  const correctSlug = generateSlug(product.title)
-  if (params.slug !== correctSlug) {
-    redirect(`/products/collection/${params.id}/${correctSlug}`)
+    if (error) throw error
+    
+    product = data
+
+    if (product) {
+      // Check if slug matches
+      const correctSlug = generateSlug(product.title)
+      if (params.slug !== correctSlug) {
+        redirect(`/products/collection/${params.id}/${correctSlug}`)
+      }
+
+      // Fetch suggested products from the same collection
+      try {
+        const { data: suggested } = await supabase
+          .from("products")
+          .select("*")
+          .eq("collection_id", product.collection_id)
+          .eq("is_visible", true)
+          .neq("id", params.id)
+          .limit(10)
+        
+        suggestedProducts = suggested || []
+      } catch (e) {
+        // Ignore errors for suggested products
+      }
+    }
+  } catch (e) {
+    // Product not found or error fetching
   }
 
-  // Fetch suggested products from the same collection
-  const { data: suggestedProducts } = await supabase
-    .from("products")
-    .select("*")
-    .eq("collection_id", product.collection_id)
-    .eq("is_visible", true)
-    .neq("id", params.id)
-    .limit(10)
+  if (!product) {
+    return (
+      <div className="relative min-h-screen bg-[#F8FAFC] dark:bg-[#1E293B]">
+        <div className="container mx-auto max-w-7xl px-4 py-16">
+          <div className="flex flex-col items-center justify-center text-center">
+            <p className="text-lg text-slate-600 dark:text-slate-400 mb-2">Product not found</p>
+            <p className="text-sm text-slate-500 dark:text-slate-500 mb-4">
+              This product may have been removed or doesn't exist.
+            </p>
+            <Link href="/" className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+              Go back to home
+            </Link>
+          </div>
+        </div>
+        <FooterLinks />
+        <BottomNav />
+      </div>
+    )
+  }
 
   return (
     <>
