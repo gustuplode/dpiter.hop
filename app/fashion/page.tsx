@@ -25,7 +25,7 @@ export default async function FashionPage() {
       .from("category_products")
       .select("*")
       .eq("category", "fashion")
-      .eq("visible", true)
+      .eq("is_visible", true)
       .order("created_at", { ascending: false })
 
     if (fetchError) {

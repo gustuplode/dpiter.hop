@@ -25,7 +25,7 @@ export default async function GamingPage() {
       .from("category_products")
       .select("*")
       .eq("category", "gaming")
-      .eq("visible", true)
+      .eq("is_visible", true)
       .order("created_at", { ascending: false })
 
     if (fetchError) {

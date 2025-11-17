@@ -25,7 +25,7 @@ export default async function GadgetsPage() {
       .from("category_products")
       .select("*")
       .eq("category", "gadgets")
-      .eq("visible", true)
+      .eq("is_visible", true)
       .order("created_at", { ascending: false })
 
     if (fetchError) {

@@ -24,7 +24,7 @@ export default async function AllProductsPage() {
     const { data, error: fetchError } = await supabase
       .from("category_products")
       .select("*")
-      .eq("visible", true)
+      .eq("is_visible", true)
       .order("created_at", { ascending: false })
 
     if (fetchError) {
