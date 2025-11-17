@@ -6,36 +6,71 @@ import { WishlistButton } from "@/components/wishlist-button"
 import { RatingButton } from "@/components/rating-button"
 import { RatingDisplay } from "@/components/rating-display"
 import { generateSlug } from "@/lib/utils"
-import { ShoppingBag, Heart } from 'lucide-react'
+import { ShoppingBag } from 'lucide-react'
 import Link from "next/link"
 
 export async function generateMetadata({ params }: { params: { id: string; slug: string } }) {
-  const supabase = await createClient()
-  const { data: product } = await supabase
-    .from("category_products")
-    .select("*")
-    .eq("id", params.id)
-    .single()
+  try {
+    const supabase = await createClient()
+    const { data: product } = await supabase
+      .from("category_products")
+      .select("*")
+      .eq("id", params.id)
+      .single()
 
-  if (!product) return { title: "Product Not Found" }
+    if (!product) return { title: "Product Not Found" }
 
-  return {
-    title: `${product.title} - ${product.brand} | Dpiter`,
-    description: `Buy ${product.title} from ${product.brand} at ₹${product.price}. Shop the best deals on fashion, gadgets, and gaming products.`,
+    return {
+      title: `${product.title} - ${product.brand} | Dpiter`,
+      description: `Buy ${product.title} from ${product.brand} at ₹${product.price}. Shop the best deals on fashion, gadgets, and gaming products.`,
+    }
+  } catch (error) {
+    return { title: "Product - Dpiter" }
   }
 }
 
 export default async function ProductDetailPage({ params }: { params: { id: string; slug: string } }) {
   const supabase = await createClient()
 
-  // Fetch the product
-  const { data: product } = await supabase
-    .from("category_products")
-    .select("*")
-    .eq("id", params.id)
-    .single()
+  let product = null
+  let suggestedProducts: any[] = []
+  let error = null
 
-  if (!product) notFound()
+  try {
+    const { data, error: fetchError } = await supabase
+      .from("category_products")
+      .select("*")
+      .eq("id", params.id)
+      .single()
+
+    if (fetchError) {
+      error = fetchError
+    } else {
+      product = data
+    }
+  } catch (e) {
+    error = e
+  }
+
+  if (!product) {
+    return (
+      <div className="relative min-h-screen bg-[#F8FAFC] dark:bg-[#1E293B]">
+        <div className="container mx-auto max-w-7xl px-4 py-16">
+          <div className="flex flex-col items-center justify-center text-center">
+            <p className="text-lg text-slate-600 dark:text-slate-400 mb-2">Product not found</p>
+            <p className="text-sm text-slate-500 dark:text-slate-500">
+              {error ? 'Please make sure the category_products table is created by running the SQL script from admin panel.' : 'This product may have been removed or doesn\'t exist.'}
+            </p>
+            <Link href="/" className="mt-4 text-blue-600 hover:text-blue-700 font-medium">
+              Go back to home
+            </Link>
+          </div>
+        </div>
+        <FooterLinks />
+        <BottomNav />
+      </div>
+    )
+  }
 
   // Check if slug matches, redirect if not
   const correctSlug = generateSlug(product.title)
@@ -44,13 +79,19 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
   }
 
   // Fetch suggested products from the same category
-  const { data: suggestedProducts } = await supabase
-    .from("category_products")
-    .select("*")
-    .eq("category", product.category)
-    .eq("is_visible", true)
-    .neq("id", params.id)
-    .limit(10)
+  try {
+    const { data } = await supabase
+      .from("category_products")
+      .select("*")
+      .eq("category", product.category)
+      .eq("is_visible", true)
+      .neq("id", params.id)
+      .limit(10)
+    
+    suggestedProducts = data || []
+  } catch (e) {
+    // Ignore errors for suggested products
+  }
 
   return (
     <>

@@ -30,11 +30,6 @@ export default async function HomePage() {
     error = e
   }
 
-  let fashionCount = 0
-  let gadgetsCount = 0
-  let gamingCount = 0
-  let allCount = 0
-
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dpiter.shop"
 
   const itemListJsonLd = {
@@ -65,12 +60,7 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
       />
       <div className="relative min-h-screen bg-[#F8FAFC] dark:bg-[#1E293B]">
-        <CategoryHeader 
-          fashionCount={fashionCount}
-          gadgetsCount={gadgetsCount}
-          gamingCount={gamingCount}
-          allProductsCount={allCount}
-        />
+        <CategoryHeader />
         
         <div className="container mx-auto max-w-7xl px-2 pt-2 pb-32">
           <main>
