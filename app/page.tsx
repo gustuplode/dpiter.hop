@@ -72,7 +72,7 @@ export default async function HomePage() {
           allProductsCount={allCount}
         />
         
-        <div className="container mx-auto max-w-7xl px-2 pt-2 pb-32">
+        <div className="container mx-auto max-w-7xl px-1.5 pt-1 pb-32">
           <main>
             {error ? (
               <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
@@ -82,48 +82,48 @@ export default async function HomePage() {
                 </p>
               </div>
             ) : collections.length > 0 ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-[5px] md:gap-x-6 gap-y-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-x-1 md:gap-x-2 gap-y-2 md:gap-y-3">
                 {collections.map((collection) => (
                   <div key={collection.id} className="group">
                     <Link href={getCollectionUrl(collection.id, collection.title)} className="block">
-                      <div className="relative overflow-hidden rounded-lg bg-white dark:bg-slate-800 shadow-sm aspect-[3/4]">
+                      <div className="relative overflow-hidden rounded-md bg-white dark:bg-slate-800 shadow-sm aspect-[3/4]">
                         <img
                           src={collection.image_url || "/placeholder.svg?height=400&width=300"}
                           alt={collection.title}
                           className="w-full h-full object-cover transition-opacity duration-300"
                           loading="lazy"
                         />
-                        <div className="absolute top-2 left-2">
+                        <div className="absolute top-1.5 left-1.5">
                           <RatingButton
                             itemId={collection.id}
                             itemType="collection"
                           />
                         </div>
-                        <div className="absolute top-2 right-2">
+                        <div className="absolute top-1.5 right-1.5">
                           <WishlistButton
                             productId={collection.id}
                             type="collection"
-                            className="h-7 w-7 flex items-center justify-center rounded-full bg-white/70 dark:bg-slate-700/70 backdrop-blur-sm"
+                            className="h-6 w-6 flex items-center justify-center rounded-full bg-white/70 dark:bg-slate-700/70 backdrop-blur-sm"
                           />
                         </div>
-                        <div className="absolute bottom-2 right-2">
+                        <div className="absolute bottom-1.5 right-1.5">
                           <RatingDisplay
                             itemId={collection.id}
                             itemType="collection"
                           />
                         </div>
                         {collection.is_limited_time && (
-                          <div className="absolute bottom-2 left-2">
-                            <span className="inline-flex items-center gap-1 rounded-md bg-[#3B82F6]/90 px-2 py-0.5 text-xs font-medium text-white">
-                              <span className="material-symbols-outlined text-sm">schedule</span>
-                              LIMITED TIME
+                          <div className="absolute bottom-1.5 left-1.5">
+                            <span className="inline-flex items-center gap-0.5 rounded-md bg-[#3B82F6]/90 px-1.5 py-0.5 text-[10px] font-medium text-white">
+                              <span className="material-symbols-outlined text-xs">schedule</span>
+                              LIMITED
                             </span>
                           </div>
                         )}
                       </div>
-                      <div className="pt-2">
-                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white">{collection.brand}</h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">{collection.title}</p>
+                      <div className="pt-1.5">
+                        <h3 className="text-xs font-semibold text-slate-900 dark:text-white truncate">{collection.brand}</h3>
+                        <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">{collection.title}</p>
                       </div>
                     </Link>
                   </div>
