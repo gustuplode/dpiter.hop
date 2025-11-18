@@ -28,10 +28,32 @@ export function UserAvatar() {
         } else if (currentUser.photoURL) {
           setProfileImage(currentUser.photoURL)
         }
+      } else {
+        setProfileImage(null)
       }
     })
 
-    return () => unsubscribe()
+    const channel = supabase
+      .channel("profile_changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "user_profiles",
+        },
+        (payload: any) => {
+          if (auth.currentUser && payload.new.user_id === auth.currentUser.uid) {
+            setProfileImage(payload.new.profile_image_url)
+          }
+        }
+      )
+      .subscribe()
+
+    return () => {
+      unsubscribe()
+      supabase.removeChannel(channel)
+    }
   }, [])
 
   if (!user) {

@@ -16,6 +16,7 @@ import { BottomNav } from "@/components/bottom-nav"
 import { FooterLinks } from "@/components/footer-links"
 import { createClient } from "@/lib/supabase/client"
 import { put } from "@vercel/blob"
+import { ImageCropper } from "@/components/admin/image-cropper"
 
 export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null)
@@ -34,6 +35,8 @@ export default function ProfilePage() {
   const [wishlistCount, setWishlistCount] = useState(0)
   const [likedCount, setLikedCount] = useState(0)
   const [requestsCount, setRequestsCount] = useState(0)
+  const [showCropper, setShowCropper] = useState(false)
+  const [tempImageUrl, setTempImageUrl] = useState<string | null>(null)
   const supabase = createClient()
 
   useEffect(() => {
@@ -110,10 +113,21 @@ export default function ProfilePage() {
   const handleProfileImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.[0] || !user) return
 
+    const file = e.target.files[0]
+    const imageUrl = URL.createObjectURL(file)
+    setTempImageUrl(imageUrl)
+    setShowCropper(true)
+  }
+
+  const handleCropComplete = async (croppedBlob: Blob) => {
+    if (!user) return
+
     setUploading(true)
+    setShowCropper(false)
+    
     try {
-      const file = e.target.files[0]
-      const blob = await put(`profile/${user.uid}/${file.name}`, file, {
+      const file = new File([croppedBlob], "profile.jpg", { type: "image/jpeg" })
+      const blob = await put(`profile/${user.uid}/${Date.now()}.jpg`, file, {
         access: "public",
       })
 
@@ -129,12 +143,26 @@ export default function ProfilePage() {
       if (upsertError) throw upsertError
 
       setProfileImage(blob.url)
+      
+      // Revoke the temporary URL
+      if (tempImageUrl) {
+        URL.revokeObjectURL(tempImageUrl)
+        setTempImageUrl(null)
+      }
     } catch (error) {
       console.error("Error uploading image:", error)
       setError("Failed to upload image")
     } finally {
       setUploading(false)
     }
+  }
+
+  const handleCropCancel = () => {
+    if (tempImageUrl) {
+      URL.revokeObjectURL(tempImageUrl)
+      setTempImageUrl(null)
+    }
+    setShowCropper(false)
   }
 
   const handleUpdateProfile = async () => {
@@ -540,6 +568,17 @@ export default function ProfilePage() {
             </div>
           </div>
         </div>
+      )}
+      
+      {showCropper && tempImageUrl && (
+        <ImageCropper
+          imageUrl={tempImageUrl}
+          aspectRatio={1}
+          cropWidth={400}
+          cropHeight={400}
+          onCropComplete={handleCropComplete}
+          onCancel={handleCropCancel}
+        />
       )}
       
       <FooterLinks />
