@@ -72,7 +72,7 @@ export default async function FashionPage() {
                       />
                       <div 
                         className="absolute top-2 right-2 flex flex-col gap-0.5"
-                        onClick={(e) => e.preventDefault()}
+                        onClick={(e) => e.stopPropagation()}
                       >
                         <RatingButton 
                           itemId={product.id} 
