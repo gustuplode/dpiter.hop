@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { Camera, Upload, ArrowLeft, Loader2, CheckCircle2 } from 'lucide-react'
+import { Camera, Upload, ArrowLeft, Loader2, CheckCircle2, X, User } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"

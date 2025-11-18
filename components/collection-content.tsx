@@ -3,8 +3,9 @@
 import { WishlistButton } from "@/components/wishlist-button"
 import { RatingButton } from "@/components/rating-button"
 import { RatingDisplay } from "@/components/rating-display"
+import { LikeButton } from "@/components/like-button"
 import { CurrencyDisplay } from "@/components/currency-display"
-import { ImageLoader } from "@/components/image-loader"
+import { Heart } from 'lucide-react'
 import { getCollectionProductUrl } from "@/lib/utils" // Add import for collection product URL helper
 import Link from "next/link" // Add Link import
 
@@ -83,17 +84,18 @@ export function CollectionContent({
                       className="absolute top-2 left-2"
                       onClick={(e) => e.preventDefault()}
                     >
-                      <RatingButton
-                        itemId={product.id}
-                        itemType="product"
+                      <WishlistButton
+                        productId={product.id}
+                        className="h-7 w-7 flex items-center justify-center rounded-full bg-white/70 dark:bg-slate-700/70 backdrop-blur-sm"
                       />
                     </div>
                     <div 
                       className="absolute top-2 right-2"
                       onClick={(e) => e.preventDefault()}
                     >
-                      <WishlistButton
-                        productId={product.id}
+                      <LikeButton
+                        itemId={product.id}
+                        itemType="product"
                         className="h-7 w-7 flex items-center justify-center rounded-full bg-white/70 dark:bg-slate-700/70 backdrop-blur-sm"
                       />
                     </div>

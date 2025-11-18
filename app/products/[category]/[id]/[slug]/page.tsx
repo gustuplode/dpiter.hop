@@ -4,6 +4,7 @@ import { BottomNav } from "@/components/bottom-nav"
 import { FooterLinks } from "@/components/footer-links"
 import { CategoryHeader } from "@/components/category-header"
 import { WishlistButton } from "@/components/wishlist-button"
+import { LikeButton } from "@/components/like-button"
 import { RatingDisplay } from "@/components/rating-display"
 import type { Metadata } from "next"
 import { getProductUrl } from "@/lib/utils"
@@ -119,10 +120,15 @@ export default async function ProductDetailPage({
                 alt={product.title}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute top-4 right-4">
+              <div className="absolute top-4 right-4 flex gap-2">
                 <WishlistButton
                   productId={product.id}
                   type="product"
+                  className="h-10 w-10 flex items-center justify-center rounded-full bg-white/90 dark:bg-slate-700/90 backdrop-blur-sm shadow-md"
+                />
+                <LikeButton
+                  itemId={product.id}
+                  itemType="category_product"
                   className="h-10 w-10 flex items-center justify-center rounded-full bg-white/90 dark:bg-slate-700/90 backdrop-blur-sm shadow-md"
                 />
               </div>

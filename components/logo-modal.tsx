@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { X, Package, Download } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -11,11 +11,35 @@ interface LogoModalProps {
 }
 
 export function LogoModal({ isOpen, onClose }: LogoModalProps) {
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null)
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      e.preventDefault()
+      setDeferredPrompt(e)
+    }
+    
+    window.addEventListener('beforeinstallprompt', handler)
+    
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handler)
+    }
+  }, [])
+
   if (!isOpen) return null
 
-  const handleInstallApp = () => {
-    if ('serviceWorker' in navigator) {
-      window.alert('To install the app:\n\n1. Tap the Share button (iOS) or Menu (Android)\n2. Select "Add to Home Screen"\n3. Enjoy the app!')
+  const handleInstallApp = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt()
+      const { outcome } = await deferredPrompt.userChoice
+      
+      if (outcome === 'accepted') {
+        console.log('User accepted the install prompt')
+      }
+      setDeferredPrompt(null)
+    } else {
+      // Fallback for browsers that don't support PWA installation
+      alert('To install the app:\n\n1. Tap the Share button (iOS) or Menu (Android)\n2. Select "Add to Home Screen"\n3. Enjoy the app!')
     }
   }
 
