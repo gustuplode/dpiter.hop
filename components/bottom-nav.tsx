@@ -3,10 +3,12 @@
 import Link from "next/link"
 import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
+import { LogoModal } from './logo-modal'
 
 export function BottomNav() {
   const pathname = usePathname()
   const [wishlistFlash, setWishlistFlash] = useState(false)
+  const [isLogoModalOpen, setIsLogoModalOpen] = useState(false)
 
   useEffect(() => {
     const handleWishlistAdded = () => {
@@ -52,16 +54,16 @@ export function BottomNav() {
           </Link>
 
           <div className="absolute -top-6 md:-top-12">
-            <Link href="/">
-              <button className="relative bg-white rounded-full w-12 h-12 md:w-20 md:h-20 flex items-center justify-center shadow-lg transform transition-all hover:scale-105 overflow-hidden p-0">
-                <img 
-                  src="/images/design-mode/1000007078-01_imgupscaler_imgupscaler.ai_V1%28Fast%29_2K%20%282%29%20%281%29%20%281%29.jpg"
-                  alt="Dpiter"
-                  className="w-full h-full object-cover rounded-full"
-                />
-              </button>
-            </Link>
-            
+            <button 
+              onClick={() => setIsLogoModalOpen(true)}
+              className="relative bg-white rounded-full w-12 h-12 md:w-20 md:h-20 flex items-center justify-center shadow-lg transform transition-all hover:scale-105 overflow-hidden p-0"
+            >
+              <img 
+                src="/images/design-mode/1000007078-01_imgupscaler_imgupscaler.ai_V1%28Fast%29_2K%20%282%29%20%281%29%20%281%29.jpg"
+                alt="Dpiter"
+                className="w-full h-full object-cover rounded-full"
+              />
+            </button>
           </div>
 
           <div className="w-10 md:w-20"></div>
@@ -95,6 +97,8 @@ export function BottomNav() {
           </Link>
         </div>
       </div>
+
+      <LogoModal isOpen={isLogoModalOpen} onClose={() => setIsLogoModalOpen(false)} />
     </footer>
   )
 }
