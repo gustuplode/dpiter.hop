@@ -7,6 +7,7 @@ import { WishlistButton } from "@/components/wishlist-button"
 import { RatingButton } from "@/components/rating-button"
 import { RatingDisplay } from "@/components/rating-display"
 import { getProductUrl } from "@/lib/utils"
+import { LikeButton } from "@/components/like-button"
 
 export const metadata = {
   title: "All Products - Dpiter",
@@ -68,20 +69,19 @@ export default async function AllProductsPage() {
                         className="w-full h-full object-cover"
                         loading="lazy"
                       />
-                      <div className="absolute top-2 left-2">
+                      <div className="absolute top-4 right-4 flex flex-col gap-0.5">
                         <RatingButton itemId={product.id} itemType="category_product" />
-                      </div>
-                      <div className="absolute top-2 right-2">
                         <WishlistButton
                           productId={product.id}
                           type="product"
-                          className="h-7 w-7 flex items-center justify-center rounded-full bg-white/70 dark:bg-slate-700/70 backdrop-blur-sm"
+                          className="h-8 w-8 flex items-center justify-center rounded-full bg-white/90 dark:bg-slate-700/90 backdrop-blur-sm hover:scale-110 transition-transform"
                         />
+                        <LikeButton itemId={product.id} itemType="category_product" />
                       </div>
                       <div className="absolute bottom-2 right-2">
                         <RatingDisplay itemId={product.id} itemType="category_product" />
                       </div>
-                      <div className="absolute top-2 left-12">
+                      <div className="absolute top-2 left-2">
                         <span className="inline-flex items-center rounded-md bg-blue-500/90 px-2 py-0.5 text-[9px] font-medium text-white capitalize">
                           {product.category}
                         </span>

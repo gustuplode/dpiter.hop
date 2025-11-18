@@ -132,16 +132,20 @@ export default function ProfilePage() {
         access: "public",
       })
 
-      // Update Supabase user_profiles table
       const { error: upsertError } = await supabase
         .from("user_profiles")
         .upsert({
           user_id: user.uid,
           profile_image_url: blob.url,
           updated_at: new Date().toISOString(),
+        }, {
+          onConflict: 'user_id'
         })
 
-      if (upsertError) throw upsertError
+      if (upsertError) {
+        console.error("[v0] Error upserting profile image:", upsertError)
+        throw upsertError
+      }
 
       setProfileImage(blob.url)
       
@@ -150,8 +154,10 @@ export default function ProfilePage() {
         URL.revokeObjectURL(tempImageUrl)
         setTempImageUrl(null)
       }
+      
+      console.log("[v0] Profile image uploaded successfully:", blob.url)
     } catch (error) {
-      console.error("Error uploading image:", error)
+      console.error("[v0] Error uploading image:", error)
       setError("Failed to upload image")
     } finally {
       setUploading(false)
