@@ -10,6 +10,7 @@ interface ImageCropperProps {
   onCancel: () => void
   cropWidth?: number
   cropHeight?: number
+  roundCrop?: boolean
 }
 
 export function ImageCropper({
@@ -19,6 +20,7 @@ export function ImageCropper({
   onCancel,
   cropWidth = 400,
   cropHeight = 400,
+  roundCrop = false,
 }: ImageCropperProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const displayCanvasRef = useRef<HTMLCanvasElement>(null)
@@ -49,18 +51,30 @@ export function ImageCropper({
     const ctx = canvas.getContext("2d")
     if (!ctx) return
 
-    const displaySize = 300
-    canvas.width = displaySize
-    canvas.height = displaySize
+    const maxDisplaySize = 400
+    let displayWidth, displayHeight
+    
+    if (aspectRatio >= 1) {
+      displayWidth = maxDisplaySize
+      displayHeight = maxDisplaySize / aspectRatio
+    } else {
+      displayHeight = maxDisplaySize
+      displayWidth = maxDisplaySize * aspectRatio
+    }
+
+    canvas.width = displayWidth
+    canvas.height = displayHeight
 
     ctx.fillStyle = "#ffffff"
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    ctx.save()
-    ctx.beginPath()
-    ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 0, Math.PI * 2)
-    ctx.closePath()
-    ctx.clip()
+    if (roundCrop) {
+      ctx.save()
+      ctx.beginPath()
+      ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 0, Math.PI * 2)
+      ctx.closePath()
+      ctx.clip()
+    }
 
     const imgWidth = image.width * scale
     const imgHeight = image.height * scale
@@ -69,8 +83,10 @@ export function ImageCropper({
 
     ctx.drawImage(image, centerX - imgWidth / 2 + position.x, centerY - imgHeight / 2 + position.y, imgWidth, imgHeight)
     
-    ctx.restore()
-  }, [image, scale, position])
+    if (roundCrop) {
+      ctx.restore()
+    }
+  }, [image, scale, position, aspectRatio, roundCrop])
 
   const handlePointerDown = (e: React.PointerEvent) => {
     e.preventDefault()
@@ -191,7 +207,7 @@ export function ImageCropper({
           ✕
         </button>
         <h2 className="text-gray-900 dark:text-gray-100 text-sm font-semibold flex-1 text-center">
-          Crop Profile Picture
+          {roundCrop ? 'Crop Profile Picture' : 'Crop Image'}
         </h2>
         <button
           onClick={handleReset}
@@ -203,10 +219,11 @@ export function ImageCropper({
       </div>
 
       <div className="flex-1 relative overflow-hidden bg-gray-50 dark:bg-gray-900 flex items-center justify-center py-4 px-3">
-        <div className="relative w-full max-w-[300px] aspect-square">
+        <div className="relative" style={{ aspectRatio: aspectRatio }}>
           <canvas
             ref={displayCanvasRef}
-            className="absolute inset-0 w-full h-full cursor-move touch-none rounded-full"
+            className={`w-full h-full cursor-move touch-none ${roundCrop ? 'rounded-full' : 'rounded-lg'}`}
+            style={{ maxWidth: '400px', maxHeight: '400px' }}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
@@ -220,7 +237,7 @@ export function ImageCropper({
           <canvas ref={canvasRef} className="hidden" />
 
           <div className="absolute inset-0 pointer-events-none">
-            <div className="relative w-full h-full border-2 border-blue-500 rounded-full">
+            <div className={`relative w-full h-full border-2 border-blue-500 ${roundCrop ? 'rounded-full' : 'rounded-lg'}`}>
               <div className="absolute -top-0.5 -left-0.5 size-2 bg-blue-500 rounded-full"></div>
               <div className="absolute -top-0.5 -right-0.5 size-2 bg-blue-500 rounded-full"></div>
               <div className="absolute -bottom-0.5 -left-0.5 size-2 bg-blue-500 rounded-full"></div>
