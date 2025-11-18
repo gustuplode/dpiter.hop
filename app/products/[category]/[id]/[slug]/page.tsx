@@ -120,7 +120,8 @@ export default async function ProductDetailPage({
                 alt={product.title}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute top-4 right-4 flex gap-2">
+              <div className="absolute top-4 right-4 flex flex-col gap-0.5">
+                <RatingDisplay itemId={product.id} itemType="category_product" />
                 <WishlistButton
                   productId={product.id}
                   type="product"
@@ -143,10 +144,6 @@ export default async function ProductDetailPage({
                   {product.brand}
                 </h1>
                 <p className="text-lg text-slate-600 dark:text-slate-400">{product.title}</p>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <RatingDisplay itemId={product.id} itemType="category_product" />
               </div>
 
               <div className="border-t border-slate-200 dark:border-slate-700 pt-6">

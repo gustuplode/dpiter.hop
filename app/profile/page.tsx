@@ -26,6 +26,7 @@ export default function ProfilePage() {
   const [showMenu, setShowMenu] = useState(false)
   const [userRatings, setUserRatings] = useState<any[]>([])
   const [wishlistCount, setWishlistCount] = useState(0)
+  const [likedCount, setLikedCount] = useState(0)
   const supabase = createClient()
 
   useEffect(() => {
@@ -57,6 +58,13 @@ export default function ProfilePage() {
     if (ratings) {
       setUserRatings(ratings)
     }
+
+    const { count: likesCount } = await supabase
+      .from("likes")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", userId)
+    
+    setLikedCount(likesCount || 0)
 
     const products = localStorage.getItem("wishlist")
     const collections = localStorage.getItem("wishlist_collections")
@@ -158,15 +166,28 @@ export default function ProfilePage() {
                   <Link href="/wishlist" className="p-4 bg-gradient-to-br from-pink-50 to-red-50 dark:from-pink-900/20 dark:to-red-900/20 rounded-xl hover:shadow-md transition-shadow">
                     <span className="material-symbols-outlined text-red-500 text-3xl">favorite</span>
                     <p className="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-2">{wishlistCount}</p>
-                    <p className="text-xs text-slate-600 dark:text-slate-400">Wishlist Items</p>
+                    <p className="text-xs text-slate-600 dark:text-slate-400">Saved Items</p>
                   </Link>
                   
-                  <div className="p-4 bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-xl">
-                    <span className="material-symbols-outlined text-[#F97316] text-3xl">star</span>
-                    <p className="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-2">{userRatings.length}</p>
-                    <p className="text-xs text-slate-600 dark:text-slate-400">Reviews Given</p>
-                  </div>
+                  <Link href="/profile/liked" className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl hover:shadow-md transition-shadow">
+                    <span className="material-symbols-outlined text-blue-500 text-3xl">thumb_up</span>
+                    <p className="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-2">{likedCount}</p>
+                    <p className="text-xs text-slate-600 dark:text-slate-400">Liked Products</p>
+                  </Link>
                 </div>
+
+                <Link href="/profile/requests" className="block p-4 bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 rounded-xl hover:shadow-md transition-shadow">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <span className="material-symbols-outlined text-purple-500 text-3xl">inventory_2</span>
+                      <div>
+                        <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">Product Requests</p>
+                        <p className="text-xs text-slate-600 dark:text-slate-400">View your requested products</p>
+                      </div>
+                    </div>
+                    <span className="material-symbols-outlined text-slate-400">chevron_right</span>
+                  </div>
+                </Link>
 
                 <div className="space-y-3 border-t dark:border-slate-700 pt-6">
                   <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-900">

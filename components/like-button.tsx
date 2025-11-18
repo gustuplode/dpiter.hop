@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Star } from 'lucide-react'
+import { ThumbsUp } from 'lucide-react'
 import { createClient } from "@/lib/supabase/client"
 
 interface LikeButtonProps {
@@ -94,11 +94,11 @@ export function LikeButton({ itemId, itemType, className = "" }: LikeButtonProps
       className={`group relative flex items-center gap-1 ${className}`}
     >
       <div className="flex items-center justify-center">
-        <Star 
+        <ThumbsUp 
           className={`w-4 h-4 transition-all ${
             isLiked 
-              ? 'fill-yellow-400 text-yellow-400' 
-              : 'text-slate-400 group-hover:text-yellow-400'
+              ? 'fill-blue-500 text-blue-500' 
+              : 'text-slate-400 group-hover:text-blue-500'
           }`}
         />
       </div>
