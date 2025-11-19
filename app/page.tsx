@@ -6,8 +6,7 @@ import { CategoryHeader } from "@/components/category-header"
 import { SearchHeader } from "@/components/search-header"
 import { WishlistButton } from "@/components/wishlist-button"
 import { RatingButton } from "@/components/rating-button"
-import { RatingDisplay } from "@/components/rating-display"
-import { getCollectionUrl } from "@/lib/utils"
+import { getProductUrl } from "@/lib/utils"
 import { Suspense } from "react"
 import { CollectionGridSkeleton } from "@/components/collection-skeleton"
 import { CurrencyDisplay } from "@/components/currency-display"
@@ -19,9 +18,9 @@ async function ProductList() {
   let error = null
 
   try {
-    // Fetch products instead of collections to match "All Products" UI
+    // Fetch products from category_products table to include fashion, gadgets, gaming
     const { data, error: fetchError } = await supabase
-      .from("products")
+      .from("category_products")
       .select("*")
       .eq("is_visible", true)
       .order("created_at", { ascending: false })
@@ -48,14 +47,8 @@ async function ProductList() {
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
       {products.map((product, index) => (
         <div key={product.id} className={`flex flex-col bg-white dark:bg-gray-800 overflow-hidden border border-black/10 dark:border-white/10 ${index % 2 !== 0 ? 'border-l-0' : ''} ${index >= 2 ? 'border-t-0' : ''}`}>
-          <Link href={`/products/${product.category}/${product.id}/${product.title.toLowerCase().replace(/\s+/g, '-')}`} className="block flex-1 flex flex-col">
-            <div className="relative w-full bg-center bg-no-repeat aspect-square bg-cover">
-              <img
-                src={product.image_url || "/placeholder.svg?height=400&width=400"}
-                alt={product.title}
-                className="w-full h-full object-cover"
-                loading="lazy"
-              />
+          <Link href={getProductUrl(product.id, product.title, product.category)} className="block flex-1 flex flex-col">
+            <div className="relative w-full bg-center bg-no-repeat aspect-square bg-cover" style={{ backgroundImage: `url("${product.image_url || "/placeholder.svg"}")` }}>
               <div className="absolute bottom-2 left-2 flex items-center gap-1 bg-black/50 text-white rounded-full px-2 py-1 text-xs backdrop-blur-sm">
                 <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                 <span className="font-semibold">4.1</span>
@@ -63,32 +56,34 @@ async function ProductList() {
             </div>
             
             <div className="p-3 flex flex-col gap-2 flex-1">
-              <p className="text-sm font-bold uppercase text-muted-foreground tracking-wide">{product.brand || 'Brand'}</p>
-              <p className="text-foreground text-xs font-semibold leading-snug truncate">{product.title}</p>
+              <p className="text-sm font-bold uppercase text-text-secondary-light dark:text-text-secondary-dark tracking-wide">{product.brand || 'Brand'}</p>
+              <p className="text-text-primary-light dark:text-text-primary-dark text-xs font-semibold leading-snug truncate">{product.title}</p>
               
               <div className="flex items-center gap-2 mt-1">
-                <p className="text-foreground text-base font-bold">
+                <p className="text-text-primary-light dark:text-white text-base font-bold">
                   <CurrencyDisplay price={product.price} />
                 </p>
-                <p className="text-muted-foreground text-xs font-normal line-through">
-                  <CurrencyDisplay price={product.price * 1.4} />
-                </p>
+                {product.original_price && (
+                  <p className="text-text-secondary-light dark:text-text-secondary-dark text-xs font-normal line-through">
+                    <CurrencyDisplay price={product.original_price} />
+                  </p>
+                )}
               </div>
 
               <div className="mt-auto pt-2 flex flex-col gap-2">
-                <div className="border-t border-black/10 dark:border-white/10"></div>
-                <div className="flex items-center justify-end text-muted-foreground -mt-1">
+                <div className="border-t border-black/10 dark:border-white/10 opacity-50"></div>
+                <div className="flex items-center justify-end text-text-secondary-light dark:text-text-secondary-dark -mt-1">
                   <div className="flex items-center gap-1">
                     <WishlistButton
                       productId={product.id}
-                      className="flex items-center justify-center h-8 w-8 text-foreground hover:text-primary transition-colors"
+                      className="flex items-center justify-center h-8 w-8 text-text-primary-light dark:text-text-primary-dark hover:text-primary transition-colors"
                     />
                     <RatingButton
                       itemId={product.id}
-                      itemType="product"
-                      className="flex items-center justify-center h-8 w-8 text-foreground hover:text-primary transition-colors"
+                      itemType="category_product"
+                      className="flex items-center justify-center h-8 w-8 text-text-primary-light dark:text-text-primary-dark hover:text-primary transition-colors"
                     />
-                    <button className="flex items-center justify-center h-8 w-8 text-primary hover:text-primary/80 transition-colors">
+                    <button className="flex items-center justify-center h-8 w-8 text-primary dark:text-primary-light hover:text-primary/80 transition-colors">
                       <span className="material-symbols-outlined text-xl">add_shopping_cart</span>
                     </button>
                   </div>
@@ -104,7 +99,7 @@ async function ProductList() {
 
 export default function HomePage() {
   return (
-    <div className="relative min-h-screen bg-background">
+    <div className="relative min-h-screen bg-background-light dark:bg-background-dark">
       <CategoryHeader />
       
       {/* Banner Section */}
@@ -127,7 +122,7 @@ export default function HomePage() {
 
       <div className="flex flex-col">
         <div className="px-4 mb-4">
-          <h2 className="font-display text-xl font-bold text-foreground">All Products</h2>
+          <h2 className="font-display text-xl font-bold text-text-primary-light dark:text-text-primary-dark">All Products</h2>
         </div>
         <main>
           <Suspense fallback={<CollectionGridSkeleton />}>

@@ -1,54 +1,9 @@
 import { createClient } from "@/lib/supabase/server"
 import { notFound, redirect } from 'next/navigation'
-import { BottomNav } from "@/components/bottom-nav"
-import { FooterLinks } from "@/components/footer-links"
-import { CategoryHeader } from "@/components/category-header"
-import { WishlistButton } from "@/components/wishlist-button"
-import { LikeButton } from "@/components/like-button"
-import { ReviewSection } from "@/components/review-section"
-import { RatingButton } from "@/components/rating-button"
-import type { Metadata } from "next"
 import { getProductUrl } from "@/lib/utils"
 import Link from "next/link"
-
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ category: string; id: string; slug: string }>
-}): Promise<Metadata> {
-  const { id } = await params
-  const supabase = await createClient()
-
-  const { data: product } = await supabase
-    .from("category_products")
-    .select("title, brand, image_url, price, category")
-    .eq("id", id)
-    .single()
-
-  if (!product) {
-    return {
-      title: "Product Not Found",
-    }
-  }
-
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dpiter.shop"
-  const productUrl = `${baseUrl}${getProductUrl(product.id, product.title, product.category)}`
-
-  return {
-    title: `${product.title} - ${product.brand} | DPITER.shop`,
-    description: `Shop ${product.title} from ${product.brand} at ₹${product.price}. Secure redirect to trusted marketplace. Best deals guaranteed.`,
-    keywords: [product.title, product.brand, `${product.brand} ${product.category}`],
-    alternates: {
-      canonical: productUrl,
-    },
-    openGraph: {
-      title: `${product.title} - ${product.brand}`,
-      description: `Shop ${product.title} from ${product.brand}`,
-      images: [{ url: product.image_url }],
-      url: productUrl,
-    },
-  }
-}
+import { WishlistButton } from "@/components/wishlist-button"
+import { CurrencyDisplay } from "@/components/currency-display"
 
 export default async function ProductDetailPage({
   params,
@@ -76,124 +31,152 @@ export default async function ProductDetailPage({
     redirect(correctUrl)
   }
 
-  const { count: fashionCount } = await supabase
+  // Fetch related products
+  const { data: relatedProducts } = await supabase
     .from("category_products")
-    .select("*", { count: "exact", head: true })
-    .eq("category", "fashion")
-    .eq("is_visible", true)
-
-  const { count: gadgetsCount } = await supabase
-    .from("category_products")
-    .select("*", { count: "exact", head: true })
-    .eq("category", "gadgets")
-    .eq("is_visible", true)
-
-  const { count: gamingCount } = await supabase
-    .from("category_products")
-    .select("*", { count: "exact", head: true })
-    .eq("category", "gaming")
-    .eq("is_visible", true)
-
-  const allCount = (fashionCount || 0) + (gadgetsCount || 0) + (gamingCount || 0)
+    .select("*")
+    .eq("category", category)
+    .neq("id", id)
+    .limit(4)
 
   return (
-    <>
-      <div className="relative min-h-screen bg-[#F8FAFC] dark:bg-[#1E293B]">
-        <CategoryHeader
-          fashionCount={fashionCount || 0}
-          gadgetsCount={gadgetsCount || 0}
-          gamingCount={gamingCount || 0}
-          allProductsCount={allCount}
-        />
+    <div className="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden bg-background-light dark:bg-background-dark">
+      <header className="sticky top-0 z-30 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm">
+        <div className="flex items-center justify-between gap-4 p-4">
+          <div className="flex items-center gap-3">
+            <Link href="/" className="flex items-center justify-center h-10 w-10">
+              <span className="material-symbols-outlined text-2xl">arrow_back</span>
+            </Link>
+          </div>
+          <div className="flex items-center gap-2">
+            <button className="flex items-center justify-center h-10 w-10">
+              <span className="material-symbols-outlined text-2xl">search</span>
+            </button>
+            <button className="flex items-center justify-center h-10 w-10">
+              <span className="material-symbols-outlined text-2xl">favorite_border</span>
+            </button>
+            <button className="flex items-center justify-center h-10 w-10">
+              <span className="material-symbols-outlined text-2xl">shopping_cart</span>
+            </button>
+          </div>
+        </div>
+      </header>
 
-        <div className="container mx-auto max-w-7xl px-4 py-6 pb-32">
-          <Link
-            href={`/${product.category}`}
-            className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-primary mb-4"
-          >
-            <span className="material-symbols-outlined text-2xl">arrow_back</span>
-          </Link>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            <div className="relative aspect-[3/4] rounded-lg overflow-hidden bg-white dark:bg-slate-800 shadow-lg">
-              <img
-                src={product.image_url || "/placeholder.svg"}
-                alt={product.title}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute top-4 right-4 flex flex-col gap-0.5">
-                <RatingButton
-                  itemId={product.id}
-                  itemType="category_product"
-                  className="h-10 w-10 flex items-center justify-center rounded-full bg-white/90 dark:bg-slate-700/90 backdrop-blur-sm shadow-md"
-                />
-                <WishlistButton
-                  productId={product.id}
-                  type="product"
-                  className="h-10 w-10 flex items-center justify-center rounded-full bg-white/90 dark:bg-slate-700/90 backdrop-blur-sm shadow-md"
-                />
-                <LikeButton
-                  itemId={product.id}
-                  itemType="category_product"
-                  className="h-10 w-10 flex items-center justify-center rounded-full bg-white/90 dark:bg-slate-700/90 backdrop-blur-sm shadow-md"
-                />
-              </div>
+      <main className="flex-1 pb-20">
+        <div className="relative w-full">
+          <div className="flex overflow-x-auto snap-x snap-mandatory [-ms-scrollbar-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex-shrink-0 w-full snap-center">
+              <div 
+                className="w-full bg-center bg-no-repeat aspect-square bg-cover" 
+                style={{ backgroundImage: `url("${product.image_url || "/placeholder.svg"}")` }}
+              ></div>
             </div>
+            {/* Placeholder for additional images if available */}
+            <div className="flex-shrink-0 w-full snap-center">
+              <div 
+                className="w-full bg-center bg-no-repeat aspect-square bg-cover" 
+                style={{ backgroundImage: `url("${product.image_url || "/placeholder.svg"}")` }}
+              ></div>
+            </div>
+          </div>
+          <div className="absolute bottom-4 left-0 right-0 flex justify-center items-center gap-2">
+            <div className="h-2 w-4 rounded-full bg-primary"></div>
+            <div className="h-2 w-2 rounded-full bg-white/50 backdrop-blur-sm"></div>
+          </div>
+          <button className="absolute top-1/2 left-4 -translate-y-1/2 flex items-center justify-center size-8 rounded-full bg-white/50 backdrop-blur-sm text-text-primary-light">
+            <span className="material-symbols-outlined text-xl">chevron_left</span>
+          </button>
+          <button className="absolute top-1/2 right-4 -translate-y-1/2 flex items-center justify-center size-8 rounded-full bg-white/50 backdrop-blur-sm text-text-primary-light">
+            <span className="material-symbols-outlined text-xl">chevron_right</span>
+          </button>
+        </div>
 
-            <div className="flex flex-col gap-6">
+        <div className="p-4 flex flex-col gap-4">
+          <div>
+            <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">
-                  {product.category.charAt(0).toUpperCase() + product.category.slice(1)}
-                </p>
-                <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
-                  {product.brand}
-                </h1>
-                <p className="text-lg text-slate-600 dark:text-slate-400">{product.title}</p>
+                <p className="text-lg font-bold uppercase text-text-secondary-light dark:text-text-secondary-dark tracking-wide">{product.brand || "Brand"}</p>
+                <h1 className="text-xl font-display font-semibold text-text-primary-light dark:text-text-primary-dark">{product.title}</h1>
               </div>
-
-              <div className="border-t border-slate-200 dark:border-slate-700 pt-6">
-                <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">Price</p>
-                <p className="text-4xl font-bold text-slate-900 dark:text-white">₹{product.price}</p>
+              <WishlistButton 
+                productId={product.id} 
+                className="flex items-center justify-center size-10 text-primary dark:text-primary-light"
+              />
+            </div>
+            <div className="flex items-center gap-2 mt-2">
+              <div className="flex items-center gap-1 text-yellow-500">
+                <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                <span className="material-symbols-outlined text-lg">star_half</span>
               </div>
-
-              <div className="flex flex-col gap-3 mt-4">
-                <a
-                  href={product.affiliate_link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-semibold py-4 px-6 rounded-lg transition-colors"
-                >
-                  <span className="material-symbols-outlined">shopping_cart</span>
-                  Buy Now
-                </a>
-                <WishlistButton
-                  productId={product.id}
-                  type="product"
-                  className="flex items-center justify-center gap-2 border-2 border-primary text-primary hover:bg-primary/10 font-semibold py-4 px-6 rounded-lg transition-colors"
-                  showText
-                />
-              </div>
-
-              <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-4 mt-4">
-                <p className="text-sm text-slate-600 dark:text-slate-400">
-                  <span className="material-symbols-outlined text-base align-middle mr-1">info</span>
-                  You will be redirected to a trusted marketplace to complete your purchase securely.
-                </p>
-              </div>
+              <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark font-medium">(4.1) 1,283 ratings</p>
             </div>
           </div>
 
-          <div className="mt-12">
-            <ReviewSection
-              itemId={product.id}
-              itemType="category_product"
-            />
+          <div className="flex items-baseline gap-3">
+            <p className="text-3xl font-bold font-sans text-text-primary-light dark:text-white">
+              <CurrencyDisplay price={product.price} />
+            </p>
+            {product.original_price && (
+              <>
+                <p className="text-base font-normal text-text-secondary-light dark:text-text-secondary-dark line-through">
+                  <CurrencyDisplay price={product.original_price} />
+                </p>
+                <p className="text-base font-bold text-green-600 dark:text-green-400">
+                  {Math.round(((product.original_price - product.price) / product.original_price) * 100)}% off
+                </p>
+              </>
+            )}
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 mt-4">
+            <button className="w-full h-12 rounded-lg bg-gray-200 dark:bg-gray-700 text-text-primary-light dark:text-text-primary-dark font-bold text-base">Add to Cart</button>
+            <a 
+              href={product.affiliate_link} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center justify-center w-full h-12 rounded-lg bg-primary text-white font-bold text-base"
+            >
+              Buy Now
+            </a>
           </div>
         </div>
 
-        <FooterLinks />
-        <BottomNav />
-      </div>
-    </>
+        <div className="h-2 bg-gray-100 dark:bg-gray-800/50"></div>
+
+        <div className="py-6">
+          <div className="px-4 mb-4">
+            <h2 className="font-display text-xl font-bold text-text-primary-light dark:text-text-primary-dark">Related Products</h2>
+          </div>
+          <div className="flex overflow-x-auto [-ms-scrollbar-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden -mx-px">
+            <div className="flex items-stretch">
+              {relatedProducts?.map((related, index) => (
+                <Link 
+                  key={related.id}
+                  href={getProductUrl(related.id, related.title, related.category)}
+                  className={`flex flex-col bg-white dark:bg-gray-800 overflow-hidden border-y border-r border-black/10 dark:border-y dark:border-r dark:border-white/10 w-44 ${index === 0 ? 'border-l' : ''}`}
+                >
+                  <div 
+                    className="relative w-full bg-center bg-no-repeat aspect-square bg-cover" 
+                    style={{ backgroundImage: `url("${related.image_url || "/placeholder.svg"}")` }}
+                  ></div>
+                  <div className="p-3 flex flex-col gap-1 flex-1">
+                    <p className="text-sm font-bold uppercase text-text-secondary-light dark:text-text-secondary-dark tracking-wide">{related.brand || "Brand"}</p>
+                    <p className="text-text-primary-light dark:text-text-primary-dark text-xs font-semibold leading-snug truncate">{related.title}</p>
+                    <div className="flex items-center gap-2 mt-auto pt-1">
+                      <p className="text-text-primary-light dark:text-white text-base font-bold">
+                        <CurrencyDisplay price={related.price} />
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
   )
 }

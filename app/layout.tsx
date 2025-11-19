@@ -344,7 +344,7 @@ export default function RootLayout({
           }
         `}</style>
       </head>
-      <body className={`${poppins.variable} ${libreBaskerville.variable} ${plusJakartaSans.variable} font-sans antialiased bg-background text-foreground`}>
+      <body className={`${poppins.variable} ${libreBaskerville.variable} ${plusJakartaSans.variable} font-sans antialiased bg-background text-foreground overflow-x-hidden`}>
         <LoadingBar />
         <Suspense fallback={
           <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-sm shadow-sm">
