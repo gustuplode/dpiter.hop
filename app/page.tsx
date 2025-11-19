@@ -2,7 +2,6 @@ import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
 import { BottomNav } from "@/components/bottom-nav"
 import { FooterLinks } from "@/components/footer-links"
-import { CategoryHeader } from "@/components/category-header"
 import { WishlistButton } from "@/components/wishlist-button"
 import { RatingButton } from "@/components/rating-button"
 import { AddToCartButton } from "@/components/add-to-cart-button"
@@ -100,7 +99,6 @@ async function ProductList() {
 export default function HomePage() {
   return (
     <div className="relative min-h-screen bg-background-light dark:bg-background-dark">
-      <CategoryHeader />
       
       <div className="px-4 mb-4">
         <div className="flex overflow-x-auto snap-x snap-mandatory [-ms-scrollbar-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden gap-3 pb-2">

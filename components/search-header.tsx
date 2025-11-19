@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import { CategoryHeader } from './category-header'
 
 export function SearchHeader() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -55,8 +56,12 @@ export function SearchHeader() {
   }, [searchQuery])
   
   const isAdminPage = pathname.startsWith('/admin')
-  const showBackButton = pathname !== '/'
+  const isProductPage = pathname.startsWith('/products/')
+  const isProfilePage = pathname === '/profile'
+  const isCollectionPage = pathname.startsWith('/collections/')
+  const showBackButton = isProductPage || isProfilePage || isCollectionPage
   const showLogo = pathname === '/' && !isScrolled
+  const showCategoryHeader = !isAdminPage && !isProductPage && !isProfilePage && !isCollectionPage
 
   if (isAdminPage) {
     return null
@@ -64,7 +69,7 @@ export function SearchHeader() {
 
   return (
     <>
-      <div className="sticky top-0 z-50 bg-background-light dark:bg-background-dark">
+      <div className="sticky top-0 z-50 bg-background-light dark:bg-background-dark shadow-sm">
         {/* Logo section - only show on home page when not scrolled */}
         {showLogo && (
           <div className="flex items-center justify-between gap-4 px-4 py-2 transition-all duration-300">
@@ -115,10 +120,16 @@ export function SearchHeader() {
             </label>
           </div>
         </div>
+
+        {showCategoryHeader && (
+          <div className="pb-2">
+            <CategoryHeader />
+          </div>
+        )}
       </div>
 
       {showResults && searchQuery && (
-        <div className="fixed top-[100px] left-0 right-0 z-20 bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-gray-700 max-h-[60vh] overflow-y-auto">
+        <div className="fixed top-[160px] left-0 right-0 z-40 bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-gray-700 max-h-[60vh] overflow-y-auto shadow-lg">
           {isLoading ? (
             <div className="flex justify-center py-8">
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary" />
