@@ -51,7 +51,7 @@ export function ImageCropper({
     const ctx = canvas.getContext("2d")
     if (!ctx) return
 
-    const maxDisplaySize = 400
+    const maxDisplaySize = Math.min(window.innerWidth * 0.9, 500)
     let displayWidth, displayHeight
     
     if (aspectRatio >= 1) {

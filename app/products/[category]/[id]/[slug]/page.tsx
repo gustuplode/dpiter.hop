@@ -32,22 +32,20 @@ export default async function ProductDetailPage({
 
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden bg-background-light dark:bg-background-dark">
-      <header className="sticky top-0 z-30 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm">
+      <header className="sticky top-0 z-30 bg-background-light dark:bg-background-dark shadow-sm">
         <div className="flex items-center justify-between gap-4 p-4">
-          <div className="flex items-center gap-3">
-            <Link href="/" className="flex items-center justify-center h-10 w-10">
-              <span className="material-symbols-outlined text-2xl">arrow_back</span>
-            </Link>
-          </div>
+          <Link href="/" className="flex items-center justify-center h-10 w-10">
+            <span className="material-symbols-outlined text-2xl text-text-primary-light dark:text-text-primary-dark">arrow_back</span>
+          </Link>
           <div className="flex items-center gap-2">
             <Link href="/" className="flex items-center justify-center h-10 w-10">
-              <span className="material-symbols-outlined text-2xl">search</span>
+              <span className="material-symbols-outlined text-2xl text-text-secondary-light dark:text-text-secondary-dark">search</span>
             </Link>
             <Link href="/wishlist" className="flex items-center justify-center h-10 w-10">
-              <span className="material-symbols-outlined text-2xl">favorite_border</span>
+              <span className="material-symbols-outlined text-2xl text-text-secondary-light dark:text-text-secondary-dark">favorite_border</span>
             </Link>
             <Link href="/cart" className="flex items-center justify-center h-10 w-10">
-              <span className="material-symbols-outlined text-2xl">shopping_cart</span>
+              <span className="material-symbols-outlined text-2xl text-text-secondary-light dark:text-text-secondary-dark">shopping_cart</span>
             </Link>
           </div>
         </div>
