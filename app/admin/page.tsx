@@ -4,6 +4,7 @@ import { ArrowLeft, Network, Search, ChevronDown, Plus, LogOut, BarChart3, Grid3
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { CollectionList } from "@/components/admin/collection-list"
+import { AdminCategorySelector } from "@/components/admin/admin-category-selector"
 
 export default async function AdminDashboard() {
   const supabase = await createClient()
@@ -22,37 +23,25 @@ export default async function AdminDashboard() {
     .order("created_at", { ascending: false })
 
   return (
-    <div className="relative flex h-auto min-h-screen w-full flex-col bg-background-light dark:bg-background-dark">
-      {/* Top App Bar */}
-      <header className="flex items-center bg-background-light dark:bg-background-dark p-4 pb-3 justify-between sticky top-0 z-10 border-b border-gray-200 dark:border-gray-700">
-        <Link href="/" className="text-text-primary-light dark:text-text-primary-dark flex size-10 shrink-0 items-center justify-center">
-          <ArrowLeft className="h-6 w-6" />
-        </Link>
-        <div className="flex items-center gap-2">
-          <div className="flex items-center justify-center h-8 w-8 rounded-full bg-primary text-white">
-            <span className="font-display font-bold text-lg">D</span>
+    <div className="relative flex h-screen w-full flex-col bg-background-light dark:bg-background-dark">
+      <header className="flex items-center bg-white dark:bg-gray-900 px-4 py-3 justify-between border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center justify-center h-10 w-10 rounded-full bg-primary text-white">
+            <span className="font-display font-bold text-xl">D</span>
           </div>
-          <h1 className="text-text-primary-light dark:text-text-primary-dark text-xl font-bold leading-tight tracking-tight font-display">Dpiter Admin</h1>
+          <h1 className="text-text-primary-light dark:text-text-primary-dark text-xl font-bold font-display">
+            Dpiter Admin
+          </h1>
         </div>
         <div className="flex items-center gap-2">
-          <Link href="/admin/requests">
-            <Button variant="ghost" className="size-10 p-0">
-              <PackagePlus className="h-5 w-5 text-text-primary-light dark:text-text-primary-dark" />
-            </Button>
-          </Link>
-          <Link href="/admin/categories">
-            <Button variant="ghost" className="size-10 p-0">
-              <Grid3X3 className="h-5 w-5 text-text-primary-light dark:text-text-primary-dark" />
-            </Button>
-          </Link>
           <Link href="/admin/analytics">
-            <Button variant="ghost" className="size-10 p-0">
-              <BarChart3 className="h-5 w-5 text-text-primary-light dark:text-text-primary-dark" />
+            <Button variant="ghost" size="icon">
+              <BarChart3 className="h-5 w-5" />
             </Button>
           </Link>
           <form action="/api/auth/logout" method="POST">
-            <Button variant="ghost" type="submit" className="size-10 p-0">
-              <LogOut className="h-5 w-5 text-text-primary-light dark:text-text-primary-dark" />
+            <Button variant="ghost" size="icon" type="submit">
+              <LogOut className="h-5 w-5" />
             </Button>
           </form>
         </div>
@@ -93,6 +82,8 @@ export default async function AdminDashboard() {
         {/* Collection List */}
         <CollectionList initialCollections={collections || []} />
       </main>
+
+      <AdminCategorySelector />
 
       {/* Floating Action Button */}
       <Link href="/admin/collections/new" className="fixed bottom-6 right-6 z-20">
