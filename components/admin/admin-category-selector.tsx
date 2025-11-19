@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Plus, Package, Shirt, Gamepad2, Smartphone, Grid3X3 } from 'lucide-react'
+import { Plus, Shirt, Gamepad2, Smartphone } from 'lucide-react'
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
@@ -9,8 +9,6 @@ export function AdminCategorySelector() {
   const [showCategories, setShowCategories] = useState(false)
 
   const categories = [
-    { name: "Collection", href: "/admin/collection", icon: Grid3X3, color: "bg-purple-500" },
-    { name: "Outfit", href: "/admin/outfit", icon: Package, color: "bg-blue-500" },
     { name: "Fashion", href: "/admin/fashion", icon: Shirt, color: "bg-pink-500" },
     { name: "Gadgets", href: "/admin/gadgets", icon: Smartphone, color: "bg-green-500" },
     { name: "Gaming", href: "/admin/gaming", icon: Gamepad2, color: "bg-red-500" },
@@ -26,7 +24,7 @@ export function AdminCategorySelector() {
           Choose a category to manage products
         </p>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 max-w-4xl mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto px-4">
           {categories.map((category) => (
             <Link
               key={category.name}
@@ -54,6 +52,7 @@ export function AdminCategorySelector() {
                   key={category.name}
                   href={`${category.href}/add`}
                   className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                  onClick={() => setShowCategories(false)}
                 >
                   <div className={`${category.color} p-2 rounded-lg text-white`}>
                     <category.icon className="h-5 w-5" />

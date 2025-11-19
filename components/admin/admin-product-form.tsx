@@ -6,7 +6,6 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { useRouter } from 'next/navigation'
 import { ImageCropper } from "./image-cropper"
-import { put } from "@vercel/blob"
 
 interface ProductFormProps {
   category: string
@@ -27,6 +26,7 @@ export function AdminProductForm({ category, initialData }: ProductFormProps) {
   const [price, setPrice] = useState(initialData?.price?.toString() || "")
   const [affiliateLink, setAffiliateLink] = useState(initialData?.affiliate_link || "")
   const [imageUrl, setImageUrl] = useState(initialData?.image_url || "")
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [tempImageUrl, setTempImageUrl] = useState<string | null>(null)
   const [showCropper, setShowCropper] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -34,6 +34,7 @@ export function AdminProductForm({ category, initialData }: ProductFormProps) {
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
+      setSelectedFile(file)
       const url = URL.createObjectURL(file)
       setTempImageUrl(url)
       setShowCropper(true)
@@ -43,14 +44,26 @@ export function AdminProductForm({ category, initialData }: ProductFormProps) {
   const handleCropComplete = async (croppedBlob: Blob) => {
     setLoading(true)
     try {
+      const formData = new FormData()
       const file = new File([croppedBlob], `product-${Date.now()}.jpg`, { type: "image/jpeg" })
-      const blob = await put(file.name, file, { access: "public" })
-      setImageUrl(blob.url)
+      formData.append("file", file)
+
+      const uploadRes = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      })
+
+      if (!uploadRes.ok) {
+        throw new Error("Upload failed")
+      }
+
+      const { url } = await uploadRes.json()
+      setImageUrl(url)
       setShowCropper(false)
       setTempImageUrl(null)
     } catch (error) {
-      console.error("Error uploading image:", error)
-      alert("Failed to upload image")
+      console.error("[v0] Error uploading image:", error)
+      alert("Failed to upload image. Please try again.")
     } finally {
       setLoading(false)
     }
@@ -58,8 +71,9 @@ export function AdminProductForm({ category, initialData }: ProductFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
     if (!brand || !title || !price || !imageUrl) {
-      alert("Please fill all fields and upload an image")
+      alert("Please fill all required fields and upload an image")
       return
     }
 
@@ -75,6 +89,8 @@ export function AdminProductForm({ category, initialData }: ProductFormProps) {
         is_visible: true,
       }
 
+      console.log("[v0] Submitting product:", payload)
+
       const res = initialData
         ? await fetch(`/api/admin/products/${initialData.id}`, {
             method: "PATCH",
@@ -87,15 +103,17 @@ export function AdminProductForm({ category, initialData }: ProductFormProps) {
             body: JSON.stringify(payload),
           })
 
-      if (res.ok) {
-        router.push(`/admin/${category}`)
-        router.refresh()
-      } else {
-        alert("Failed to save product")
+      if (!res.ok) {
+        const error = await res.json()
+        throw new Error(error.error || "Failed to save product")
       }
+
+      console.log("[v0] Product saved successfully")
+      router.push(`/admin/${category}`)
+      router.refresh()
     } catch (error) {
-      console.error("Error saving product:", error)
-      alert("Failed to save product")
+      console.error("[v0] Error saving product:", error)
+      alert(error instanceof Error ? error.message : "Failed to save product")
     } finally {
       setLoading(false)
     }
@@ -117,12 +135,13 @@ export function AdminProductForm({ category, initialData }: ProductFormProps) {
       <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 space-y-4">
         <div>
           <label className="block text-sm font-medium text-text-primary-light dark:text-text-primary-dark mb-2">
-            Brand Name
+            Brand Name *
           </label>
           <input
             type="text"
             value={brand}
             onChange={(e) => setBrand(e.target.value)}
+            required
             className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary"
             placeholder="e.g., TECHCORP"
           />
@@ -130,12 +149,13 @@ export function AdminProductForm({ category, initialData }: ProductFormProps) {
 
         <div>
           <label className="block text-sm font-medium text-text-primary-light dark:text-text-primary-dark mb-2">
-            Product Title
+            Product Title *
           </label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            required
             className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary"
             placeholder="e.g., Smartwatch Pro X"
           />
@@ -143,12 +163,13 @@ export function AdminProductForm({ category, initialData }: ProductFormProps) {
 
         <div>
           <label className="block text-sm font-medium text-text-primary-light dark:text-text-primary-dark mb-2">
-            Price (₹)
+            Price (₹) *
           </label>
           <input
             type="number"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
+            required
             className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary"
             placeholder="20699"
           />
@@ -169,7 +190,7 @@ export function AdminProductForm({ category, initialData }: ProductFormProps) {
 
         <div>
           <label className="block text-sm font-medium text-text-primary-light dark:text-text-primary-dark mb-2">
-            Product Image
+            Product Image *
           </label>
           {imageUrl ? (
             <div className="relative w-full aspect-square bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
@@ -177,13 +198,13 @@ export function AdminProductForm({ category, initialData }: ProductFormProps) {
               <button
                 type="button"
                 onClick={() => setImageUrl("")}
-                className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full hover:bg-red-600"
+                className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
           ) : (
-            <label className="flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:border-primary transition-colors">
+            <label className="flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:border-primary transition-colors bg-white dark:bg-gray-800">
               <Upload className="h-12 w-12 text-gray-400 mb-2" />
               <span className="text-sm text-gray-500">Click to upload image</span>
               <input type="file" accept="image/*" onChange={handleImageSelect} className="hidden" />
@@ -191,7 +212,11 @@ export function AdminProductForm({ category, initialData }: ProductFormProps) {
           )}
         </div>
 
-        <Button type="submit" disabled={loading} className="w-full h-12 bg-primary hover:bg-primary/90 text-white font-semibold">
+        <Button 
+          type="submit" 
+          disabled={loading || !brand || !title || !price || !imageUrl} 
+          className="w-full h-12 bg-primary hover:bg-primary/90 text-white font-semibold text-base disabled:opacity-50"
+        >
           {loading ? "Publishing..." : initialData ? "Update Product" : "Publish Product"}
         </Button>
       </form>
@@ -206,6 +231,7 @@ export function AdminProductForm({ category, initialData }: ProductFormProps) {
           onCancel={() => {
             setShowCropper(false)
             setTempImageUrl(null)
+            setSelectedFile(null)
           }}
         />
       )}
