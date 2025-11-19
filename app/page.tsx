@@ -3,9 +3,9 @@ import Link from "next/link"
 import { BottomNav } from "@/components/bottom-nav"
 import { FooterLinks } from "@/components/footer-links"
 import { CategoryHeader } from "@/components/category-header"
-import { SearchHeader } from "@/components/search-header"
 import { WishlistButton } from "@/components/wishlist-button"
 import { RatingButton } from "@/components/rating-button"
+import { AddToCartButton } from "@/components/add-to-cart-button"
 import { getProductUrl } from "@/lib/utils"
 import { Suspense } from "react"
 import { CollectionGridSkeleton } from "@/components/collection-skeleton"
@@ -79,12 +79,13 @@ async function ProductList() {
                     />
                     <RatingButton
                       itemId={product.id}
-                      itemType="category_product"
+                      itemType="product"
                       className="flex items-center justify-center h-8 w-8 text-text-primary-light dark:text-text-primary-dark hover:text-primary transition-colors"
                     />
-                    <button className="flex items-center justify-center h-8 w-8 text-primary dark:text-primary-light hover:text-primary/80 transition-colors">
-                      <span className="material-symbols-outlined text-xl">add_shopping_cart</span>
-                    </button>
+                    <AddToCartButton
+                      productId={product.id}
+                      className="flex items-center justify-center h-8 w-8 text-primary dark:text-primary-light hover:text-primary/80 transition-colors"
+                    />
                   </div>
                 </div>
               </div>

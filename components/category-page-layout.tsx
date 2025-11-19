@@ -2,9 +2,8 @@ import Link from "next/link"
 import { BottomNav } from "@/components/bottom-nav"
 import { WishlistButton } from "@/components/wishlist-button"
 import { RatingButton } from "@/components/rating-button"
-import { RatingDisplay } from "@/components/rating-display"
-import { LikeButton } from "@/components/like-button"
 import { getProductUrl } from "@/lib/utils"
+import { AddToCartButton } from "@/components/add-to-cart-button"
 
 interface CategoryPageLayoutProps {
   title: string
@@ -32,7 +31,7 @@ export function CategoryPageLayout({ title, products, error }: CategoryPageLayou
                       className="relative w-full bg-center bg-no-repeat aspect-square bg-cover" 
                       style={{ backgroundImage: `url("${product.image_url || "/placeholder.svg"}")` }}
                     >
-                      <div className="absolute bottom-2 left-2 flex items-center gap-1 bg-black/50 text-white rounded-full px-2 py-1 text-xs">
+                      <div className="absolute bottom-2 left-2 flex items-center gap-1 bg-black/50 text-white rounded-full px-2 py-1 text-xs backdrop-blur-sm">
                         <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                         <span className="font-semibold">4.1</span>
                       </div>
@@ -49,13 +48,21 @@ export function CategoryPageLayout({ title, products, error }: CategoryPageLayou
                     </div>
                     <div className="mt-auto pt-2 flex flex-col gap-2">
                       <div className="border-t border-black/10 dark:border-white/10 opacity-50"></div>
-                      <div className="flex items-center justify-between text-text-secondary-light dark:text-text-secondary-dark">
-                        <LikeButton itemId={product.id} itemType="category_product" className="flex items-center justify-center h-8 w-8 text-text-primary-light dark:text-text-primary-dark" />
+                      <div className="flex items-center justify-end text-text-secondary-light dark:text-text-secondary-dark -mt-1">
                         <div className="flex items-center gap-1">
-                          <RatingButton itemId={product.id} itemType="category_product" className="flex items-center justify-center h-8 w-8 text-text-primary-light dark:text-text-primary-dark" />
-                          <button className="flex items-center justify-center h-8 w-8 text-primary dark:text-primary-light">
-                            <span className="material-symbols-outlined text-xl">add_shopping_cart</span>
-                          </button>
+                          <WishlistButton
+                            productId={product.id}
+                            className="flex items-center justify-center h-8 w-8 text-text-primary-light dark:text-text-primary-dark hover:text-primary transition-colors"
+                          />
+                          <RatingButton
+                            itemId={product.id}
+                            itemType="product"
+                            className="flex items-center justify-center h-8 w-8 text-text-primary-light dark:text-text-primary-dark hover:text-primary transition-colors"
+                          />
+                          <AddToCartButton
+                            productId={product.id}
+                            className="flex items-center justify-center h-8 w-8 text-primary dark:text-primary-light hover:text-primary/80 transition-colors"
+                          />
                         </div>
                       </div>
                     </div>
