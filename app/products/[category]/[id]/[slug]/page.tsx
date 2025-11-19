@@ -38,9 +38,6 @@ export default async function ProductDetailPage({
             <span className="material-symbols-outlined text-2xl text-text-primary-light dark:text-text-primary-dark">arrow_back</span>
           </Link>
           <div className="flex items-center gap-2">
-            <Link href="/" className="flex items-center justify-center h-10 w-10">
-              <span className="material-symbols-outlined text-2xl text-text-secondary-light dark:text-text-secondary-dark">search</span>
-            </Link>
             <Link href="/wishlist" className="flex items-center justify-center h-10 w-10">
               <span className="material-symbols-outlined text-2xl text-text-secondary-light dark:text-text-secondary-dark">favorite_border</span>
             </Link>
@@ -86,9 +83,7 @@ export default async function ProductDetailPage({
                 <p className="text-lg font-bold uppercase text-text-secondary-light dark:text-text-secondary-dark tracking-wide">{product.brand || "BRAND"}</p>
                 <h1 className="text-xl font-display font-semibold text-text-primary-light dark:text-text-primary-dark">{product.title}</h1>
               </div>
-              <button className="flex items-center justify-center size-10 text-primary dark:text-primary-light">
-                <span className="material-symbols-outlined text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
-              </button>
+              <WishlistButton productId={product.id} />
             </div>
             <div className="flex items-center gap-2 mt-2">
               <div className="flex items-center gap-1 text-yellow-500">

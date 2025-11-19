@@ -7,25 +7,18 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
 export function SearchHeader() {
-  const pathname = usePathname()
-  const router = useRouter()
-  
-  const isCategoryPage = ['/fashion', '/gadgets', '/gaming', '/outfit'].includes(pathname)
-  const isProductPage = pathname.startsWith('/products/')
-  const isProfilePage = pathname.startsWith('/profile')
-  const isAdminPage = pathname.startsWith('/admin')
-  
-  if (isCategoryPage || isProductPage || isProfilePage || isAdminPage) return null
-
   const [searchQuery, setSearchQuery] = useState('')
   const [products, setProducts] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [showResults, setShowResults] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  
+  const pathname = usePathname()
+  const router = useRouter()
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 100)
+      setIsScrolled(window.scrollY > 50)
     }
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
@@ -60,10 +53,20 @@ export function SearchHeader() {
 
     return () => clearTimeout(debounce)
   }, [searchQuery])
+  
+  const isCategoryPage = ['/fashion', '/gadgets', '/gaming', '/outfit'].includes(pathname)
+  const isProductPage = pathname.startsWith('/products/')
+  const isProfilePage = pathname.startsWith('/profile')
+  const isAdminPage = pathname.startsWith('/admin')
+  
+  // Early return AFTER all hooks
+  if (isCategoryPage || isProductPage || isProfilePage || isAdminPage) {
+    return null
+  }
 
   return (
     <>
-      <div className={`relative z-30 bg-background-light dark:bg-background-dark transition-all duration-300 ${isScrolled ? 'h-0 overflow-hidden' : 'h-auto'}`}>
+      <div className={`relative z-30 bg-background-light dark:bg-background-dark transition-all duration-300 ${isScrolled ? 'h-0 overflow-hidden opacity-0' : 'h-auto opacity-100'}`}>
         <div className="flex items-center justify-between gap-4 p-4">
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center h-10 w-10 rounded-full bg-primary text-white">
@@ -74,7 +77,8 @@ export function SearchHeader() {
         </div>
       </div>
 
-      <div className="sticky top-0 z-30 bg-background-light dark:bg-background-dark shadow-sm px-4 pb-3 pt-3">
+      {/* Added z-50 and ensured solid background to prevent transparency issues */}
+      <div className="sticky top-0 z-50 bg-background-light dark:bg-background-dark shadow-sm px-4 pb-3 pt-3 border-b border-gray-100 dark:border-gray-800">
         <label className="flex flex-col min-w-40 h-12 w-full">
           <div className="flex w-full flex-1 items-stretch rounded-lg h-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
             <div className="text-text-secondary-light dark:text-text-secondary-dark flex items-center justify-center pl-4">
@@ -102,7 +106,7 @@ export function SearchHeader() {
       </div>
 
       {showResults && searchQuery && (
-        <div className="fixed top-[60px] left-0 right-0 z-20 bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-gray-700 shadow-lg max-h-[60vh] overflow-y-auto">
+        <div className="fixed top-[120px] left-0 right-0 z-20 bg-white dark:bg-slate-800 border-b border-gray-200 dark:border-gray-700 shadow-lg max-h-[60vh] overflow-y-auto">
           {isLoading ? (
             <div className="flex justify-center py-8">
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary" />

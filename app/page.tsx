@@ -18,7 +18,6 @@ async function ProductList() {
   let error = null
 
   try {
-    // Fetch products from category_products table to include fashion, gadgets, gaming
     const { data, error: fetchError } = await supabase
       .from("category_products")
       .select("*")
@@ -104,14 +103,14 @@ export default function HomePage() {
       
       <div className="px-4 mb-4">
         <div className="flex overflow-x-auto snap-x snap-mandatory [-ms-scrollbar-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden gap-3 pb-2">
-          <div className="relative flex-shrink-0 w-[85vw] snap-center">
+          <div className="relative flex-shrink-0 w-[85vw] md:w-[45vw] lg:w-[32vw] snap-center">
             <div className="relative flex h-full flex-col rounded-xl overflow-hidden shadow-lg">
-              <div className="w-full bg-center bg-no-repeat aspect-[16/7] bg-cover" style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuCIdhfHPQERaI5PPdd04MvO3BdaarPHqT_-vnTwWFitc1ULELL0MqX_YanzRip66kUgdtY8eJss3VZUuDKjPLEsjETIjTaXR5fJVNiIKFCmlOtMvyNxWSf2l8spgc3kao2y2L4fA31ww9sfvXOsV5jGIOf8lbwy243Lst38C1OunLL9E-h33TrGeGoHsPYBlZyI2x0oazLmKCvK7mU8Lt0cizPm43i7G9HjD5KgoWBZS54C7-kAmxbRIRASAKFnIxR0m_aRGnzYyk7I")' }}></div>
+              <div className="w-full bg-center bg-no-repeat aspect-[16/9] md:aspect-[21/9] lg:aspect-[32/9] bg-cover" style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuCIdhfHPQERaI5PPdd04MvO3BdaarPHqT_-vnTwWFitc1ULELL0MqX_YanzRip66kUgdtY8eJss3VZUuDKjPLEsjETIjTaXR5fJVNiIKFCmlOtMvyNxWSf2l8spgc3kao2y2L4fA31ww9sfvXOsV5jGIOf8lbwy243Lst38C1OunLL9E-h33TrGeGoHsPYBlZyI2x0oazLmKCvK7mU8Lt0cizPm43i7G9HjD5KgoWBZS54C7-kAmxbRIRASAKFnIxR0m_aRGnzYyk7I")' }}></div>
             </div>
           </div>
-          <div className="relative flex-shrink-0 w-[85vw] snap-center">
+          <div className="relative flex-shrink-0 w-[85vw] md:w-[45vw] lg:w-[32vw] snap-center">
             <div className="relative flex h-full flex-col rounded-xl overflow-hidden shadow-lg">
-              <div className="w-full bg-center bg-no-repeat aspect-[16/7] bg-cover" style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuCzQ5vrlhemfKhhO6mDwODsCnXvTOg3F5EK6vahMsrMHj0_3hsGucRUiMOJUbp_AWaoAoGTi_2x_dEB7_3CUOy3uSGn9BFOyZWmxvFjfSpem30OUV9mDjjdqyozKLuZlI0aySANfs-0HGGAFKln5cI0HVoG_R7385SuCJuYvwONIgniXdgFOSQtBKNkrPUozAsoc_Aha9NhzpS5CG8Z9k-RjqQ6jpUw9eZCde83W4kVPDpV6MKzHar5Kvxhya8CdrsbJXh9VqKbkROI")' }}></div>
+              <div className="w-full bg-center bg-no-repeat aspect-[16/9] md:aspect-[21/9] lg:aspect-[32/9] bg-cover" style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuCzQ5vrlhemfKhhO6mDwODsCnXvTOg3F5EK6vahMsrMHj0_3hsGucRUiMOJUbp_AWaoAoGTi_2x_dEB7_3CUOy3uSGn9BFOyZWmxvFjfSpem30OUV9mDjjdqyozKLuZlI0aySANfs-0HGGAFKln5cI0HVoG_R7385SuCJuYvwONIgniXdgFOSQtBKNkrPUozAsoc_Aha9NhzpS5CG8Z9k-RjqQ6jpUw9eZCde83W4kVPDpV6MKzHar5Kvxhya8CdrsbJXh9VqKbkROI")' }}></div>
             </div>
           </div>
         </div>

@@ -267,30 +267,42 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center pb-24">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#F97316]"></div>
+      <div className="min-h-screen bg-background-light dark:bg-background-dark flex items-center justify-center pb-24">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
         <BottomNav />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+    <div className="min-h-screen bg-background-light dark:bg-background-dark">
+      {/* Added Profile Header */}
+      <header className="sticky top-0 z-30 bg-background-light dark:bg-background-dark shadow-sm">
+        <div className="flex items-center justify-between gap-4 p-4">
+          <div className="flex items-center gap-3">
+            <Link className="flex items-center justify-center h-10 w-10" href="/">
+              <span className="material-symbols-outlined text-3xl text-text-primary-light dark:text-text-primary-dark">arrow_back</span>
+            </Link>
+            <h1 className="font-display text-2xl font-bold text-text-primary-light dark:text-text-primary-dark">Profile</h1>
+          </div>
+        </div>
+      </header>
+
       <div className="w-full px-4 sm:px-6 lg:px-8 py-6 pb-32">
         {user ? (
           <div className="space-y-6">
-            <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 space-y-6">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 space-y-6 border border-gray-100 dark:border-gray-700">
               <div className="flex justify-between items-start">
                 <div className="flex items-center gap-4">
                   <button
                     onClick={() => setShowEditProfile(true)}
                     className="relative group"
                   >
-                    <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-[#F97316]">
+                    <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-primary">
                       {profileImage ? (
                         <img src={profileImage || "/placeholder.svg"} alt="Profile" className="w-full h-full object-cover" />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-[#F97316] to-[#EA580C] flex items-center justify-center text-white text-3xl font-bold">
+                        <div className="w-full h-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center text-white text-3xl font-bold">
                           {user.displayName?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase() || "U"}
                         </div>
                       )}
@@ -300,7 +312,7 @@ export default function ProfilePage() {
                     </div>
                   </button>
                   <div>
-                    <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">
+                    <h2 className="text-2xl font-bold text-text-primary-light dark:text-text-primary-dark">
                       {user.displayName || "User"}
                     </h2>
                     {user.emailVerified && (
@@ -315,26 +327,26 @@ export default function ProfilePage() {
                 <div className="relative">
                   <button
                     onClick={() => setShowMenu(!showMenu)}
-                    className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition-colors"
+                    className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
                   >
-                    <span className="material-symbols-outlined text-slate-600 dark:text-slate-400">more_vert</span>
+                    <span className="material-symbols-outlined text-text-secondary-light dark:text-text-secondary-dark">more_vert</span>
                   </button>
                   
                   {showMenu && (
-                    <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xl z-50 overflow-hidden">
-                      <div className="p-4 border-b border-slate-200 dark:border-slate-700 space-y-2">
+                    <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-xl z-50 overflow-hidden">
+                      <div className="p-4 border-b border-gray-200 dark:border-gray-700 space-y-2">
                         <div className="flex items-center gap-2 text-sm">
-                          <span className="material-symbols-outlined text-[#F97316]">email</span>
+                          <span className="material-symbols-outlined text-primary">email</span>
                           <div>
-                            <p className="text-xs text-slate-500 dark:text-slate-400">Email</p>
-                            <p className="font-medium text-slate-800 dark:text-slate-100">{user.email}</p>
+                            <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark">Email</p>
+                            <p className="font-medium text-text-primary-light dark:text-text-primary-dark">{user.email}</p>
                           </div>
                         </div>
                         <div className="flex items-center gap-2 text-sm">
-                          <span className="material-symbols-outlined text-[#F97316]">calendar_today</span>
+                          <span className="material-symbols-outlined text-primary">calendar_today</span>
                           <div>
-                            <p className="text-xs text-slate-500 dark:text-slate-400">Member Since</p>
-                            <p className="font-medium text-slate-800 dark:text-slate-100">
+                            <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark">Member Since</p>
+                            <p className="font-medium text-text-primary-light dark:text-text-primary-dark">
                               {user.metadata.creationTime ? new Date(user.metadata.creationTime).toLocaleDateString() : "N/A"}
                             </p>
                           </div>
@@ -343,7 +355,7 @@ export default function ProfilePage() {
                       
                       <Link
                         href="/admin/login"
-                        className="w-full text-left px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-2 text-purple-600 dark:text-purple-400 border-b border-slate-200 dark:border-slate-700"
+                        className="w-full text-left px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2 text-purple-600 dark:text-purple-400 border-b border-gray-200 dark:border-gray-700"
                         onClick={() => setShowMenu(false)}
                       >
                         <span className="material-symbols-outlined text-base">admin_panel_settings</span>
@@ -352,7 +364,7 @@ export default function ProfilePage() {
                       
                       <button
                         onClick={handleSignOut}
-                        className="w-full text-left px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-2 text-red-600 dark:text-red-400"
+                        className="w-full text-left px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2 text-red-600 dark:text-red-400"
                       >
                         <span className="material-symbols-outlined text-base">logout</span>
                         <span className="text-sm font-medium">Sign Out</span>
@@ -365,39 +377,39 @@ export default function ProfilePage() {
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <Link href="/wishlist" className="p-4 bg-gradient-to-br from-pink-50 to-red-50 dark:from-pink-900/20 dark:to-red-900/20 rounded-xl hover:scale-105 transition-transform">
                   <span className="material-symbols-outlined text-red-500 text-3xl">favorite</span>
-                  <p className="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-2">{wishlistCount}</p>
-                  <p className="text-xs text-slate-600 dark:text-slate-400">Saved Products</p>
+                  <p className="text-2xl font-bold text-text-primary-light dark:text-text-primary-dark mt-2">{wishlistCount}</p>
+                  <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark">Saved Products</p>
                 </Link>
                 
                 <Link href="/profile/liked" className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl hover:scale-105 transition-transform">
                   <span className="material-symbols-outlined text-blue-500 text-3xl">thumb_up</span>
-                  <p className="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-2">{likedCount}</p>
-                  <p className="text-xs text-slate-600 dark:text-slate-400">Liked Products</p>
+                  <p className="text-2xl font-bold text-text-primary-light dark:text-text-primary-dark mt-2">{likedCount}</p>
+                  <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark">Liked Products</p>
                 </Link>
 
                 <div className="p-4 bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-xl">
                   <span className="material-symbols-outlined text-yellow-600 text-3xl">star</span>
-                  <p className="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-2">{userRatings.length}</p>
-                  <p className="text-xs text-slate-600 dark:text-slate-400">Reviews Given</p>
+                  <p className="text-2xl font-bold text-text-primary-light dark:text-text-primary-dark mt-2">{userRatings.length}</p>
+                  <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark">Reviews Given</p>
                 </div>
 
                 <Link href="/profile/requests" className="p-4 bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 rounded-xl hover:scale-105 transition-transform">
                   <span className="material-symbols-outlined text-purple-500 text-3xl">inventory_2</span>
-                  <p className="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-2">{requestsCount}</p>
-                  <p className="text-xs text-slate-600 dark:text-slate-400">Product Requests</p>
+                  <p className="text-2xl font-bold text-text-primary-light dark:text-text-primary-dark mt-2">{requestsCount}</p>
+                  <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark">Product Requests</p>
                 </Link>
               </div>
             </div>
 
             {userRatings.length > 0 && (
-              <div className="bg-white dark:bg-slate-800 rounded-2xl p-6">
-                <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700">
+                <h3 className="text-lg font-bold text-text-primary-light dark:text-text-primary-dark mb-4 flex items-center gap-2">
                   <span className="material-symbols-outlined">rate_review</span>
                   My Reviews
                 </h3>
                 <div className="space-y-3 max-h-96 overflow-y-auto">
                   {userRatings.map((rating) => (
-                    <div key={rating.id} className="p-4 bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 relative group">
+                    <div key={rating.id} className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 relative group">
                       <button
                         onClick={() => deleteRating(rating.id)}
                         className="absolute top-2 right-2 p-1.5 bg-red-100 hover:bg-red-200 dark:bg-red-900/30 dark:hover:bg-red-900/50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
@@ -419,12 +431,12 @@ export default function ProfilePage() {
                             </span>
                           ))}
                         </div>
-                        <span className="text-xs text-slate-500 dark:text-slate-400">
+                        <span className="text-xs text-text-secondary-light dark:text-text-secondary-dark">
                           {new Date(rating.created_at).toLocaleDateString()}
                         </span>
                       </div>
                       {rating.comment && (
-                        <p className="text-sm text-slate-700 dark:text-slate-300 pr-8">{rating.comment}</p>
+                        <p className="text-sm text-text-primary-light dark:text-text-primary-dark pr-8">{rating.comment}</p>
                       )}
                     </div>
                   ))}
@@ -436,12 +448,12 @@ export default function ProfilePage() {
           <>
             {showAuthModal && (
               <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 animate-in fade-in duration-200">
-                <div className="bg-white dark:bg-slate-800 rounded-t-3xl sm:rounded-3xl w-full sm:max-w-md p-6 space-y-4 animate-in slide-in-from-bottom sm:slide-in-from-bottom-0 duration-300">
+                <div className="bg-white dark:bg-gray-800 rounded-t-3xl sm:rounded-3xl w-full sm:max-w-md p-6 space-y-4 animate-in slide-in-from-bottom sm:slide-in-from-bottom-0 duration-300">
                   <div className="flex justify-between items-center">
-                    <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">Sign in to continue</h2>
+                    <h2 className="text-xl font-bold text-text-primary-light dark:text-text-primary-dark">Sign in to continue</h2>
                     <button
                       onClick={() => setShowAuthModal(false)}
-                      className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition-colors"
+                      className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
                     >
                       <span className="material-symbols-outlined">close</span>
                     </button>
@@ -455,7 +467,7 @@ export default function ProfilePage() {
 
                   <button
                     onClick={handleGoogleSignIn}
-                    className="w-full bg-white dark:bg-slate-700 border-2 border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-3"
+                    className="w-full bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-3"
                   >
                     <svg className="w-5 h-5" viewBox="0 0 24 24">
                       <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -463,15 +475,15 @@ export default function ProfilePage() {
                       <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66 2.84.81-.62z"/>
                       <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                     </svg>
-                    <span className="text-slate-700 dark:text-slate-200">Continue with Google</span>
+                    <span className="text-text-primary-light dark:text-text-primary-dark">Continue with Google</span>
                   </button>
 
                   <div className="relative">
                     <div className="absolute inset-0 flex items-center">
-                      <div className="w-full border-t border-slate-300 dark:border-slate-600"></div>
+                      <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
                     </div>
                     <div className="relative flex justify-center text-sm">
-                      <span className="px-2 bg-white dark:bg-slate-800 text-slate-500">Or use email</span>
+                      <span className="px-2 bg-white dark:bg-gray-800 text-text-secondary-light dark:text-text-secondary-dark">Or use email</span>
                     </div>
                   </div>
 
@@ -481,7 +493,7 @@ export default function ProfilePage() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
-                      className="w-full px-4 py-3 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#F97316]"
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary"
                       placeholder="Email"
                     />
 
@@ -491,13 +503,13 @@ export default function ProfilePage() {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       minLength={6}
-                      className="w-full px-4 py-3 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#F97316]"
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary"
                       placeholder="Password"
                     />
 
                     <button
                       type="submit"
-                      className="w-full bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:from-[#EA580C] hover:to-[#F97316] text-white py-3 rounded-lg font-medium transition-all"
+                      className="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-lg font-medium transition-all"
                     >
                       {isSignUp ? "Sign Up" : "Sign In"}
                     </button>
@@ -508,7 +520,7 @@ export default function ProfilePage() {
                       setIsSignUp(!isSignUp)
                       setError("")
                     }}
-                    className="text-[#F97316] hover:underline text-sm font-medium w-full text-center"
+                    className="text-primary hover:underline text-sm font-medium w-full text-center"
                   >
                     {isSignUp ? "Already have an account? Sign In" : "Don't have an account? Sign Up"}
                   </button>
@@ -516,13 +528,13 @@ export default function ProfilePage() {
               </div>
             )}
             
-            <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 text-center space-y-4">
-              <span className="material-symbols-outlined text-[#F97316] text-6xl">person</span>
-              <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100">Profile</h2>
-              <p className="text-slate-600 dark:text-slate-400">Sign in to view your profile</p>
+            <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 text-center space-y-4 border border-gray-100 dark:border-gray-700">
+              <span className="material-symbols-outlined text-primary text-6xl">person</span>
+              <h2 className="text-2xl font-bold text-text-primary-light dark:text-text-primary-dark">Profile</h2>
+              <p className="text-text-secondary-light dark:text-text-secondary-dark">Sign in to view your profile</p>
               <button
                 onClick={() => setShowAuthModal(true)}
-                className="w-full bg-gradient-to-r from-[#F97316] to-[#EA580C] text-white py-3 rounded-lg font-medium"
+                className="w-full bg-primary text-white py-3 rounded-lg font-medium"
               >
                 Sign In
               </button>
@@ -533,12 +545,12 @@ export default function ProfilePage() {
 
       {showEditProfile && user && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-slate-800 rounded-t-3xl sm:rounded-3xl w-full sm:max-w-md p-6 space-y-4 animate-in slide-in-from-bottom sm:slide-in-from-bottom-0 duration-300">
+          <div className="bg-white dark:bg-gray-800 rounded-t-3xl sm:rounded-3xl w-full sm:max-w-md p-6 space-y-4 animate-in slide-in-from-bottom sm:slide-in-from-bottom-0 duration-300">
             <div className="flex justify-between items-center">
-              <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">Edit Profile</h2>
+              <h2 className="text-xl font-bold text-text-primary-light dark:text-text-primary-dark">Edit Profile</h2>
               <button
                 onClick={() => setShowEditProfile(false)}
-                className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition-colors"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
               >
                 <span className="material-symbols-outlined">close</span>
               </button>
@@ -546,16 +558,16 @@ export default function ProfilePage() {
 
             <div className="space-y-4">
               <div className="flex flex-col items-center gap-3">
-                <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-[#F97316]">
+                <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-primary">
                   {profileImage ? (
                     <img src={profileImage || "/placeholder.svg"} alt="Profile" className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-[#F97316] to-[#EA580C] flex items-center justify-center text-white text-3xl font-bold">
+                    <div className="w-full h-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center text-white text-3xl font-bold">
                       {user.displayName?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase() || "U"}
                     </div>
                   )}
                 </div>
-                <label className="cursor-pointer bg-[#F97316] hover:bg-[#EA580C] text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                <label className="cursor-pointer bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
                   {uploading ? "Uploading..." : "Change Photo"}
                   <input
                     type="file"
@@ -568,21 +580,21 @@ export default function ProfilePage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                <label className="block text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark mb-2">
                   Display Name
                 </label>
                 <input
                   type="text"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#F97316]"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="Enter your name"
                 />
               </div>
 
               <button
                 onClick={handleUpdateProfile}
-                className="w-full bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:from-[#EA580C] hover:to-[#F97316] text-white py-3 rounded-lg font-medium transition-all"
+                className="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-lg font-medium transition-all"
               >
                 Save Changes
               </button>
