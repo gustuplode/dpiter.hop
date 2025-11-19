@@ -16,14 +16,14 @@ export default async function OutfitPage() {
     .from("collections")
     .select(`
       *,
-      products:collection_products(count)
+      products (count)
     `)
     .eq("status", "published")
     .order("created_at", { ascending: false})
 
   const collectionsWithCount = collections?.map(col => ({
     ...col,
-    product_count: col.products?.[0]?.count || 0
+    product_count: col.products?.[0]?.count ?? col.product_count ?? 0
   }))
 
   return (

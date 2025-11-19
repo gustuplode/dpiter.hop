@@ -39,7 +39,7 @@ export function CategoryHeader({
     },
     {
       name: 'Outfit',
-      path: '/',
+      path: '/outfit',
       icon: 'apparel',
     },
   ]

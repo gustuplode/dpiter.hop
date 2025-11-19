@@ -33,7 +33,7 @@ export function RatingButton({ itemId, itemType, className = "" }: RatingButtonP
         .eq("item_id", itemId)
         .eq("item_type", itemType)
         .eq("user_id", userId)
-        .single()
+        .maybeSingle()
 
       if (userRatingData) {
         setUserRating(userRatingData.rating)
