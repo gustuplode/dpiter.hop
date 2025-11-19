@@ -3,6 +3,11 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Add smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
 :root {
   --background: #FEFBF9;
   --foreground: #3C2A21;
@@ -183,5 +188,11 @@
     transform: translateZ(0);
     backface-visibility: hidden;
     perspective: 1000px;
+  }
+  
+  /* Optimize scroll performance */
+  .smooth-scroll {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
   }
 }

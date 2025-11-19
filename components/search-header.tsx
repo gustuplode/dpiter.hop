@@ -55,7 +55,8 @@ export function SearchHeader() {
   }, [searchQuery])
   
   const isAdminPage = pathname.startsWith('/admin')
-  
+  const showBackButton = pathname !== '/'
+
   if (isAdminPage) {
     return null
   }
@@ -63,41 +64,52 @@ export function SearchHeader() {
   return (
     <>
       <div className={`relative z-30 bg-background-light dark:bg-background-dark transition-all duration-300 ${isScrolled && pathname === '/' ? 'h-0 overflow-hidden opacity-0' : 'h-auto opacity-100'}`}>
-        <div className="flex items-center justify-between gap-4 px-4 py-2">
+        <div className="flex items-center justify-between gap-4 px-4 py-3">
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center h-10 w-10 rounded-full bg-primary text-white">
-              <span className="font-display font-bold text-2xl">D</span>
+            <div className="flex items-center justify-center h-8 w-8 rounded-full bg-primary text-white">
+              <span className="font-display font-bold text-xl">D</span>
             </div>
-            <h1 className="font-display text-2xl font-bold text-text-primary-light dark:text-text-primary-dark">Dpiter</h1>
+            <h1 className="font-display text-xl font-bold text-text-primary-light dark:text-text-primary-dark">Dpiter</h1>
           </div>
         </div>
       </div>
 
-      <div className="sticky top-0 z-50 bg-background-light dark:bg-background-dark shadow-sm px-4 py-2 border-b border-gray-100 dark:border-gray-800">
-        <label className="flex flex-col min-w-40 h-12 w-full">
-          <div className="flex w-full flex-1 items-stretch rounded-lg h-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
-            <div className="text-text-secondary-light dark:text-text-secondary-dark flex items-center justify-center pl-4">
-              <span className="material-symbols-outlined">search</span>
+      <div className="sticky top-0 z-50 bg-background-light dark:bg-background-dark shadow-sm px-4 py-3 border-b border-gray-100 dark:border-gray-800">
+        <div className="flex items-center gap-3">
+          {showBackButton && (
+            <button 
+              onClick={() => router.back()}
+              className="flex items-center justify-center h-10 w-10 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
+            >
+              <span className="material-symbols-outlined text-2xl text-text-primary-light dark:text-text-primary-dark">arrow_back</span>
+            </button>
+          )}
+          
+          <label className="flex flex-col min-w-40 h-11 w-full">
+            <div className="flex w-full flex-1 items-stretch rounded-lg h-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
+              <div className="text-text-secondary-light dark:text-text-secondary-dark flex items-center justify-center pl-4">
+                <span className="material-symbols-outlined text-xl">search</span>
+              </div>
+              <input
+                className="flex w-full min-w-0 flex-1 resize-none overflow-hidden text-text-primary-light dark:text-white focus:outline-0 focus:ring-0 border-none bg-transparent h-full placeholder:text-text-secondary-light dark:placeholder:text-text-secondary-dark px-2 text-base font-normal leading-normal"
+                placeholder="Search for products..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => setShowResults(true)}
+                onBlur={() => setTimeout(() => setShowResults(false), 200)}
+              />
+              <div className="flex items-center pr-2 gap-1">
+                <button className="flex items-center justify-center rounded-md h-8 w-8 bg-transparent text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                  <span className="material-symbols-outlined text-xl">mic</span>
+                </button>
+                <div className="h-5 w-px bg-gray-200 dark:bg-gray-700"></div>
+                <button className="flex items-center justify-center rounded-md h-8 w-8 bg-transparent text-text-secondary-light dark:text-text-secondary-dark hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                  <span className="material-symbols-outlined text-xl">photo_camera</span>
+                </button>
+              </div>
             </div>
-            <input
-              className="flex w-full min-w-0 flex-1 resize-none overflow-hidden text-text-primary-light dark:text-white focus:outline-0 focus:ring-0 border-none bg-transparent h-full placeholder:text-text-secondary-light dark:placeholder:text-text-secondary-dark px-2 text-base font-normal leading-normal"
-              placeholder="Search for products..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onFocus={() => setShowResults(true)}
-              onBlur={() => setTimeout(() => setShowResults(false), 200)}
-            />
-            <div className="flex items-center pr-2 gap-1">
-              <button className="flex items-center justify-center rounded-md h-9 w-9 bg-transparent text-text-secondary-light dark:text-text-secondary-dark">
-                <span className="material-symbols-outlined text-2xl">mic</span>
-              </button>
-              <div className="h-6 w-px bg-gray-200 dark:bg-gray-700"></div>
-              <button className="flex items-center justify-center rounded-md h-9 w-9 bg-transparent text-text-secondary-light dark:text-text-secondary-dark">
-                <span className="material-symbols-outlined text-2xl">photo_camera</span>
-              </button>
-            </div>
-          </div>
-        </label>
+          </label>
+        </div>
       </div>
 
       {showResults && searchQuery && (

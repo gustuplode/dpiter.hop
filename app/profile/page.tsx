@@ -278,7 +278,7 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-background-light dark:bg-background-dark">
       {/* Using main SearchHeader from layout */}
-      <SearchHeader />
+      {/* <SearchHeader /> */}
 
       <div className="w-full px-4 sm:px-6 lg:px-8 py-6 pb-32">
         {user ? (

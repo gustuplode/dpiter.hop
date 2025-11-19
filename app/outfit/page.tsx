@@ -1,8 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
 import { BottomNav } from "@/components/bottom-nav"
-import { LikeButton } from "@/components/like-button"
-import { RatingButton } from "@/components/rating-button"
+import { SearchHeader } from "@/components/search-header" // Added import for SearchHeader
 
 export const metadata = {
   title: "Outfit - Dpiter",
@@ -28,29 +27,9 @@ export default async function OutfitPage() {
 
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden bg-background-light dark:bg-background-dark">
-      <header className="sticky top-0 z-30 bg-background-light dark:bg-background-dark shadow-sm">
-        <div className="flex items-center justify-between gap-4 p-4">
-          <div className="flex items-center gap-3">
-            <Link className="flex items-center justify-center h-10 w-10" href="/">
-              <span className="material-symbols-outlined text-3xl text-text-primary-light dark:text-text-primary-dark">arrow_back</span>
-            </Link>
-            <h1 className="font-display text-2xl font-bold text-text-primary-light dark:text-text-primary-dark">Outfit</h1>
-          </div>
-          <div className="flex items-center gap-2">
-            <button className="flex items-center justify-center rounded-full h-10 w-10">
-              <span className="material-symbols-outlined text-2xl text-text-secondary-light dark:text-text-secondary-dark">search</span>
-            </button>
-            <button className="flex items-center justify-center rounded-full h-10 w-10">
-              <span className="material-symbols-outlined text-2xl text-text-secondary-light dark:text-text-secondary-dark">favorite_border</span>
-            </button>
-            <button className="flex items-center justify-center rounded-full h-10 w-10">
-              <span className="material-symbols-outlined text-2xl text-text-secondary-light dark:text-text-secondary-dark">shopping_bag</span>
-            </button>
-          </div>
-        </div>
-      </header>
+      <SearchHeader /> {/* Replaced custom header with SearchHeader */}
       
-      <main className="flex-1 pb-20">
+      <main className="flex-1 pb-20 pt-2">
         <div className="flex flex-col">
           {collectionsWithCount && collectionsWithCount.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
