@@ -1,11 +1,15 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Poppins } from 'next/font/google'
+import { Poppins, Libre_Baskerville, Plus_Jakarta_Sans } from 'next/font/google'
 import { Analytics } from "@vercel/analytics/next"
+import { Suspense } from "react"
 import "./globals.css"
 import { LoadingBar } from "@/components/loading-bar"
+import { SearchHeader } from "@/components/search-header"
 
-const poppins = Poppins({ subsets: ["latin"], weight: ["400", "500", "600", "700"] })
+const poppins = Poppins({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: '--font-poppins' })
+const libreBaskerville = Libre_Baskerville({ subsets: ["latin"], weight: ["400", "700"], variable: '--font-libre' })
+const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: '--font-jakarta' })
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://dpiter.shop"),
@@ -321,10 +325,37 @@ export default function RootLayout({
             font-display: swap;
             size-adjust: 100%;
           }
+          @font-face {
+            font-family: 'Libre Baskerville';
+            font-display: swap;
+            size-adjust: 100%;
+          }
+          @font-face {
+            font-family: 'Plus Jakarta Sans';
+            font-display: swap;
+            size-adjust: 100%;
+          }
         `}</style>
       </head>
-      <body className={`${poppins.className} font-display antialiased`}>
+      <body className={`${poppins.variable} ${libreBaskerville.variable} ${plusJakartaSans.variable} font-sans antialiased bg-background text-foreground`}>
         <LoadingBar />
+        <Suspense fallback={
+          <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-sm shadow-sm">
+            <div className="flex items-center justify-between gap-4 p-4">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center justify-center h-10 w-10 rounded-full bg-primary text-white">
+                  <span className="font-display font-bold text-2xl">D</span>
+                </div>
+                <h1 className="font-display text-2xl font-bold text-foreground">Dpiter</h1>
+              </div>
+            </div>
+            <div className="px-4 pb-4">
+              <div className="flex w-full flex-1 items-stretch rounded-lg h-12 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm animate-pulse" />
+            </div>
+          </header>
+        }>
+          <SearchHeader />
+        </Suspense>
         {children}
         <Analytics />
       </body>

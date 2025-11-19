@@ -54,43 +54,43 @@ export default async function AllProductsPage() {
           allProductsCount={allCount}
         />
         
-        <div className="container mx-auto max-w-7xl px-2 py-6 pb-32">
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">All Products</h1>
+        <div className="container mx-auto max-w-7xl px-1.5 py-2 pb-32">
+          <h1 className="text-lg font-bold text-slate-900 dark:text-white mb-3 px-1">All Products</h1>
           
           {products && products.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-[5px] md:gap-x-6 gap-y-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-x-1 md:gap-x-2 gap-y-2 md:gap-y-3">
               {products.map((product) => (
                 <div key={product.id} className="group">
                   <Link href={getProductUrl(product.id, product.title, product.category)} className="block">
-                    <div className="relative overflow-hidden rounded-lg bg-white dark:bg-slate-800 shadow-sm aspect-[3/4]">
+                    <div className="relative overflow-hidden rounded-md bg-white dark:bg-slate-800 shadow-sm aspect-[3/4]">
                       <img
                         src={product.image_url || "/placeholder.svg"}
                         alt={product.title}
                         className="w-full h-full object-cover"
                         loading="lazy"
                       />
-                      <div className="absolute top-4 right-4 flex flex-col gap-0.5">
+                      <div className="absolute top-1.5 right-1.5 flex flex-col gap-0.5">
                         <RatingButton itemId={product.id} itemType="category_product" />
                         <WishlistButton
                           productId={product.id}
                           type="product"
-                          className="h-8 w-8 flex items-center justify-center rounded-full bg-white/90 dark:bg-slate-700/90 backdrop-blur-sm hover:scale-110 transition-transform"
+                          className="h-6 w-6 flex items-center justify-center rounded-full bg-white/90 dark:bg-slate-700/90 backdrop-blur-sm hover:scale-110 transition-transform"
                         />
                         <LikeButton itemId={product.id} itemType="category_product" />
                       </div>
-                      <div className="absolute bottom-2 right-2">
+                      <div className="absolute bottom-1.5 right-1.5">
                         <RatingDisplay itemId={product.id} itemType="category_product" />
                       </div>
-                      <div className="absolute top-2 left-2">
-                        <span className="inline-flex items-center rounded-md bg-blue-500/90 px-2 py-0.5 text-[9px] font-medium text-white capitalize">
+                      <div className="absolute top-1.5 left-1.5">
+                        <span className="inline-flex items-center rounded-md bg-blue-500/90 px-1.5 py-0.5 text-[9px] font-medium text-white capitalize">
                           {product.category}
                         </span>
                       </div>
                     </div>
-                    <div className="pt-2">
-                      <h3 className="text-sm font-semibold text-slate-900 dark:text-white">{product.brand}</h3>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">{product.title}</p>
-                      <p className="text-sm font-bold text-slate-900 dark:text-white mt-1">₹{product.price}</p>
+                    <div className="pt-1.5 px-0.5">
+                      <h3 className="text-xs font-semibold text-slate-900 dark:text-white truncate">{product.brand}</h3>
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">{product.title}</p>
+                      <p className="text-xs font-bold text-slate-900 dark:text-white mt-0.5">₹{product.price}</p>
                     </div>
                   </Link>
                 </div>

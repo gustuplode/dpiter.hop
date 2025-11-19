@@ -34,7 +34,7 @@ export function CollectionContent({
   const productCount = products.length
 
   return (
-    <div className="container mx-auto max-w-7xl px-4 pt-6 pb-32">
+    <div className="container mx-auto max-w-7xl px-4 pt-2 pb-32">
       <main>
         <div className="mb-6">
           <div className="flex items-center justify-between mb-4">
@@ -65,52 +65,58 @@ export function CollectionContent({
         </div>
 
         {products.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-[5px] md:gap-x-6 gap-y-4">
-            {products.map((product) => (
-              <div key={product.id} className="group">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+            {products.map((product, index) => (
+              <div key={product.id} className={`flex flex-col bg-white dark:bg-gray-800 overflow-hidden border border-black/10 dark:border-white/10 ${index % 2 !== 0 ? 'border-l-0' : ''} ${index >= 2 ? 'border-t-0' : ''}`}>
                 <Link
                   href={getCollectionProductUrl(collection.id, product.id, product.title)}
-                  className="block"
+                  className="block flex-1 flex flex-col"
                 >
-                  <div className="relative overflow-hidden rounded-lg bg-white dark:bg-slate-800 shadow-sm aspect-[3/4]">
+                  <div className="relative w-full bg-center bg-no-repeat aspect-square bg-cover">
                     <img
-                      src={product.image_url || "/placeholder.svg?height=400&width=300"}
+                      src={product.image_url || "/placeholder.svg?height=400&width=400"}
                       alt={product.title}
                       className="w-full h-full object-cover"
                       loading="lazy"
                     />
-                    <div 
-                      className="absolute top-2 right-2 flex flex-col gap-0.5"
-                      onClick={(e) => e.preventDefault()}
-                    >
-                      <RatingButton
-                        itemId={product.id}
-                        itemType="product"
-                        className="h-7 w-7 flex items-center justify-center rounded-full bg-white/70 dark:bg-slate-700/70 backdrop-blur-sm"
-                      />
-                      <WishlistButton
-                        productId={product.id}
-                        className="h-7 w-7 flex items-center justify-center rounded-full bg-white/70 dark:bg-slate-700/70 backdrop-blur-sm"
-                      />
-                      <LikeButton
-                        itemId={product.id}
-                        itemType="product"
-                        className="h-7 w-7 flex items-center justify-center rounded-full bg-white/70 dark:bg-slate-700/70 backdrop-blur-sm"
-                      />
-                    </div>
-                    <div className="absolute bottom-2 right-2">
-                      <RatingDisplay
-                        itemId={product.id}
-                        itemType="product"
-                      />
+                    <div className="absolute bottom-2 left-2 flex items-center gap-1 bg-black/50 text-white rounded-full px-2 py-1 text-xs backdrop-blur-sm">
+                      <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                      <span className="font-semibold">4.1</span>
                     </div>
                   </div>
-                  <div className="pt-2">
-                    <h3 className="text-sm font-semibold text-slate-900 dark:text-white truncate">{product.title}</h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">{product.brand}</p>
-                    <p className="text-sm font-bold text-slate-900 dark:text-white mt-1">
-                      <CurrencyDisplay price={product.price} />
-                    </p>
+                  
+                  <div className="p-3 flex flex-col gap-2 flex-1">
+                    <p className="text-sm font-bold uppercase text-muted-foreground tracking-wide">{product.brand || 'Brand'}</p>
+                    <p className="text-foreground text-xs font-semibold leading-snug truncate">{product.title}</p>
+                    
+                    <div className="flex items-center gap-2 mt-1">
+                      <p className="text-foreground text-base font-bold">
+                        <CurrencyDisplay price={product.price} />
+                      </p>
+                      <p className="text-muted-foreground text-xs font-normal line-through">
+                        <CurrencyDisplay price={product.price * 1.4} />
+                      </p>
+                    </div>
+
+                    <div className="mt-auto pt-2 flex flex-col gap-2">
+                      <div className="border-t border-black/10 dark:border-white/10"></div>
+                      <div className="flex items-center justify-end text-muted-foreground -mt-1" onClick={(e) => e.preventDefault()}>
+                        <div className="flex items-center gap-1">
+                          <WishlistButton
+                            productId={product.id}
+                            className="flex items-center justify-center h-8 w-8 text-foreground hover:text-primary transition-colors"
+                          />
+                          <RatingButton
+                            itemId={product.id}
+                            itemType="product"
+                            className="flex items-center justify-center h-8 w-8 text-foreground hover:text-primary transition-colors"
+                          />
+                          <button className="flex items-center justify-center h-8 w-8 text-primary hover:text-primary/80 transition-colors">
+                            <span className="material-symbols-outlined text-xl">add_shopping_cart</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </Link>
               </div>

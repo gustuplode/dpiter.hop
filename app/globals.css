@@ -4,26 +4,26 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: #f8f6f5;
-  --foreground: #23150f;
+  --background: #FEFBF9;
+  --foreground: #3C2A21;
   --card: #ffffff;
-  --card-foreground: #23150f;
+  --card-foreground: #3C2A21;
   --popover: #ffffff;
-  --popover-foreground: #23150f;
-  --primary: #3B82F6;
+  --popover-foreground: #3C2A21;
+  --primary: #8A3324;
   --primary-foreground: #ffffff;
-  --secondary: #f4eae6;
-  --secondary-foreground: #23150f;
-  --muted: #f4eae6;
-  --muted-foreground: #9e6147;
-  --accent: #f4eae6;
-  --accent-foreground: #23150f;
+  --secondary: #F5E5E1;
+  --secondary-foreground: #6A5E5B;
+  --muted: #F5E5E1;
+  --muted-foreground: #6A5E5B;
+  --accent: #F5E5E1;
+  --accent-foreground: #3C2A21;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
   --border: #e5e7eb;
   --input: #e5e7eb;
-  --ring: #3B82F6;
-  --radius: 0.5rem;
+  --ring: #8A3324;
+  --radius: 0.25rem;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -40,25 +40,25 @@
 }
 
 .dark {
-  --background: #23150f;
-  --foreground: #f8f6f5;
+  --background: #1A120B;
+  --foreground: #E5E5E5;
   --card: #2a1a13;
-  --card-foreground: #f8f6f5;
+  --card-foreground: #E5E5E5;
   --popover: #2a1a13;
-  --popover-foreground: #f8f6f5;
+  --popover-foreground: #E5E5E5;
   --primary: #ffffff;
-  --primary-foreground: #f85a16;
+  --primary-foreground: #8A3324;
   --secondary: #3a2a1d;
-  --secondary-foreground: #f8f6f5;
+  --secondary-foreground: #A39E9C;
   --muted: #3a2a1d;
-  --muted-foreground: #c4a08a;
+  --muted-foreground: #A39E9C;
   --accent: #3a2a1d;
-  --accent-foreground: #f8f6f5;
+  --accent-foreground: #E5E5E5;
   --destructive: #dc2626;
-  --destructive-foreground: #f8f6f5;
+  --destructive-foreground: #E5E5E5;
   --border: #3a2a1d;
   --input: #3a2a1d;
-  --ring: #f85a16;
+  --ring: #8A3324;
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -120,7 +120,10 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: "Plus Jakarta Sans", sans-serif;
+    font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;
+  }
+  .font-display {
+    font-family: "Libre Baskerville", serif;
   }
 }
 

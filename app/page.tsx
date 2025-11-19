@@ -10,146 +10,128 @@ import { RatingDisplay } from "@/components/rating-display"
 import { getCollectionUrl } from "@/lib/utils"
 import { Suspense } from "react"
 import { CollectionGridSkeleton } from "@/components/collection-skeleton"
+import { CurrencyDisplay } from "@/components/currency-display"
 
-async function CollectionList() {
+async function ProductList() {
   const supabase = await createClient()
 
-  let collections: any[] = []
+  let products: any[] = []
   let error = null
 
   try {
+    // Fetch products instead of collections to match "All Products" UI
     const { data, error: fetchError } = await supabase
-      .from("collections")
+      .from("products")
       .select("*")
-      .eq("status", "published")
+      .eq("is_visible", true)
       .order("created_at", { ascending: false })
+      .limit(20)
 
     if (fetchError) {
       error = fetchError
     } else {
-      collections = data || []
+      products = data || []
     }
   } catch (e) {
     error = e
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dpiter.shop"
-
-  const itemListJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    "itemListElement": collections.map((collection, index) => ({
-      "@type": "ListItem",
-      "position": index + 1,
-      "item": {
-        "@type": "Product",
-        "name": collection.title,
-        "brand": collection.brand,
-        "image": collection.image_url,
-        "url": `${baseUrl}${getCollectionUrl(collection.id, collection.title)}`,
-        "offers": {
-          "@type": "AggregateOffer",
-          "availability": "https://schema.org/InStock",
-          "priceCurrency": "INR"
-        }
-      }
-    }))
-  }
-
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-        <p className="text-lg text-slate-600 dark:text-slate-400">Unable to load collections</p>
-        <p className="text-sm text-slate-500 dark:text-slate-500 mt-2">
-          Please make sure the database tables are created.
-        </p>
-      </div>
-    )
-  }
-
-  if (collections.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-        <p className="text-lg text-slate-600 dark:text-slate-400">No collections available yet</p>
-        <p className="text-sm text-slate-500 dark:text-slate-500 mt-2">
-          Collections will appear here once they are published
-        </p>
+        <p className="text-lg text-slate-600 dark:text-slate-400">Unable to load products</p>
       </div>
     )
   }
 
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
-      />
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-x-1 md:gap-x-2 gap-y-2 md:gap-y-3">
-        {collections.map((collection) => (
-          <div key={collection.id} className="group">
-            <Link href={getCollectionUrl(collection.id, collection.title)} className="block">
-              <div className="relative overflow-hidden rounded-md bg-white dark:bg-slate-800 shadow-sm aspect-[3/4]">
-                <img
-                  src={collection.image_url || "/placeholder.svg?height=400&width=300"}
-                  alt={collection.title}
-                  className="w-full h-full object-cover transition-opacity duration-300"
-                  loading="lazy"
-                />
-                <div className="absolute top-1.5 left-1.5">
-                  <RatingButton
-                    itemId={collection.id}
-                    itemType="collection"
-                  />
-                </div>
-                <div className="absolute top-1.5 right-1.5">
-                  <WishlistButton
-                    productId={collection.id}
-                    type="collection"
-                    className="h-6 w-6 flex items-center justify-center rounded-full bg-white/70 dark:bg-slate-700/70 backdrop-blur-sm"
-                  />
-                </div>
-                <div className="absolute bottom-1.5 right-1.5">
-                  <RatingDisplay
-                    itemId={collection.id}
-                    itemType="collection"
-                  />
-                </div>
-                {collection.is_limited_time && (
-                  <div className="absolute bottom-1.5 left-1.5">
-                    <span className="inline-flex items-center gap-0.5 rounded-md bg-[#3B82F6]/90 px-1.5 py-0.5 text-[10px] font-medium text-white">
-                      <span className="material-symbols-outlined text-xs">schedule</span>
-                      LIMITED
-                    </span>
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+      {products.map((product, index) => (
+        <div key={product.id} className={`flex flex-col bg-white dark:bg-gray-800 overflow-hidden border border-black/10 dark:border-white/10 ${index % 2 !== 0 ? 'border-l-0' : ''} ${index >= 2 ? 'border-t-0' : ''}`}>
+          <Link href={`/products/${product.category}/${product.id}/${product.title.toLowerCase().replace(/\s+/g, '-')}`} className="block flex-1 flex flex-col">
+            <div className="relative w-full bg-center bg-no-repeat aspect-square bg-cover">
+              <img
+                src={product.image_url || "/placeholder.svg?height=400&width=400"}
+                alt={product.title}
+                className="w-full h-full object-cover"
+                loading="lazy"
+              />
+              <div className="absolute bottom-2 left-2 flex items-center gap-1 bg-black/50 text-white rounded-full px-2 py-1 text-xs backdrop-blur-sm">
+                <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                <span className="font-semibold">4.1</span>
+              </div>
+            </div>
+            
+            <div className="p-3 flex flex-col gap-2 flex-1">
+              <p className="text-sm font-bold uppercase text-muted-foreground tracking-wide">{product.brand || 'Brand'}</p>
+              <p className="text-foreground text-xs font-semibold leading-snug truncate">{product.title}</p>
+              
+              <div className="flex items-center gap-2 mt-1">
+                <p className="text-foreground text-base font-bold">
+                  <CurrencyDisplay price={product.price} />
+                </p>
+                <p className="text-muted-foreground text-xs font-normal line-through">
+                  <CurrencyDisplay price={product.price * 1.4} />
+                </p>
+              </div>
+
+              <div className="mt-auto pt-2 flex flex-col gap-2">
+                <div className="border-t border-black/10 dark:border-white/10"></div>
+                <div className="flex items-center justify-end text-muted-foreground -mt-1">
+                  <div className="flex items-center gap-1">
+                    <WishlistButton
+                      productId={product.id}
+                      className="flex items-center justify-center h-8 w-8 text-foreground hover:text-primary transition-colors"
+                    />
+                    <RatingButton
+                      itemId={product.id}
+                      itemType="product"
+                      className="flex items-center justify-center h-8 w-8 text-foreground hover:text-primary transition-colors"
+                    />
+                    <button className="flex items-center justify-center h-8 w-8 text-primary hover:text-primary/80 transition-colors">
+                      <span className="material-symbols-outlined text-xl">add_shopping_cart</span>
+                    </button>
                   </div>
-                )}
+                </div>
               </div>
-              <div className="pt-1.5">
-                <h3 className="text-xs font-semibold text-slate-900 dark:text-white truncate">{collection.brand}</h3>
-                <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">{collection.title}</p>
-              </div>
-            </Link>
-          </div>
-        ))}
-      </div>
-    </>
+            </div>
+          </Link>
+        </div>
+      ))}
+    </div>
   )
 }
 
 export default function HomePage() {
   return (
-    <div className="relative min-h-screen bg-[#F8FAFC] dark:bg-[#1E293B]">
-      <SearchHeader />
-      <CategoryHeader 
-        fashionCount={0}
-        gadgetsCount={0}
-        gamingCount={0}
-        allProductsCount={0}
-      />
+    <div className="relative min-h-screen bg-background">
+      <CategoryHeader />
       
-      <div className="container mx-auto max-w-7xl px-1.5 pt-1 pb-32">
+      {/* Banner Section */}
+      <div className="flex overflow-x-auto [-ms-scrollbar-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden -mx-4 mb-4">
+        <div className="flex items-stretch px-4 gap-3">
+          <div className="relative flex h-full flex-1 flex-col gap-4 rounded-xl min-w-[320px] overflow-hidden shadow-lg">
+            <div className="w-full bg-center bg-no-repeat aspect-[16/7] bg-cover flex flex-col" style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuCIdhfHPQERaI5PPdd04MvO3BdaarPHqT_-vnTwWFitc1ULELL0MqX_YanzRip66kUgdtY8eJss3VZUuDKjPLEsjETIjTaXR5fJVNiIKFCmlOtMvyNxWSf2l8spgc3kao2y2L4fA31ww9sfvXOsV5jGIOf8lbwy243Lst38C1OunLL9E-h33TrGeGoHsPYBlZyI2x0oazLmKCvK7mU8Lt0cizPm43i7G9HjD5KgoWBZS54C7-kAmxbRIRASAKFnIxR0m_aRGnzYyk7I")' }}></div>
+          </div>
+          <div className="relative flex h-full flex-1 flex-col gap-4 rounded-xl min-w-[320px] overflow-hidden shadow-lg">
+            <div className="w-full bg-center bg-no-repeat aspect-[16/7] bg-cover flex flex-col" style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuCzQ5vrlhemfKhhO6mDwODsCnXvTOg3F5EK6vahMsrMHj0_3hsGucRUiMOJUbp_AWaoAoGTi_2x_dEB7_3CUOy3uSGn9BFOyZWmxvFjfSpem30OUV9mDjjdqyozKLuZlI0aySANfs-0HGGAFKln5cI0HVoG_R7385SuCJuYvwONIgniXdgFOSQtBKNkrPUozAsoc_Aha9NhzpS5CG8Z9k-RjqQ6jpUw9eZCde83W4kVPDpV6MKzHar5Kvxhya8CdrsbJXh9VqKbkROI")' }}></div>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex w-full flex-row items-center justify-center gap-2 py-4">
+        <div className="h-2 w-4 rounded-full bg-primary"></div>
+        <div className="h-2 w-2 rounded-full bg-gray-300 dark:bg-gray-700"></div>
+        <div className="h-2 w-2 rounded-full bg-gray-300 dark:bg-gray-700"></div>
+      </div>
+
+      <div className="flex flex-col">
+        <div className="px-4 mb-4">
+          <h2 className="font-display text-xl font-bold text-foreground">All Products</h2>
+        </div>
         <main>
           <Suspense fallback={<CollectionGridSkeleton />}>
-            <CollectionList />
+            <ProductList />
           </Suspense>
         </main>
       </div>

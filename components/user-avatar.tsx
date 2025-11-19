@@ -6,12 +6,23 @@ import { onAuthStateChanged, User } from "firebase/auth"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
 
-export function UserAvatar() {
+interface UserAvatarProps {
+  size?: "sm" | "md" | "lg"
+  asButton?: boolean
+}
+
+export function UserAvatar({ size = "md", asButton = false }: UserAvatarProps) {
   const [user, setUser] = useState<User | null>(null)
   const [profileImage, setProfileImage] = useState<string | null>(null)
   const supabase = createClient()
 
   useEffect(() => {
+    // Try to load from localStorage first to prevent flicker
+    const cachedImage = localStorage.getItem('user_profile_image')
+    if (cachedImage) {
+      setProfileImage(cachedImage)
+    }
+
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser)
       
@@ -25,11 +36,14 @@ export function UserAvatar() {
         
         if (data?.profile_image_url) {
           setProfileImage(data.profile_image_url)
+          localStorage.setItem('user_profile_image', data.profile_image_url)
         } else if (currentUser.photoURL) {
           setProfileImage(currentUser.photoURL)
+          localStorage.setItem('user_profile_image', currentUser.photoURL)
         }
       } else {
         setProfileImage(null)
+        localStorage.removeItem('user_profile_image')
       }
     })
 
@@ -45,6 +59,7 @@ export function UserAvatar() {
         (payload: any) => {
           if (auth.currentUser && payload.new.user_id === auth.currentUser.uid) {
             setProfileImage(payload.new.profile_image_url)
+            localStorage.setItem('user_profile_image', payload.new.profile_image_url)
           }
         }
       )
@@ -56,33 +71,46 @@ export function UserAvatar() {
     }
   }, [])
 
-  if (!user) {
-    return (
-      <Link
-        href="/profile"
-        className="flex size-9 shrink-0 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors"
-      >
-        <span className="material-symbols-outlined text-slate-700 dark:text-slate-300 text-xl">person</span>
-      </Link>
-    )
+  const sizeClasses = {
+    sm: "size-8",
+    md: "size-9",
+    lg: "size-12"
   }
 
-  return (
-    <Link
-      href="/profile"
-      className="flex size-9 shrink-0 items-center justify-center rounded-full overflow-hidden border-2 border-[#F97316] hover:border-[#EA580C] transition-colors"
-    >
-      {profileImage ? (
-        <img 
-          src={profileImage || "/placeholder.svg"} 
-          alt={user.displayName || "User"} 
-          className="w-full h-full object-cover"
-        />
-      ) : (
-        <div className="w-full h-full bg-gradient-to-br from-[#F97316] to-[#EA580C] flex items-center justify-center text-white text-sm font-bold">
-          {user.displayName?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase() || "U"}
-        </div>
-      )}
-    </Link>
+  const content = profileImage ? (
+    <img 
+      src={profileImage || "/placeholder.svg"} 
+      alt={user?.displayName || "User"} 
+      className="w-full h-full object-cover"
+    />
+  ) : (
+    <div className="w-full h-full bg-gradient-to-br from-[#F97316] to-[#EA580C] flex items-center justify-center text-white text-sm font-bold">
+      {user?.displayName?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || "U"}
+    </div>
   )
+
+  if (!user) {
+    const loginButton = (
+      <div className={`flex ${sizeClasses[size]} shrink-0 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors`}>
+        <span className="material-symbols-outlined text-slate-700 dark:text-slate-300 text-xl">person</span>
+      </div>
+    )
+
+    if (asButton) {
+      return <Link href="/profile">{loginButton}</Link>
+    }
+    return <Link href="/profile">{loginButton}</Link>
+  }
+
+  const avatar = (
+    <div className={`flex ${sizeClasses[size]} shrink-0 items-center justify-center rounded-full overflow-hidden border-2 border-[#F97316] hover:border-[#EA580C] transition-colors`}>
+      {content}
+    </div>
+  )
+
+  if (asButton) {
+    return <Link href="/profile">{avatar}</Link>
+  }
+
+  return <Link href="/profile">{avatar}</Link>
 }
