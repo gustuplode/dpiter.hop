@@ -1,11 +1,18 @@
 import type React from "react"
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Poppins, Libre_Baskerville, Plus_Jakarta_Sans } from 'next/font/google'
 import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
 import "./globals.css"
 import { LoadingBar } from "@/components/loading-bar"
 import { SearchHeader } from "@/components/search-header"
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+}
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: '--font-poppins' })
 const libreBaskerville = Libre_Baskerville({ subsets: ["latin"], weight: ["400", "700"], variable: '--font-libre' })

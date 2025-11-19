@@ -2,19 +2,19 @@ import { createClient } from "@/lib/supabase/server"
 import { CategoryPageLayout } from "@/components/category-page-layout"
 
 export const metadata = {
-  title: "Gaming - Dpiter",
-  description: "Browse our curated collection of gaming products",
+  title: "Outfit - Dpiter",
+  description: "Browse our curated collection of outfits",
 }
 
-export default async function GamingPage() {
+export default async function OutfitPage() {
   const supabase = await createClient()
 
   const { data: products, error } = await supabase
     .from("category_products")
     .select("*")
-    .eq("category", "gaming")
+    .eq("category", "outfit")
     .eq("is_visible", true)
     .order("created_at", { ascending: false })
 
-  return <CategoryPageLayout title="Gaming" products={products || []} error={error} />
+  return <CategoryPageLayout title="Outfit" products={products || []} error={error} />
 }
