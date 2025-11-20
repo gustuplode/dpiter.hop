@@ -3,6 +3,7 @@ import "./globals.css"
 import { Suspense } from "react"
 import { SearchHeader } from "@/components/search-header"
 import { BottomNav } from "@/components/bottom-nav"
+import { SwipeablePageWrapper } from "@/components/swipeable-page-wrapper"
 
 export const metadata = {
   title: "Dpiter - E-commerce Collections",
@@ -33,7 +34,9 @@ export default function RootLayout({
         <Suspense fallback={<div className="h-32 bg-background-light dark:bg-background-dark" />}>
           <SearchHeader />
         </Suspense>
-        <main className="pb-16 min-h-screen">{children}</main>
+        <main className="pb-16 min-h-screen">
+          <SwipeablePageWrapper>{children}</SwipeablePageWrapper>
+        </main>
         <BottomNav />
       </body>
     </html>

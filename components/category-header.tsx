@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { LogoModal } from "./logo-modal"
 
 interface CategoryHeaderProps {
@@ -20,8 +20,10 @@ export function CategoryHeader({
 }: CategoryHeaderProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const pathname = usePathname()
+  const router = useRouter()
 
   const categories = [
+    { name: "All", path: "/", icon: "apps" },
     { name: "Fashion", path: "/fashion", icon: "checkroom" },
     { name: "Gadgets", path: "/gadgets", icon: "devices" },
     { name: "Gaming", path: "/gaming", icon: "sports_esports" },
