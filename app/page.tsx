@@ -49,63 +49,60 @@ async function ProductList() {
           key={product.id}
           className="flex flex-col bg-white dark:bg-gray-800 overflow-hidden border-t border-r border-black/10 dark:border-white/10 md:rounded-lg md:border hover:shadow-lg transition-shadow"
         >
-          <Link
-            href={getProductUrl(product.id, product.title, product.category)}
-            className="block flex-1 flex flex-col"
-          >
+          <Link href={getProductUrl(product.id, product.title, product.category)} className="block">
             <div
               className="relative w-full bg-center bg-no-repeat aspect-square bg-cover"
               style={{ backgroundImage: `url("${product.image_url || "/placeholder.svg"}")` }}
             >
-              <div className="absolute bottom-2 left-2 flex items-center gap-1 bg-black/50 text-white rounded-full px-2 py-1 text-xs backdrop-blur-sm">
-                <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>
+              <div className="absolute bottom-1.5 left-1.5 flex items-center gap-0.5 bg-white/95 backdrop-blur-sm rounded px-1.5 py-0.5 shadow-sm">
+                <span className="text-[10px] font-semibold text-gray-800">4.1</span>
+                <span
+                  className="material-symbols-outlined text-[11px] text-yellow-500"
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                >
                   star
                 </span>
-                <span className="font-semibold">4.1</span>
               </div>
             </div>
+          </Link>
 
-            <div className="p-3 flex flex-col gap-2 flex-1 bg-[#F7F7F7] dark:bg-gray-800">
-              <p className="text-[10px] font-bold uppercase text-text-secondary-light dark:text-text-secondary-dark tracking-wide">
-                {product.brand || "Brand"}
-              </p>
-              <p className="text-text-primary-light dark:text-text-primary-dark text-[11px] font-semibold leading-snug line-clamp-2">
-                {product.title}
-              </p>
+          <div className="p-2 flex flex-col gap-1">
+            <p className="text-[10px] font-bold uppercase text-gray-600 dark:text-gray-400 tracking-wider">
+              {product.brand || "Brand"}
+            </p>
+            <p className="text-gray-800 dark:text-gray-200 text-[11px] font-normal leading-snug line-clamp-1">
+              {product.title}
+            </p>
 
-              <div className="flex items-center gap-2 mt-1">
-                <p className="text-text-primary-light dark:text-white text-sm font-bold">
+            <div className="flex items-center justify-between mt-1">
+              <div className="flex items-center gap-1.5">
+                <p className="text-gray-900 dark:text-white text-sm font-bold">
                   <CurrencyDisplay price={product.price} />
                 </p>
                 {product.original_price && (
-                  <p className="text-text-secondary-light dark:text-text-secondary-dark text-xs font-normal line-through">
+                  <p className="text-gray-400 dark:text-gray-500 text-[10px] line-through">
                     <CurrencyDisplay price={product.original_price} />
                   </p>
                 )}
               </div>
 
-              <div className="mt-auto pt-2 flex flex-col gap-2">
-                <div className="border-t border-black/10 dark:border-white/10 opacity-50"></div>
-                <div className="flex items-center justify-end text-text-secondary-light dark:text-text-secondary-dark -mt-1">
-                  <div className="flex items-center gap-1">
-                    <WishlistButton
-                      productId={product.id}
-                      className="flex items-center justify-center h-8 w-8 text-text-primary-light dark:text-text-primary-dark hover:text-primary transition-colors"
-                    />
-                    <RatingButton
-                      itemId={product.id}
-                      itemType="product"
-                      className="flex items-center justify-center h-8 w-8 text-text-primary-light dark:text-text-primary-dark hover:text-primary transition-colors"
-                    />
-                    <AddToCartButton
-                      productId={product.id}
-                      className="flex items-center justify-center h-8 w-8 text-primary dark:text-primary-light hover:text-primary/80 transition-colors"
-                    />
-                  </div>
-                </div>
+              <div className="flex items-center gap-0.5">
+                <WishlistButton
+                  productId={product.id}
+                  className="flex items-center justify-center h-6 w-6 text-gray-600 dark:text-gray-400 hover:text-primary transition-colors"
+                />
+                <RatingButton
+                  itemId={product.id}
+                  itemType="product"
+                  className="flex items-center justify-center h-6 w-6 text-gray-600 dark:text-gray-400 hover:text-primary transition-colors"
+                />
+                <AddToCartButton
+                  productId={product.id}
+                  className="flex items-center justify-center h-6 w-6 text-primary dark:text-primary-light hover:text-primary/80 transition-colors"
+                />
               </div>
             </div>
-          </Link>
+          </div>
         </div>
       ))}
     </div>

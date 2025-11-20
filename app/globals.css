@@ -9,25 +9,25 @@ html {
 }
 
 :root {
-  --background: #FEFBF9;
-  --foreground: #3C2A21;
+  --background: #fefbf9;
+  --foreground: #3c2a21;
   --card: #ffffff;
-  --card-foreground: #3C2A21;
+  --card-foreground: #3c2a21;
   --popover: #ffffff;
-  --popover-foreground: #3C2A21;
-  --primary: #8A3324;
+  --popover-foreground: #3c2a21;
+  --primary: #8a3324;
   --primary-foreground: #ffffff;
-  --secondary: #F5E5E1;
-  --secondary-foreground: #6A5E5B;
-  --muted: #F5E5E1;
-  --muted-foreground: #6A5E5B;
-  --accent: #F5E5E1;
-  --accent-foreground: #3C2A21;
+  --secondary: #f5e5e1;
+  --secondary-foreground: #6a5e5b;
+  --muted: #f5e5e1;
+  --muted-foreground: #6a5e5b;
+  --accent: #f5e5e1;
+  --accent-foreground: #3c2a21;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
   --border: #e5e7eb;
   --input: #e5e7eb;
-  --ring: #8A3324;
+  --ring: #8a3324;
   --radius: 0.25rem;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
@@ -45,25 +45,25 @@ html {
 }
 
 .dark {
-  --background: #1A120B;
-  --foreground: #E5E5E5;
+  --background: #1a120b;
+  --foreground: #e5e5e5;
   --card: #2a1a13;
-  --card-foreground: #E5E5E5;
+  --card-foreground: #e5e5e5;
   --popover: #2a1a13;
-  --popover-foreground: #E5E5E5;
+  --popover-foreground: #e5e5e5;
   --primary: #ffffff;
-  --primary-foreground: #8A3324;
+  --primary-foreground: #8a3324;
   --secondary: #3a2a1d;
-  --secondary-foreground: #A39E9C;
+  --secondary-foreground: #a39e9c;
   --muted: #3a2a1d;
-  --muted-foreground: #A39E9C;
+  --muted-foreground: #a39e9c;
   --accent: #3a2a1d;
-  --accent-foreground: #E5E5E5;
+  --accent-foreground: #e5e5e5;
   --destructive: #dc2626;
-  --destructive-foreground: #E5E5E5;
+  --destructive-foreground: #e5e5e5;
   --border: #3a2a1d;
   --input: #3a2a1d;
-  --ring: #8A3324;
+  --ring: #8a3324;
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
@@ -125,7 +125,8 @@ html {
   }
   body {
     @apply bg-background text-foreground;
-    font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;
+    /* Added Myntra-style font stack */
+    font-family: "Assistant", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
   .font-display {
     font-family: "Libre Baskerville", serif;
@@ -189,7 +190,7 @@ html {
     backface-visibility: hidden;
     perspective: 1000px;
   }
-  
+
   /* Optimize scroll performance */
   .smooth-scroll {
     scroll-behavior: smooth;

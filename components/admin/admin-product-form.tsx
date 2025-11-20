@@ -1,10 +1,12 @@
 "use client"
 
+import type React from "react"
+
 import { useState } from "react"
-import { ArrowLeft, Upload, X } from 'lucide-react'
+import { ArrowLeft, Upload, X } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation"
 import { ImageCropper } from "./image-cropper"
 
 interface ProductFormProps {
@@ -71,7 +73,7 @@ export function AdminProductForm({ category, initialData }: ProductFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!brand || !title || !price || !imageUrl) {
       alert("Please fill all required fields and upload an image")
       return
@@ -82,7 +84,7 @@ export function AdminProductForm({ category, initialData }: ProductFormProps) {
       const payload = {
         brand,
         title,
-        price: parseFloat(price),
+        price: Number.parseFloat(price),
         image_url: imageUrl,
         affiliate_link: affiliateLink,
         category,
@@ -212,9 +214,9 @@ export function AdminProductForm({ category, initialData }: ProductFormProps) {
           )}
         </div>
 
-        <Button 
-          type="submit" 
-          disabled={loading || !brand || !title || !price || !imageUrl} 
+        <Button
+          type="submit"
+          disabled={loading || !brand || !title || !price || !imageUrl}
           className="w-full h-12 bg-primary hover:bg-primary/90 text-white font-semibold text-base disabled:opacity-50"
         >
           {loading ? "Publishing..." : initialData ? "Update Product" : "Publish Product"}
@@ -225,8 +227,8 @@ export function AdminProductForm({ category, initialData }: ProductFormProps) {
         <ImageCropper
           imageUrl={tempImageUrl}
           aspectRatio={1}
-          cropWidth={500}
-          cropHeight={500}
+          cropWidth={1080}
+          cropHeight={1080}
           onCropComplete={handleCropComplete}
           onCancel={() => {
             setShowCropper(false)
