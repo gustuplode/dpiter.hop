@@ -1,6 +1,6 @@
 import "./globals.css"
 import { Suspense } from "react"
-import LoadingBar fro "../components/loading-bar"/ / Assuming LoadingBar is a component in the same directory
+import LoadingBar "../components/loading-bar"/ / Assuming LoadingBar is a component in the same directory
 import SearchHeader from "../components/search-header" // Assuming SearchHeader is a component in the same directory
 export default function RootLayout({ children }) {
   return (
