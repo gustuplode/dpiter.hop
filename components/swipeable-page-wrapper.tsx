@@ -14,12 +14,15 @@ export function SwipeablePageWrapper({ children }: SwipeablePageWrapperProps) {
   const pathname = usePathname()
   const touchStartX = useRef<number>(0)
   const touchEndX = useRef<number>(0)
+  const isScrolling = useRef<boolean>(false)
 
-  const pages = ["/", "/fashion", "/gadgets", "/gaming"]
+  const pages = ["/", "/fashion", "/gadgets", "/gaming", "/outfit"]
 
   const handleSwipe = () => {
+    if (isScrolling.current) return
+
     const diff = touchStartX.current - touchEndX.current
-    const threshold = 50 // minimum swipe distance
+    const threshold = 50
 
     if (Math.abs(diff) < threshold) return
 
@@ -27,12 +30,10 @@ export function SwipeablePageWrapper({ children }: SwipeablePageWrapperProps) {
     if (currentIndex === -1) return
 
     if (diff > 0) {
-      // Swiped left - go to next page
       if (currentIndex < pages.length - 1) {
         router.push(pages[currentIndex + 1])
       }
     } else {
-      // Swiped right - go to previous page
       if (currentIndex > 0) {
         router.push(pages[currentIndex - 1])
       }
@@ -42,10 +43,17 @@ export function SwipeablePageWrapper({ children }: SwipeablePageWrapperProps) {
   useEffect(() => {
     const handleTouchStart = (e: TouchEvent) => {
       touchStartX.current = e.touches[0].clientX
+      isScrolling.current = false
     }
 
     const handleTouchMove = (e: TouchEvent) => {
       touchEndX.current = e.touches[0].clientX
+      const verticalDiff = Math.abs(e.touches[0].clientY - (e.touches[0] as any).startY)
+      const horizontalDiff = Math.abs(touchStartX.current - touchEndX.current)
+
+      if (verticalDiff > horizontalDiff) {
+        isScrolling.current = true
+      }
     }
 
     const handleTouchEnd = () => {
