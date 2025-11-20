@@ -71,13 +71,8 @@ export function SearchHeader() {
         {/* Logo section */}
         {showLogo && (
           <div className="flex items-center justify-between gap-4 px-4 py-1.5 transition-all duration-300">
-            <div className="flex items-center gap-2">
-              <div className="flex items-center justify-center h-7 w-7 rounded-full bg-primary text-white">
-                <span className="font-display font-bold text-lg">D</span>
-              </div>
-              <h1 className="font-display text-lg font-bold text-text-primary-light dark:text-text-primary-dark">
-                Dpiter
-              </h1>
+            <div className="flex items-center justify-center h-8 w-8 rounded-full bg-primary text-white">
+              <span className="font-display font-bold text-xl">D</span>
             </div>
           </div>
         )}

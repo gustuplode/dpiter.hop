@@ -1,3 +1,5 @@
+"use client"
+
 import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
 import { BottomNav } from "@/components/bottom-nav"
@@ -9,6 +11,7 @@ import { getProductUrl } from "@/lib/utils"
 import { Suspense } from "react"
 import { CollectionGridSkeleton } from "@/components/collection-skeleton"
 import { CurrencyDisplay } from "@/components/currency-display"
+import { useState } from "react"
 
 async function ProductList() {
   const supabase = await createClient()
@@ -64,16 +67,16 @@ async function ProductList() {
               </div>
             </div>
 
-            <div className="p-3 flex flex-col gap-2 flex-1">
-              <p className="text-sm font-bold uppercase text-text-secondary-light dark:text-text-secondary-dark tracking-wide">
+            <div className="p-3 flex flex-col gap-2 flex-1 bg-[#F7F7F7] dark:bg-gray-800">
+              <p className="text-[10px] font-bold uppercase text-text-secondary-light dark:text-text-secondary-dark tracking-wide">
                 {product.brand || "Brand"}
               </p>
-              <p className="text-text-primary-light dark:text-text-primary-dark text-xs font-semibold leading-snug truncate">
+              <p className="text-text-primary-light dark:text-text-primary-dark text-[11px] font-semibold leading-snug line-clamp-2">
                 {product.title}
               </p>
 
               <div className="flex items-center gap-2 mt-1">
-                <p className="text-text-primary-light dark:text-white text-base font-bold">
+                <p className="text-text-primary-light dark:text-white text-sm font-bold">
                   <CurrencyDisplay price={product.price} />
                 </p>
                 {product.original_price && (
@@ -112,30 +115,31 @@ async function ProductList() {
 }
 
 export default function HomePage() {
+  const [currentBanner, setCurrentBanner] = useState(0)
+  const banners = [
+    "https://lh3.googleusercontent.com/aida-public/AB6AXuCIdhfHPQERaI5PPdd04MvO3BdaarPHqT_-vnTwWFitc1ULELL0MqX_YanzRip66kUgdtY8eJss3VZUuDKjPLEsjETIjTaXR5fJVNiIKFCmlOtMvyNxWSf2l8spgc3kao2y2L4fA31ww9sfvXOsV5jGIOf8lbwy243Lst38C1OunLL9E-h33TrGeGoHsPYBlZyI2x0oazLmKCvK7mU8Lt0cizPm43i7G9HjD5KgoWBZS54C7-kAmxbRIRASAKFnIxR0m_aRGnzYyk7I",
+    "https://lh3.googleusercontent.com/aida-public/AB6AXuCzQ5vrlhemfKhhO6mDwODsCnXvTOg3F5EK6vahMsrMHj0_3hsGucRUiMOJUbp_AWaoAoGTi_2x_dEB7_3CUOy3uSGn9BFOyZWmxvFjfSpem30OUV9mDjjdqyozKLuZlI0aySANfs-0HGGAFKln5cI0HVoG_R7385SuCJuYvwONIgniXdgFOSQtBKNkrPUozAsoc_Aha9NhzpS5CG8Z9k-RjqQ6jpUw9eZCde83W4kVPDpV6MKzHar5Kvxhya8CdrsbJXh9VqKbkROI",
+  ]
+
   return (
     <div className="relative min-h-screen bg-background-light dark:bg-background-dark">
-      <div className="mb-4">
-        <div className="overflow-x-auto snap-x snap-mandatory [-ms-scrollbar-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          <div className="flex">
-            <div className="relative flex-shrink-0 w-full snap-center">
-              <div
-                className="w-full bg-center bg-no-repeat aspect-[16/7] md:aspect-[24/7] bg-cover"
-                style={{
-                  backgroundImage:
-                    'url("https://lh3.googleusercontent.com/aida-public/AB6AXuCIdhfHPQERaI5PPdd04MvO3BdaarPHqT_-vnTwWFitc1ULELL0MqX_YanzRip66kUgdtY8eJss3VZUuDKjPLEsjETIjTaXR5fJVNiIKFCmlOtMvyNxWSf2l8spgc3kao2y2L4fA31ww9sfvXOsV5jGIOf8lbwy243Lst38C1OunLL9E-h33TrGeGoHsPYBlZyI2x0oazLmKCvK7mU8Lt0cizPm43i7G9HjD5KgoWBZS54C7-kAmxbRIRASAKFnIxR0m_aRGnzYyk7I")',
-                }}
-              ></div>
-            </div>
-            <div className="relative flex-shrink-0 w-full snap-center">
-              <div
-                className="w-full bg-center bg-no-repeat aspect-[16/7] md:aspect-[24/7] bg-cover"
-                style={{
-                  backgroundImage:
-                    'url("https://lh3.googleusercontent.com/aida-public/AB6AXuCzQ5vrlhemfKhhO6mDwODsCnXvTOg3F5EK6vahMsrMHj0_3hsGucRUiMOJUbp_AWaoAoGTi_2x_dEB7_3CUOy3uSGn9BFOyZWmxvFjfSpem30OUV9mDjjdqyozKLuZlI0aySANfs-0HGGAFKln5cI0HVoG_R7385SuCJuYvwONIgniXdgFOSQtBKNkrPUozAsoc_Aha9NhzpS5CG8Z9k-RjqQ6jpUw9eZCde83W4kVPDpV6MKzHar5Kvxhya8CdrsbJXh9VqKbkROI")',
-                }}
-              ></div>
-            </div>
-          </div>
+      <div className="mb-4 relative">
+        <div
+          className="w-full bg-center bg-no-repeat aspect-[16/7] md:aspect-[24/7] bg-cover transition-all duration-500"
+          style={{
+            backgroundImage: `url("${banners[currentBanner]}")`,
+          }}
+        ></div>
+        <div className="absolute bottom-3 left-0 right-0 flex justify-center items-center gap-2">
+          {banners.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentBanner(index)}
+              className={`h-2 rounded-full transition-all ${
+                index === currentBanner ? "w-6 bg-white" : "w-2 bg-white/50"
+              }`}
+            />
+          ))}
         </div>
       </div>
 
