@@ -1,9 +1,8 @@
 "use client"
 
 import type React from "react"
-
 import { useEffect, useRef, useState } from "react"
-import { ZoomIn, ZoomOut } from "lucide-react"
+import { ZoomIn, ZoomOut, RotateCcw } from "lucide-react"
 
 interface ImageCropperProps {
   imageUrl: string
@@ -36,12 +35,11 @@ export function ImageCropper({
     img.crossOrigin = "anonymous"
     img.onload = () => {
       setImage(img)
-      // Calculate initial zoom to fit image in container
-      const scale = Math.max(containerSize.width / img.width, containerSize.height / img.height)
-      setZoom(scale)
+      setZoom(1)
+      setPosition({ x: 0, y: 0 })
     }
     img.src = imageUrl
-  }, [imageUrl, containerSize])
+  }, [imageUrl])
 
   useEffect(() => {
     const updateSize = () => {
@@ -103,11 +101,16 @@ export function ImageCropper({
   }
 
   const handleZoomIn = () => {
-    setZoom((prev) => Math.min(prev + 0.1, 3))
+    setZoom((prev) => Math.min(prev + 0.1, 5))
   }
 
   const handleZoomOut = () => {
-    setZoom((prev) => Math.max(prev - 0.1, 0.5))
+    setZoom((prev) => Math.max(prev - 0.1, 0.1))
+  }
+
+  const handleReset = () => {
+    setZoom(1)
+    setPosition({ x: 0, y: 0 })
   }
 
   const handleApplyCrop = () => {
@@ -123,16 +126,22 @@ export function ImageCropper({
     ctx.fillStyle = "#ffffff"
     ctx.fillRect(0, 0, cropWidth, cropHeight)
 
-    // Calculate scaling factor from display to output
-    const scale = cropWidth / containerSize.width
+    const displaySize = containerSize.width
+    const scale = cropWidth / displaySize
 
-    // Calculate image dimensions and position in output canvas
-    const imgWidth = image.width * zoom * scale
-    const imgHeight = image.height * zoom * scale
-    const imgX = cropWidth / 2 + position.x * scale - imgWidth / 2
-    const imgY = cropHeight / 2 + position.y * scale - imgHeight / 2
+    // Calculate the actual displayed image dimensions
+    const displayedWidth = image.width * zoom
+    const displayedHeight = image.height * zoom
 
-    ctx.drawImage(image, imgX, imgY, imgWidth, imgHeight)
+    // Scale for output canvas (1080x1080)
+    const outputWidth = displayedWidth * scale
+    const outputHeight = displayedHeight * scale
+
+    // Calculate centered position with user offset
+    const outputX = (cropWidth - outputWidth) / 2 + position.x * scale
+    const outputY = (cropHeight - outputHeight) / 2 + position.y * scale
+
+    ctx.drawImage(image, outputX, outputY, outputWidth, outputHeight)
 
     canvas.toBlob(
       (blob) => {
@@ -150,34 +159,39 @@ export function ImageCropper({
         width: `${image.width * zoom}px`,
         height: `${image.height * zoom}px`,
         transform: `translate(${position.x}px, ${position.y}px)`,
+        objectFit: "contain" as const,
       }
     : {}
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-white dark:bg-gray-900">
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-primary/5 to-transparent">
         <button
           onClick={onCancel}
-          className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white font-medium"
+          className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
         >
           Cancel
         </button>
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Adjust Image</h2>
-        <button onClick={handleApplyCrop} className="text-primary hover:text-primary/80 font-medium">
-          Done
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white">Crop Image (1:1)</h2>
+        <button
+          onClick={handleApplyCrop}
+          className="px-4 py-2 text-sm font-medium bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors shadow-sm"
+        >
+          Apply
         </button>
       </div>
 
       {/* Crop Area */}
-      <div className="flex-1 flex flex-col items-center justify-center p-4 bg-gray-50 dark:bg-gray-800">
+      <div className="flex-1 flex flex-col items-center justify-center p-6 bg-gray-100 dark:bg-gray-800">
         <div
           ref={containerRef}
-          className="relative bg-white dark:bg-gray-900 overflow-hidden shadow-2xl"
+          className="relative overflow-hidden shadow-2xl rounded-lg"
           style={{
             width: `${containerSize.width}px`,
             height: `${containerSize.height}px`,
-            aspectRatio: "1/1",
+            backgroundImage: "repeating-conic-gradient(#e5e7eb 0% 25%, #f3f4f6 0% 50%)",
+            backgroundPosition: "0 0, 10px 10px",
+            backgroundSize: "20px 20px",
           }}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
@@ -202,25 +216,27 @@ export function ImageCropper({
 
           {/* Grid overlay */}
           <div className="absolute inset-0 pointer-events-none">
-            <div className="w-full h-full border-2 border-primary/50">
+            <div className="w-full h-full border-2 border-primary/70">
               <div className="grid grid-cols-3 grid-rows-3 w-full h-full">
                 {[...Array(9)].map((_, i) => (
-                  <div key={i} className="border border-primary/20" />
+                  <div key={i} className="border border-white/30" />
                 ))}
               </div>
             </div>
           </div>
         </div>
 
-        {/* Preview label */}
-        <div className="mt-4 text-sm text-gray-600 dark:text-gray-400">Preview (1080×1080)</div>
+        <div className="mt-4 px-4 py-2 bg-white dark:bg-gray-900 rounded-full shadow-sm">
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Output: 1080×1080 • Zoom: {Math.round(zoom * 100)}%
+          </span>
+        </div>
       </div>
 
-      {/* Zoom Controls */}
-      <div className="flex items-center justify-center gap-4 p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+      <div className="flex items-center justify-center gap-4 p-6 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
         <button
           onClick={handleZoomOut}
-          className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+          className="flex items-center justify-center w-11 h-11 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all shadow-sm active:scale-95"
           aria-label="Zoom out"
         >
           <ZoomOut className="w-5 h-5 text-gray-700 dark:text-gray-300" />
@@ -229,22 +245,29 @@ export function ImageCropper({
         <div className="flex-1 max-w-xs">
           <input
             type="range"
-            min="0.5"
-            max="3"
-            step="0.1"
+            min="0.1"
+            max="5"
+            step="0.05"
             value={zoom}
             onChange={(e) => setZoom(Number.parseFloat(e.target.value))}
-            className="w-full"
+            className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-primary"
           />
-          <div className="text-center text-sm text-gray-600 dark:text-gray-400 mt-1">{Math.round(zoom * 100)}%</div>
         </div>
 
         <button
           onClick={handleZoomIn}
-          className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+          className="flex items-center justify-center w-11 h-11 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all shadow-sm active:scale-95"
           aria-label="Zoom in"
         >
           <ZoomIn className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+        </button>
+
+        <button
+          onClick={handleReset}
+          className="flex items-center justify-center w-11 h-11 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all shadow-sm active:scale-95"
+          aria-label="Reset"
+        >
+          <RotateCcw className="w-5 h-5 text-gray-700 dark:text-gray-300" />
         </button>
       </div>
     </div>
