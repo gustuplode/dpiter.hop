@@ -32,7 +32,7 @@ export default async function OutfitPage() {
           {collectionsWithCount.map((collection, index) => (
             <div
               key={collection.id}
-              className="flex flex-col bg-white dark:bg-gray-800 overflow-hidden border-t border-r border-black/10 dark:border-white/10 lg:rounded-lg lg:border hover:shadow-lg transition-shadow"
+              className="flex flex-col bg-white dark:bg-gray-800 overflow-hidden border-t border-r border-[#8A3224]/10 dark:border-[#8A3224]/15 lg:rounded-lg lg:border hover:shadow-lg transition-shadow"
             >
               <Link href={`/collections/${collection.id}`} className="block">
                 <div className="relative w-full bg-center bg-no-repeat aspect-square bg-cover">
@@ -55,35 +55,30 @@ export default async function OutfitPage() {
               </Link>
 
               <div className="p-2 flex flex-col gap-1 bg-[#F7F7F7] dark:bg-gray-800">
-                <p className="text-[9px] font-bold uppercase text-muted-foreground tracking-wide">
+                <p className="text-[9px] font-bold uppercase text-gray-600 dark:text-gray-400 tracking-wide">
                   {collection.brand || "COLLECTION"}
                 </p>
-                <p className="text-foreground text-[10px] font-semibold leading-tight line-clamp-2">
+                <p className="text-gray-800 dark:text-gray-200 text-[10px] font-normal leading-tight line-clamp-2">
                   {collection.title}
                 </p>
-              </div>
 
-              <div className="px-2 pb-2 flex flex-col gap-2 bg-white dark:bg-gray-800">
-                <div className="flex items-center justify-between">
-                  <p className="text-foreground text-sm font-bold">{collection.product_count} items</p>
-                </div>
-
-                <div className="flex items-center justify-end text-muted-foreground -mt-1">
-                  <div className="flex items-center gap-1">
+                <div className="flex items-center justify-between mt-1">
+                  <p className="text-gray-900 dark:text-white text-sm font-bold">{collection.product_count} items</p>
+                  <div className="flex items-center gap-0.5">
                     <WishlistButton
                       productId={collection.id}
-                      className="flex items-center justify-center h-7 w-7 text-foreground hover:text-primary transition-colors"
+                      className="flex items-center justify-center h-6 w-6 text-gray-600 dark:text-gray-400 hover:text-primary transition-colors"
                     />
                     <RatingButton
                       itemId={collection.id}
                       itemType="collection"
-                      className="flex items-center justify-center h-7 w-7 text-foreground hover:text-primary transition-colors"
+                      className="flex items-center justify-center h-6 w-6 text-gray-600 dark:text-gray-400 hover:text-primary transition-colors"
                     />
                     <Link
                       href={`/collections/${collection.id}`}
-                      className="flex items-center justify-center h-7 w-7 text-primary hover:text-primary/80 transition-colors"
+                      className="flex items-center justify-center h-6 w-6 text-primary hover:text-primary/80 transition-colors"
                     >
-                      <span className="material-symbols-outlined text-xl">arrow_forward</span>
+                      <span className="material-symbols-outlined text-base">arrow_forward</span>
                     </Link>
                   </div>
                 </div>
