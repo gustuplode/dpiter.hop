@@ -47,7 +47,7 @@ async function ProductList() {
       {products.map((product) => (
         <div
           key={product.id}
-          className="flex flex-col bg-white dark:bg-gray-800 overflow-hidden border-t border-r border-[#8A3224]/10 dark:border-[#8A3224]/15 md:rounded-lg md:border hover:shadow-lg transition-shadow"
+          className="flex flex-col bg-white dark:bg-gray-800 overflow-hidden border-t border-r border-[#8A3224] dark:border-[#8A3224] md:rounded-lg md:border hover:shadow-lg transition-shadow"
         >
           <Link href={getProductUrl(product.id, product.title, product.category)} className="block">
             <div
@@ -60,7 +60,7 @@ async function ProductList() {
             </div>
           </Link>
 
-          <div className="p-2 flex flex-col gap-1">
+          <div className="p-2 flex flex-col gap-1 bg-[#F7F7F7] dark:bg-gray-800">
             <p className="text-[10px] font-bold uppercase text-gray-600 dark:text-gray-400 tracking-wider">
               {product.brand || "Brand"}
             </p>

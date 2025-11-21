@@ -32,7 +32,7 @@ export default async function OutfitPage() {
           {collectionsWithCount.map((collection, index) => (
             <div
               key={collection.id}
-              className="flex flex-col bg-white dark:bg-gray-800 overflow-hidden border-t border-r border-[#8A3224]/10 dark:border-[#8A3224]/15 lg:rounded-lg lg:border hover:shadow-lg transition-shadow"
+              className="flex flex-col bg-white dark:bg-gray-800 overflow-hidden border-t border-r border-[#8A3224] dark:border-[#8A3224] lg:rounded-lg lg:border hover:shadow-lg transition-shadow"
             >
               <Link href={`/collections/${collection.id}`} className="block">
                 <div className="relative w-full bg-center bg-no-repeat aspect-square bg-cover">
@@ -42,23 +42,17 @@ export default async function OutfitPage() {
                     className="w-full h-full object-cover"
                     loading="lazy"
                   />
-                  <div className="absolute top-2 left-2 flex items-center gap-0.5 bg-green-600 text-white rounded px-1.5 py-0.5">
-                    <span className="text-[9px] font-bold">4.1</span>
-                    <span
-                      className="material-symbols-outlined text-[10px]"
-                      style={{ fontVariationSettings: "'FILL' 1" }}
-                    >
-                      star
-                    </span>
+                  <div className="absolute bottom-1.5 left-1.5 flex items-center bg-white/95 backdrop-blur-sm rounded px-1.5 py-0.5 shadow-sm">
+                    <span className="text-[10px] font-semibold text-gray-800">4.1</span>
                   </div>
                 </div>
               </Link>
 
               <div className="p-2 flex flex-col gap-1 bg-[#F7F7F7] dark:bg-gray-800">
-                <p className="text-[9px] font-bold uppercase text-gray-600 dark:text-gray-400 tracking-wide">
+                <p className="text-[10px] font-bold uppercase text-gray-600 dark:text-gray-400 tracking-wider">
                   {collection.brand || "COLLECTION"}
                 </p>
-                <p className="text-gray-800 dark:text-gray-200 text-[10px] font-normal leading-tight line-clamp-2">
+                <p className="text-gray-800 dark:text-gray-200 text-[11px] font-normal leading-snug line-clamp-1">
                   {collection.title}
                 </p>
 
