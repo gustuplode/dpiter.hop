@@ -3,6 +3,7 @@ import { redirect } from "next/navigation"
 import Link from "next/link"
 import { Plus, ImageIcon, Video } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { DeleteBannerButton } from "@/components/admin/banners/delete-banner-button"
 
 export default async function BannersPage() {
   const supabase = await createClient()
@@ -94,11 +95,7 @@ export default async function BannersPage() {
                           Edit
                         </Button>
                       </Link>
-                      <form action={`/api/admin/banners/${banner.id}`} method="DELETE">
-                        <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700 bg-transparent">
-                          Delete
-                        </Button>
-                      </form>
+                      <DeleteBannerButton bannerId={banner.id} />
                     </div>
                   </div>
                 </div>
