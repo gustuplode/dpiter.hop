@@ -32,26 +32,26 @@ export function CategoryHeader({
 
   return (
     <>
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
+      <div className="flex items-center justify-center gap-3 md:gap-6 overflow-x-auto pb-1 scrollbar-hide">
         {categories.map((category) => {
           const isActive = pathname === category.path
           return (
             <Link
               key={category.name}
               href={category.path}
-              className="flex flex-col items-center justify-center gap-0.5 min-w-[60px] group"
+              className="flex flex-col items-center justify-center gap-0.5 min-w-[60px] md:min-w-[80px] group"
             >
               <div
-                className={`flex items-center justify-center size-9 rounded-full transition-all ${
+                className={`flex items-center justify-center size-9 md:size-11 rounded-full transition-all ${
                   isActive
                     ? "bg-primary text-white"
                     : "bg-gray-100 dark:bg-gray-800 text-text-secondary-light dark:text-text-secondary-dark group-hover:bg-primary/10"
                 }`}
               >
-                <span className="material-symbols-outlined text-base">{category.icon}</span>
+                <span className="material-symbols-outlined text-base md:text-lg">{category.icon}</span>
               </div>
               <span
-                className={`text-[8px] font-medium transition-colors ${
+                className={`text-[8px] md:text-[10px] font-medium transition-colors ${
                   isActive
                     ? "text-primary dark:text-primary-light"
                     : "text-text-secondary-light dark:text-text-secondary-dark"

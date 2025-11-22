@@ -68,7 +68,7 @@ export function SearchHeader() {
   return (
     <>
       <div className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200/50 dark:border-gray-700/50">
-        <div className="px-4 py-2 space-y-1.5">
+        <div className="max-w-7xl mx-auto px-4 py-2 space-y-1.5">
           <div className="flex items-center gap-3">
             {showBackButton && (
               <button
