@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState, useEffect, useRef } from "react"
-import { Volume2, VolumeX } from "lucide-react"
+import { Volume2, VolumeX, Play, Pause } from "lucide-react"
 
 interface Banner {
   id: string
@@ -16,8 +16,11 @@ interface Banner {
 export function BannerCarouselClient({ banners }: { banners: Banner[] }) {
   const [currentBanner, setCurrentBanner] = useState(0)
   const [isMuted, setIsMuted] = useState(true)
+  const [isPlaying, setIsPlaying] = useState(true)
+  const [showControls, setShowControls] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   const timerRef = useRef<NodeJS.Timeout | null>(null)
+  const hideControlsTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     if (banners[currentBanner].type === "video" && videoRef.current) {
@@ -25,6 +28,7 @@ export function BannerCarouselClient({ banners }: { banners: Banner[] }) {
       videoRef.current.play().catch((err) => {
         console.log("[v0] Video autoplay failed:", err)
       })
+      setIsPlaying(true)
     }
   }, [currentBanner, banners])
 
@@ -46,6 +50,22 @@ export function BannerCarouselClient({ banners }: { banners: Banner[] }) {
     }
   }, [isMuted])
 
+  const handleMouseMove = () => {
+    if (banners[currentBanner].type === "video") {
+      setShowControls(true)
+      if (hideControlsTimerRef.current) clearTimeout(hideControlsTimerRef.current)
+      hideControlsTimerRef.current = setTimeout(() => {
+        setShowControls(false)
+      }, 2000)
+    }
+  }
+
+  const handleMouseLeave = () => {
+    if (banners[currentBanner].type === "video") {
+      setShowControls(false)
+    }
+  }
+
   const handleVideoEnd = () => {
     setCurrentBanner((prev) => (prev === banners.length - 1 ? 0 : prev + 1))
   }
@@ -59,6 +79,18 @@ export function BannerCarouselClient({ banners }: { banners: Banner[] }) {
     setIsMuted(!isMuted)
   }
 
+  const togglePlayPause = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause()
+      } else {
+        videoRef.current.play()
+      }
+      setIsPlaying(!isPlaying)
+    }
+  }
+
   return (
     <div
       className="mb-4 relative"
@@ -66,6 +98,8 @@ export function BannerCarouselClient({ banners }: { banners: Banner[] }) {
       onTouchStart={handleBannerInteraction}
       onTouchMove={handleBannerInteraction}
       onTouchEnd={handleBannerInteraction}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
     >
       <div className="w-full aspect-[16/7] md:aspect-[24/7] bg-gray-100 dark:bg-gray-800 overflow-hidden rounded-2xl shadow-lg">
         {banners[currentBanner].type === "image" ? (
@@ -91,13 +125,26 @@ export function BannerCarouselClient({ banners }: { banners: Banner[] }) {
       </div>
 
       {banners[currentBanner].type === "video" && (
-        <button
-          onClick={toggleMute}
-          className="absolute top-4 right-4 flex items-center justify-center h-10 w-10 rounded-full bg-black/60 backdrop-blur-md hover:bg-black/80 transition-all shadow-lg"
-          aria-label={isMuted ? "Unmute" : "Mute"}
+        <div
+          className={`absolute top-4 right-4 flex gap-2 transition-opacity duration-300 ${
+            showControls ? "opacity-100" : "opacity-0"
+          }`}
         >
-          {isMuted ? <VolumeX className="w-5 h-5 text-white" /> : <Volume2 className="w-5 h-5 text-white" />}
-        </button>
+          <button
+            onClick={togglePlayPause}
+            className="flex items-center justify-center h-10 w-10 rounded-full bg-black/60 backdrop-blur-md hover:bg-black/80 transition-all shadow-lg"
+            aria-label={isPlaying ? "Pause" : "Play"}
+          >
+            {isPlaying ? <Pause className="w-5 h-5 text-white" /> : <Play className="w-5 h-5 text-white ml-0.5" />}
+          </button>
+          <button
+            onClick={toggleMute}
+            className="flex items-center justify-center h-10 w-10 rounded-full bg-black/60 backdrop-blur-md hover:bg-black/80 transition-all shadow-lg"
+            aria-label={isMuted ? "Unmute" : "Mute"}
+          >
+            {isMuted ? <VolumeX className="w-5 h-5 text-white" /> : <Volume2 className="w-5 h-5 text-white" />}
+          </button>
+        </div>
       )}
 
       <div className="absolute bottom-4 left-0 right-0 flex justify-center items-center gap-4">

@@ -34,42 +34,59 @@ export function AdminMediaCropper({ file, mediaType, onComplete, onCancel }: Adm
   const handleDone = async () => {
     setUploading(true)
     try {
-      let finalBlob: Blob
-
       if (mediaType === "video") {
-        const croppedVideo = await getCroppedVideo(mediaSrc, croppedAreaPixels, videoRef.current!)
-        finalBlob = croppedVideo
-        console.log("[v0] Video cropped successfully, size:", finalBlob.size)
+        console.log("[v0] Uploading video directly:", file.name, "Size:", file.size)
+
+        const formData = new FormData()
+        formData.append("file", file, file.name)
+
+        const response = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        })
+
+        if (!response.ok) {
+          const errorText = await response.text()
+          console.error("[v0] Video upload failed:", errorText)
+          throw new Error(`Upload failed: ${response.status} - ${errorText}`)
+        }
+
+        const data = await response.json()
+        console.log("[v0] Video upload successful:", data.url)
+
+        if (data.url) {
+          onComplete(data.url)
+        } else {
+          throw new Error("No URL returned from upload")
+        }
       } else {
-        // Images are cropped using canvas
         const croppedImage = await getCroppedImg(mediaSrc, croppedAreaPixels)
-        finalBlob = croppedImage
-        console.log("[v0] Image cropped successfully, size:", finalBlob.size)
-      }
+        console.log("[v0] Image cropped successfully, size:", croppedImage.size)
 
-      const formData = new FormData()
-      formData.append("file", finalBlob, file.name)
+        const formData = new FormData()
+        formData.append("file", croppedImage, file.name)
 
-      console.log("[v0] Uploading file:", file.name, "Type:", mediaType, "Size:", finalBlob.size)
+        console.log("[v0] Uploading cropped image:", file.name)
 
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      })
+        const response = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        })
 
-      if (!response.ok) {
-        const errorText = await response.text()
-        console.error("[v0] Upload failed:", errorText)
-        throw new Error(`Upload failed: ${response.status}`)
-      }
+        if (!response.ok) {
+          const errorText = await response.text()
+          console.error("[v0] Upload failed:", errorText)
+          throw new Error(`Upload failed: ${response.status}`)
+        }
 
-      const data = await response.json()
-      console.log("[v0] Upload successful:", data.url)
+        const data = await response.json()
+        console.log("[v0] Upload successful:", data.url)
 
-      if (data.url) {
-        onComplete(data.url)
-      } else {
-        throw new Error("No URL returned from upload")
+        if (data.url) {
+          onComplete(data.url)
+        } else {
+          throw new Error("No URL returned from upload")
+        }
       }
     } catch (error) {
       console.error("[v0] Error uploading:", error)
@@ -83,7 +100,7 @@ export function AdminMediaCropper({ file, mediaType, onComplete, onCancel }: Adm
     <div className="fixed inset-0 bg-white dark:bg-gray-950 z-50 flex flex-col">
       <div className="bg-white dark:bg-gray-900 px-4 py-3 flex items-center justify-between border-b border-gray-200 dark:border-gray-800">
         <h2 className="text-text-primary-light dark:text-text-primary-dark font-semibold">
-          Adjust {mediaType === "image" ? "Image" : "Video"} - 16:7 Crop
+          {mediaType === "image" ? "Adjust Image - 16:7 Crop" : "Upload Video"}
         </h2>
         <Button onClick={onCancel} variant="ghost" size="icon">
           <X className="h-5 w-5" />
@@ -110,115 +127,53 @@ export function AdminMediaCropper({ file, mediaType, onComplete, onCancel }: Adm
             objectFit="contain"
           />
         ) : (
-          <>
-            {/* Video preview with cropper overlay */}
-            <video ref={videoRef} src={mediaSrc} className="hidden" />
-            <Cropper
-              video={mediaSrc}
-              crop={crop}
-              zoom={zoom}
-              aspect={16 / 7}
-              onCropChange={setCrop}
-              onZoomChange={setZoom}
-              onCropComplete={onCropComplete}
-              objectFit="contain"
+          <div className="absolute inset-0 flex items-center justify-center">
+            <video
+              ref={videoRef}
+              src={mediaSrc}
+              controls
+              className="max-w-full max-h-full rounded-lg shadow-2xl"
+              style={{ maxHeight: "80%" }}
             />
-          </>
+          </div>
         )}
       </div>
 
-      <div className="bg-white dark:bg-gray-900 px-4 py-4 space-y-4 border-t border-gray-200 dark:border-gray-800">
-        <div className="flex items-center gap-4">
-          <ZoomOut className="h-5 w-5 text-text-primary-light dark:text-text-primary-dark flex-shrink-0" />
-          <Slider
-            value={[zoom]}
-            onValueChange={([value]) => setZoom(value)}
-            min={0.5}
-            max={3}
-            step={0.1}
-            className="flex-1"
-          />
-          <ZoomIn className="h-5 w-5 text-text-primary-light dark:text-text-primary-dark flex-shrink-0" />
-          <Button onClick={() => setZoom(1)} variant="outline" size="sm" className="flex items-center gap-1">
-            <RotateCw className="h-4 w-4" />
-            Reset
-          </Button>
+      {mediaType === "image" && (
+        <div className="bg-white dark:bg-gray-900 px-4 py-4 space-y-4 border-t border-gray-200 dark:border-gray-800">
+          <div className="flex items-center gap-4">
+            <ZoomOut className="h-5 w-5 text-text-primary-light dark:text-text-primary-dark flex-shrink-0" />
+            <Slider
+              value={[zoom]}
+              onValueChange={([value]) => setZoom(value)}
+              min={0.5}
+              max={3}
+              step={0.1}
+              className="flex-1"
+            />
+            <ZoomIn className="h-5 w-5 text-text-primary-light dark:text-text-primary-dark flex-shrink-0" />
+            <Button onClick={() => setZoom(1)} variant="outline" size="sm" className="flex items-center gap-1">
+              <RotateCw className="h-4 w-4" />
+              Reset
+            </Button>
+          </div>
+          <p className="text-xs text-center text-text-secondary-light dark:text-text-secondary-dark">
+            Output: 1920×840 (16:7 aspect ratio) • Drag to reposition • Use slider to zoom
+          </p>
         </div>
-        <p className="text-xs text-center text-text-secondary-light dark:text-text-secondary-dark">
-          Output: 1920×840 (16:7 aspect ratio) • Drag to reposition • Use slider to zoom
-        </p>
-      </div>
+      )}
 
       <div className="bg-white dark:bg-gray-900 px-4 py-3 flex gap-3 border-t border-gray-200 dark:border-gray-800">
         <Button onClick={onCancel} variant="outline" className="flex-1 bg-transparent">
           Cancel
         </Button>
         <Button onClick={handleDone} disabled={uploading} className="flex-1 bg-primary hover:bg-primary/90">
-          {uploading ? "Processing & Uploading..." : "Crop & Upload"}
+          {uploading ? "Uploading..." : mediaType === "image" ? "Crop & Upload" : "Upload Video"}
           <Check className="h-5 w-5 ml-2" />
         </Button>
       </div>
     </div>
   )
-}
-
-async function getCroppedVideo(videoSrc: string, pixelCrop: any, videoElement: HTMLVideoElement): Promise<Blob> {
-  return new Promise((resolve, reject) => {
-    const video = videoElement
-    const canvas = document.createElement("canvas")
-    const ctx = canvas.getContext("2d")
-
-    const outputWidth = 1920
-    const outputHeight = 840
-
-    canvas.width = outputWidth
-    canvas.height = outputHeight
-
-    // Wait for video to load metadata
-    video.onloadedmetadata = () => {
-      // Seek to first frame
-      video.currentTime = 0
-      video.onseeked = () => {
-        if (ctx && pixelCrop) {
-          // Draw the cropped portion of the video onto the canvas
-          ctx.drawImage(
-            video,
-            pixelCrop.x,
-            pixelCrop.y,
-            pixelCrop.width,
-            pixelCrop.height,
-            0,
-            0,
-            outputWidth,
-            outputHeight,
-          )
-
-          // Convert to blob (thumbnail for now - full video processing would require server-side)
-          canvas.toBlob(
-            (blob) => {
-              if (blob) {
-                console.log("[v0] Video frame captured and cropped successfully")
-                // For actual video cropping, we'd need FFmpeg on server
-                // For now, using the original video file
-                fetch(videoSrc)
-                  .then((res) => res.blob())
-                  .then((videoBlob) => {
-                    resolve(videoBlob)
-                  })
-                  .catch(reject)
-              } else {
-                reject(new Error("Failed to create blob from canvas"))
-              }
-            },
-            "image/jpeg",
-            0.95,
-          )
-        }
-      }
-    }
-
-    video.onerror = () => reject(new Error("Failed to load video"))
-  })
 }
 
 async function getCroppedImg(imageSrc: string, pixelCrop: any): Promise<Blob> {
