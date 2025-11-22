@@ -14,22 +14,22 @@ export function SwipeablePageWrapper({ children }: SwipeablePageWrapperProps) {
   const pathname = usePathname()
   const touchStartX = useRef<number>(0)
   const touchEndX = useRef<number>(0)
-  const isScrolling = useRef<boolean>(false)
+  const touchStartY = useRef<number>(0)
+  const isDragging = useRef<boolean>(false)
 
   const pages = ["/", "/fashion", "/gadgets", "/gaming", "/outfit"]
 
   const handleSwipe = () => {
-    if (isScrolling.current) return
+    const diffX = touchStartX.current - touchEndX.current
+    const diffY = Math.abs(touchStartY.current - touchEndX.current)
+    const threshold = 100
 
-    const diff = touchStartX.current - touchEndX.current
-    const threshold = 50
-
-    if (Math.abs(diff) < threshold) return
+    if (Math.abs(diffX) < threshold || diffY > Math.abs(diffX)) return
 
     const currentIndex = pages.indexOf(pathname)
     if (currentIndex === -1) return
 
-    if (diff > 0) {
+    if (diffX > 0) {
       if (currentIndex < pages.length - 1) {
         router.push(pages[currentIndex + 1])
       }
@@ -43,21 +43,28 @@ export function SwipeablePageWrapper({ children }: SwipeablePageWrapperProps) {
   useEffect(() => {
     const handleTouchStart = (e: TouchEvent) => {
       touchStartX.current = e.touches[0].clientX
-      isScrolling.current = false
+      touchStartY.current = e.touches[0].clientY
+      isDragging.current = false
     }
 
     const handleTouchMove = (e: TouchEvent) => {
       touchEndX.current = e.touches[0].clientX
-      const verticalDiff = Math.abs(e.touches[0].clientY - (e.touches[0] as any).startY)
+      const verticalDiff = Math.abs(e.touches[0].clientY - touchStartY.current)
       const horizontalDiff = Math.abs(touchStartX.current - touchEndX.current)
 
-      if (verticalDiff > horizontalDiff) {
-        isScrolling.current = true
+      if (horizontalDiff > 10) {
+        isDragging.current = true
+      }
+
+      if (verticalDiff > horizontalDiff * 1.5) {
+        isDragging.current = false
       }
     }
 
     const handleTouchEnd = () => {
-      handleSwipe()
+      if (isDragging.current) {
+        handleSwipe()
+      }
     }
 
     document.addEventListener("touchstart", handleTouchStart)
