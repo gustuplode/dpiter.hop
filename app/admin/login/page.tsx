@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useState, useEffect } from "react"
 import { Network } from "lucide-react"
-import { BottomNav } from "@/components/bottom-nav"
 import { useRouter } from "next/navigation"
 
 export default function AdminLoginPage() {
@@ -109,10 +108,6 @@ export default function AdminLoginPage() {
             </CardContent>
           </Card>
         </div>
-      </div>
-
-      <div className="pb-2">
-        <BottomNav />
       </div>
     </div>
   )

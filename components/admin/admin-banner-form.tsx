@@ -10,7 +10,6 @@ import Link from "next/link"
 
 export function AdminBannerForm({ banner }: { banner?: any }) {
   const router = useRouter()
-  const [title, setTitle] = useState(banner?.title || "")
   const [mediaType, setMediaType] = useState<"image" | "video">(banner?.type || "image")
   const [mediaUrl, setMediaUrl] = useState(banner?.media_url || "")
   const [position, setPosition] = useState(banner?.position || 0)
@@ -46,7 +45,7 @@ export function AdminBannerForm({ banner }: { banner?: any }) {
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          title,
+          title: mediaType === "image" ? "Image Banner" : "Video Banner",
           type: mediaType,
           media_url: mediaUrl,
           position,
@@ -121,20 +120,6 @@ export function AdminBannerForm({ banner }: { banner?: any }) {
       </header>
 
       <form onSubmit={handleSubmit} className="p-4 max-w-2xl mx-auto space-y-6">
-        <div>
-          <label className="block text-sm font-medium text-text-primary-light dark:text-text-primary-dark mb-2">
-            Title
-          </label>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-text-primary-light dark:text-text-primary-dark focus:ring-2 focus:ring-primary"
-            placeholder="Banner title"
-            required
-          />
-        </div>
-
         <div>
           <label className="block text-sm font-medium text-text-primary-light dark:text-text-primary-dark mb-2">
             Media Type
