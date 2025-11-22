@@ -1,21 +1,18 @@
 "use client"
 
 import type React from "react"
-import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useState } from "react"
 import { Network } from "lucide-react"
-import { useRouter } from "next/navigation"
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -23,24 +20,22 @@ export default function AdminLoginPage() {
     setError(null)
 
     try {
-      const supabase = createClient()
-
-      const { data, error: authError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      const response = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
       })
 
-      if (authError) {
-        throw new Error(authError.message)
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || "Login failed")
       }
 
-      if (data?.user) {
-        // Successfully logged in
-        router.push("/admin")
-        router.refresh()
-      } else {
-        throw new Error("Login failed")
-      }
+      // Redirect to admin dashboard
+      window.location.href = "/admin"
     } catch (error: unknown) {
       console.error("[v0] Admin login error:", error)
       setError(error instanceof Error ? error.message : "Login failed. Please check your credentials.")
