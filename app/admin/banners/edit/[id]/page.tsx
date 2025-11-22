@@ -2,8 +2,9 @@ import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { AdminBannerForm } from "@/components/admin/admin-banner-form"
 
-export default async function EditBannerPage({ params }: { params: { id: string } }) {
+export default async function EditBannerPage({ params }: { params: Promise<{ id: string }> }) {
   const supabase = await createClient()
+  const { id } = await params
 
   const {
     data: { user },
@@ -13,7 +14,7 @@ export default async function EditBannerPage({ params }: { params: { id: string 
     redirect("/admin/login")
   }
 
-  const { data: banner } = await supabase.from("banners").select("*").eq("id", params.id).single()
+  const { data: banner } = await supabase.from("banners").select("*").eq("id", id).single()
 
   if (!banner) {
     redirect("/admin/banners")

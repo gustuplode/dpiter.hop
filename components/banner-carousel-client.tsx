@@ -3,6 +3,7 @@
 import type React from "react"
 
 import { useState, useEffect, useRef } from "react"
+import { Volume2, VolumeX } from "lucide-react"
 
 interface Banner {
   id: string
@@ -14,6 +15,7 @@ interface Banner {
 
 export function BannerCarouselClient({ banners }: { banners: Banner[] }) {
   const [currentBanner, setCurrentBanner] = useState(0)
+  const [isMuted, setIsMuted] = useState(true)
   const videoRef = useRef<HTMLVideoElement>(null)
   const timerRef = useRef<NodeJS.Timeout | null>(null)
 
@@ -29,12 +31,23 @@ export function BannerCarouselClient({ banners }: { banners: Banner[] }) {
     }
   }, [currentBanner, banners])
 
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.muted = isMuted
+    }
+  }, [isMuted, currentBanner])
+
   const handleVideoEnd = () => {
     setCurrentBanner((prev) => (prev === banners.length - 1 ? 0 : prev + 1))
   }
 
   const handleBannerInteraction = (e: React.MouseEvent | React.TouchEvent) => {
     e.stopPropagation()
+  }
+
+  const toggleMute = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setIsMuted(!isMuted)
   }
 
   return (
@@ -57,13 +70,24 @@ export function BannerCarouselClient({ banners }: { banners: Banner[] }) {
             ref={videoRef}
             src={banners[currentBanner].media_url}
             autoPlay
-            muted
+            muted={isMuted}
             playsInline
             onEnded={handleVideoEnd}
             className="w-full h-full object-cover"
           />
         )}
       </div>
+
+      {banners[currentBanner].type === "video" && (
+        <button
+          onClick={toggleMute}
+          className="absolute top-4 right-4 flex items-center justify-center h-10 w-10 rounded-full bg-black/60 backdrop-blur-md hover:bg-black/80 transition-all shadow-lg"
+          aria-label={isMuted ? "Unmute" : "Mute"}
+        >
+          {isMuted ? <VolumeX className="w-5 h-5 text-white" /> : <Volume2 className="w-5 h-5 text-white" />}
+        </button>
+      )}
+
       <div className="absolute bottom-4 left-0 right-0 flex justify-center items-center gap-4">
         <button
           onClick={(e) => {

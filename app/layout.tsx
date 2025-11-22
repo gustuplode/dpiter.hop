@@ -1,7 +1,8 @@
 import type React from "react"
 import "./globals.css"
 import { Suspense } from "react"
-import { ConditionalLayout } from "@/components/conditional-layout" // Import ConditionalLayout component
+import { ConditionalLayout } from "@/components/conditional-layout"
+import { LoadingScreen } from "@/components/loading-screen"
 
 export const metadata = {
   title: "Dpiter - E-commerce Collections",
@@ -29,6 +30,7 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-background-light dark:bg-background-dark text-text-primary-light dark:text-text-primary-dark overflow-x-hidden">
+        <LoadingScreen />
         <Suspense fallback={<div className="h-32 bg-background-light dark:bg-background-dark" />}>
           <ConditionalLayout>{children}</ConditionalLayout>
         </Suspense>
