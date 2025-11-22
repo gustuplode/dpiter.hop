@@ -9,7 +9,7 @@ export function BannerListClient({ banners }: { banners: any[] }) {
   const router = useRouter()
 
   return (
-    <div className="space-y-4">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {banners.map((banner) => (
         <BannerCard key={banner.id} banner={banner} router={router} />
       ))}
@@ -20,8 +20,8 @@ export function BannerListClient({ banners }: { banners: any[] }) {
 function BannerCard({ banner, router }: { banner: any; router: any }) {
   const [isDeleting, setIsDeleting] = useState(false)
 
-  const handleEdit = async () => {
-    console.log("[v0] Navigating to edit page:", `/admin/banners/edit/${banner.id}`)
+  const handleEdit = () => {
+    console.log("[v0] Editing banner ID:", banner.id)
     router.push(`/admin/banners/edit/${banner.id}`)
   }
 
@@ -29,78 +29,73 @@ function BannerCard({ banner, router }: { banner: any; router: any }) {
     if (!confirm("Are you sure you want to delete this banner?")) return
 
     setIsDeleting(true)
-    console.log("[v0] Deleting banner:", banner.id)
+    console.log("[v0] Deleting banner ID:", banner.id)
 
     try {
       const response = await fetch(`/api/admin/banners/${banner.id}`, {
         method: "DELETE",
       })
 
+      const result = await response.json()
+
       if (!response.ok) {
-        throw new Error("Failed to delete banner")
+        throw new Error(result.error || "Failed to delete banner")
       }
 
       console.log("[v0] Banner deleted successfully")
-      window.location.href = "/admin/banners"
-    } catch (error) {
+      router.refresh()
+    } catch (error: any) {
       console.error("[v0] Delete error:", error)
-      alert("Failed to delete banner. Please try again.")
+      alert(`Failed to delete banner: ${error.message}`)
       setIsDeleting(false)
     }
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow">
-      <div className="flex items-center gap-4 p-4">
-        {/* Preview */}
-        <div className="relative w-28 h-28 flex-shrink-0 bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
-          {banner.type === "image" ? (
-            <img src={banner.media_url || "/placeholder.svg"} alt="Banner" className="w-full h-full object-cover" />
-          ) : (
-            <video src={banner.media_url} className="w-full h-full object-cover" muted />
-          )}
-          <div className="absolute top-2 left-2 bg-black/70 text-white px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
-            {banner.type === "image" ? <ImageIcon className="w-3 h-3" /> : <Video className="w-3 h-3" />}
-            {banner.type}
-          </div>
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-xl transition-all">
+      {/* Banner Preview */}
+      <div className="relative aspect-[16/7] bg-gray-100 dark:bg-gray-700">
+        {banner.type === "image" ? (
+          <img src={banner.media_url || "/placeholder.svg"} alt="Banner" className="w-full h-full object-cover" />
+        ) : (
+          <video src={banner.media_url} className="w-full h-full object-cover" muted loop />
+        )}
+        {/* Type Badge */}
+        <div className="absolute top-2 right-2 bg-black/80 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5">
+          {banner.type === "image" ? <ImageIcon className="w-3.5 h-3.5" /> : <Video className="w-3.5 h-3.5" />}
+          {banner.type === "image" ? "Image" : "Video"}
         </div>
-
-        {/* Info */}
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-1">
-            <span
-              className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-                banner.is_active
-                  ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                  : "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-400"
-              }`}
-            >
-              {banner.is_active ? "Active" : "Inactive"}
-            </span>
-            <span className="text-xs text-gray-500 dark:text-gray-400">Position: {banner.position}</span>
-          </div>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            {banner.type === "image" ? "Image Banner" : "Video Banner"}
-          </p>
-        </div>
-
-        {/* Actions */}
-        <div className="flex gap-2">
-          <Button
-            onClick={handleEdit}
-            variant="outline"
-            size="sm"
-            className="gap-2 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300 dark:hover:bg-blue-900/20 bg-transparent"
+        {/* Status Badge */}
+        <div className="absolute top-2 left-2">
+          <span
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold ${
+              banner.is_active ? "bg-green-500 text-white" : "bg-gray-500 text-white"
+            }`}
           >
+            {banner.is_active ? "Active" : "Inactive"}
+          </span>
+        </div>
+      </div>
+
+      {/* Info & Actions */}
+      <div className="p-4">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+            Position: <span className="text-gray-900 dark:text-white font-bold">{banner.position}</span>
+          </span>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex gap-2">
+          <Button onClick={handleEdit} className="flex-1 bg-blue-500 hover:bg-blue-600 text-white gap-2" size="sm">
             <Pencil className="w-4 h-4" />
             Edit
           </Button>
           <Button
             onClick={handleDelete}
             disabled={isDeleting}
-            variant="outline"
+            className="flex-1 bg-red-500 hover:bg-red-600 text-white gap-2 disabled:opacity-50"
             size="sm"
-            className="gap-2 text-red-600 hover:bg-red-50 hover:border-red-300 dark:text-red-400 dark:hover:bg-red-900/20 bg-transparent"
           >
             <Trash2 className="w-4 h-4" />
             {isDeleting ? "Deleting..." : "Delete"}
