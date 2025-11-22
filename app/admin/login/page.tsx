@@ -16,6 +16,7 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [userChecked, setUserChecked] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
@@ -27,6 +28,8 @@ export default function AdminLoginPage() {
 
       if (user) {
         router.push("/admin")
+      } else {
+        setUserChecked(true)
       }
     }
 
@@ -52,6 +55,14 @@ export default function AdminLoginPage() {
       setError(error instanceof Error ? error.message : "An error occurred")
       setIsLoading(false)
     }
+  }
+
+  if (!userChecked) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#F4F4F7] dark:bg-[#1a1a1d]">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
+      </div>
+    )
   }
 
   return (
